@@ -15,7 +15,7 @@ export async function getPokemon(name: string) {
 export async function getPokemonSpecies(name: string) {
   try {
     const response = await axios.get(
-      `https://pokeapi.co/api/v2/pokemon-species/${name}/`
+      `https://pokeapi.co/api/v2/pokemon-species/${name}`
     );
     return response.data;
   } catch (error: any) {

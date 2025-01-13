@@ -1,4 +1,6 @@
-export const typeColors = {
+type PokemonTypes = { [key: string]: string };
+
+export const typeColors: PokemonTypes = {
   normal: "#A8A878",
   fire: "#F08030",
   water: "#6890F0",
