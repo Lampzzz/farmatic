@@ -3,7 +3,8 @@ import { Icon } from "@/components/icon";
 import { MainLayout } from "@/components/layout/main-layout";
 import { ProfileCard } from "@/components/profile-card";
 import { ProfileInfoRow } from "@/components/profile-info-row";
-import { Image, Text, View } from "react-native";
+import { router } from "expo-router";
+import { Image, Pressable, Text, View } from "react-native";
 
 export default function ProfileScreen() {
   return (
@@ -74,10 +75,12 @@ export default function ProfileScreen() {
             <Text className="text-gray">About Farmatic</Text>
           </View>
           <View className="border-b border-gray/10 my-4" />
-          <View className="flex-row items-center justify-start gap-4">
-            <Icon name="LogOut" size={24} color="#EF4444" />
-            <Text className="text-red-500">Log Out</Text>
-          </View>
+          <Pressable onPress={() => router.push("/sign-in")}>
+            <View className="flex-row items-center justify-start gap-4">
+              <Icon name="LogOut" size={24} color="#EF4444" />
+              <Text className="text-red-500">Log Out</Text>
+            </View>
+          </Pressable>
         </ProfileCard>
 
         {/* <View className="bg-white shadow-md rounded-xl p-4">

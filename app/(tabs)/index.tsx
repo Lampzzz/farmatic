@@ -1,8 +1,9 @@
 import { StatusCard } from "@/components/greenhouse/status-card";
 import { Header } from "@/components/header";
+import { Icon } from "@/components/icon";
 import { MainLayout } from "@/components/layout/main-layout";
-import { AddPlant } from "@/components/plant/add-plant";
 import { PlantCard } from "@/components/plant/plant-card";
+import { myPlants } from "@/constants";
 import { Text, View } from "react-native";
 
 export default function HomeScreen() {
@@ -15,25 +16,23 @@ export default function HomeScreen() {
           <StatusCard title="Light" value="High" icon="Sun" />
         </View>
       </Header>
+
       <View className="px-6 py-4">
-        <Text className="text-2xl font-bold mb-4">My Plants</Text>
+        <View className="flex-row items-center justify-between mb-6">
+          <Text className="text-2xl font-bold">My Plants</Text>
+          <View className="bg-primary h-10 w-10 items-center justify-center rounded-full shadow-xl">
+            <Icon name="Plus" size={18} color="white" />
+          </View>
+        </View>
         <View className="flex-row flex-wrap gap-4">
-          <PlantCard
-            image="https://picsum.photos/400/300?random=1"
-            title="Tomato"
-            description="Planted: Aug 17, 2023"
-          />
-          <PlantCard
-            image="https://picsum.photos/400/300?random=2"
-            title="Lettuce"
-            description="Planted: Sep 21, 2023"
-          />
-          <PlantCard
-            image="https://picsum.photos/400/300?random=3"
-            title="Carrot"
-            description="Planted: Oct 15, 2023"
-          />
-          <AddPlant />
+          {myPlants.map((plant) => (
+            <PlantCard
+              key={plant.id}
+              image={plant.image}
+              title={plant.name}
+              datePlanted={plant.datePlanted}
+            />
+          ))}
         </View>
       </View>
     </MainLayout>

@@ -3,25 +3,25 @@ import { Image, Text, View } from "react-native";
 export function PlantCard({
   image,
   title,
-  description,
+  datePlanted,
 }: {
   image: string;
   title: string;
-  description: string;
+  datePlanted: string;
 }) {
   return (
-    <View className="flex-1 min-w-[45%]">
-      <View className="shadow-lg bg-white rounded-b-lg">
+    <View className="min-w-[47.7%]">
+      <View className="shadow-md bg-white rounded-b-lg">
         <Image
           source={{
             uri: image,
           }}
-          className="w-full h-36 rounded-t-lg"
+          className="w-full h-32 rounded-t-lg"
           resizeMode="cover"
         />
         <View className="p-4">
           <Text className="text-primary font-semibold">{title}</Text>
-          <Text className="text-gray text-sm">{description}</Text>
+          <Text className="text-gray text-sm">Planted: {datePlanted}</Text>
         </View>
       </View>
     </View>
