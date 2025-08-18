@@ -6,9 +6,8 @@ import { router } from "expo-router";
 import { useState } from "react";
 import { Pressable, Text, View } from "react-native";
 
-export default function SignIn() {
+export default function ForgotPassword() {
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
 
   return (
     <MainLayout>
@@ -18,33 +17,27 @@ export default function SignIn() {
             <View className="bg-primary rounded-xl p-4 mb-4">
               <Icon name="Leaf" size={40} color="white" />
             </View>
-            <Text className="text-2xl font-bold">Welcome Back</Text>
+            <Text className="text-2xl font-bold">Forgot Password</Text>
             <Text className="text-gray text-sm">
-              Sign in to continue to your greenhouse
+              Enter your email to reset your password
             </Text>
           </View>
           <FormInput
             label="Email"
-            placeholder="Enter your email"
+            placeholder="Enter your email address"
             value={email}
             onChangeText={setEmail}
-            styles="mb-4"
             iconName="Mail"
           />
-          <FormInput
-            label="Password"
-            placeholder="Enter your password"
-            value={password}
-            onChangeText={setPassword}
-            isPassword
-            iconName="Lock"
-          />
           <View className="my-6">
-            <Button onPress={() => router.push("/home")} label="Login" />
+            <Button
+              onPress={() => router.push("/home")}
+              label="Reset Password"
+            />
           </View>
           <View className="items-center">
-            <Pressable onPress={() => router.push("/forgot-password")}>
-              <Text className="text-gray underline">Forgot Password?</Text>
+            <Pressable onPress={() => router.push("/sign-in")}>
+              <Text className="text-gray">Back to Login</Text>
             </Pressable>
           </View>
         </View>
