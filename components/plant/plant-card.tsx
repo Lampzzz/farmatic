@@ -7,21 +7,20 @@ export function PlantCard({
 }: {
   image: string;
   title: string;
-  datePlanted: string;
+  datePlanted?: string;
 }) {
   return (
-    <View className="min-w-[47.7%]">
-      <View className="shadow-md bg-white rounded-b-lg">
+    <View className="flex-1">
+      <View className="shadow-md relative h-40">
         <Image
           source={{
             uri: image,
           }}
-          className="w-full h-32 rounded-t-lg"
+          className="w-full h-40 rounded-md absolute top-0 left-0"
           resizeMode="cover"
         />
-        <View className="p-4">
-          <Text className="text-primary font-semibold">{title}</Text>
-          <Text className="text-gray text-sm">Planted: {datePlanted}</Text>
+        <View className="absolute bottom-0 left-0 right-0 p-4">
+          <Text className="text-white font-bold">{title}</Text>
         </View>
       </View>
     </View>

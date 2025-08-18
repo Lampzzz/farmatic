@@ -16,7 +16,7 @@ export function FormInput({
   placeholder: string;
   value: string;
   onChangeText: (text: string) => void;
-  label: string;
+  label?: string;
   isPassword?: boolean;
   styles?: string;
   iconName?: keyof typeof icons;
@@ -25,8 +25,8 @@ export function FormInput({
 
   return (
     <View className={clsx(styles)}>
-      <Text className="text-sm font-medium mb-2">{label}</Text>
-      <View className="border border-gray/20 rounded-xl px-4 py-1 flex-row items-center justify-between gap-2">
+      {label && <Text className="font-medium mb-2">{label}</Text>}
+      <View className="bg-white border border-gray/20 rounded-xl px-4 py-1 flex-row items-center justify-between gap-2">
         {iconName && <Icon name={iconName} size={20} color="#6B7280" />}
         <View className="flex-1">
           <TextInput

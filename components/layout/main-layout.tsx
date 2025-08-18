@@ -1,23 +1,19 @@
 import clsx from "clsx";
-import { ScrollView } from "react-native";
+import { View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export function MainLayout({
   children,
   styles,
+  backgroundColor = "bg-primary",
 }: {
   children: React.ReactNode;
   styles?: string;
+  backgroundColor?: string;
 }) {
   return (
-    <SafeAreaView className="flex-1 bg-primary relative" edges={["top"]}>
-      <ScrollView
-        className={clsx("bg-background", styles)}
-        contentContainerStyle={{ flexGrow: 1 }}
-        overScrollMode="never"
-      >
-        {children}
-      </ScrollView>
+    <SafeAreaView className={clsx("flex-1", backgroundColor)} edges={["top"]}>
+      <View className={clsx("bg-background flex-1", styles)}>{children}</View>
     </SafeAreaView>
   );
 }

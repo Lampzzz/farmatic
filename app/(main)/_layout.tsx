@@ -1,9 +1,11 @@
 import { Icon } from "@/components/icon";
 import { Tabs } from "expo-router";
+import { TouchableOpacity } from "react-native";
 
 export default function TabLayout() {
   return (
     <Tabs
+      initialRouteName="home"
       screenOptions={{
         tabBarActiveTintColor: "#16A34A",
         tabBarShowLabel: true,
@@ -11,10 +13,13 @@ export default function TabLayout() {
           height: 80,
           paddingTop: 5,
         },
+        tabBarButton: (props: any) => (
+          <TouchableOpacity {...props} activeOpacity={1} />
+        ),
       }}
     >
       <Tabs.Screen
-        name="index"
+        name="home"
         options={{
           title: "Home",
           headerShown: false,
@@ -34,22 +39,32 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="controller"
+        name="identifier"
         options={{
-          title: "Controller",
+          title: "Identifier",
           headerShown: false,
           tabBarIcon: ({ color }) => (
-            <Icon name="Fan" size={24} color={color} />
+            <Icon name="Focus" size={24} color={color} />
           ),
         }}
       />
       <Tabs.Screen
-        name="profile"
+        name="analysis"
         options={{
-          title: "Profile",
+          title: "Analysis",
           headerShown: false,
           tabBarIcon: ({ color }) => (
-            <Icon name="User" size={24} color={color} />
+            <Icon name="ChartPie" size={24} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="settings"
+        options={{
+          title: "Settings",
+          headerShown: false,
+          tabBarIcon: ({ color }) => (
+            <Icon name="Settings" size={24} color={color} />
           ),
         }}
       />

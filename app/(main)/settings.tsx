@@ -4,17 +4,22 @@ import { MainLayout } from "@/components/layout/main-layout";
 import { ProfileCard } from "@/components/profile-card";
 import { ProfileInfoRow } from "@/components/profile-info-row";
 import { router } from "expo-router";
-import { Image, Pressable, Text, View } from "react-native";
+import { Image, Pressable, ScrollView, Text, View } from "react-native";
 
-export default function ProfileScreen() {
+export default function SettingsScreen() {
   return (
     <MainLayout>
       <Header
-        title="Profile"
+        title="Settings"
         description="Manage your account and preferences"
       />
 
-      <View className="p-6">
+      <ScrollView
+        className="flex-1"
+        contentContainerStyle={{ padding: 24 }}
+        showsVerticalScrollIndicator={false}
+        overScrollMode="never"
+      >
         <ProfileCard styles="mb-6 items-center justify-center">
           <Image
             source={{
@@ -64,7 +69,7 @@ export default function ProfileScreen() {
           </View>
         </ProfileCard>
 
-        <ProfileCard styles="mb-6">
+        <ProfileCard styles="">
           <View className="flex-row items-center justify-start gap-4">
             <Icon name="CircleQuestionMark" size={24} color="#16A34A" />
             <Text className="text-gray">Help Center</Text>
@@ -82,14 +87,7 @@ export default function ProfileScreen() {
             </View>
           </Pressable>
         </ProfileCard>
-
-        {/* <View className="bg-white shadow-md rounded-xl p-4">
-          <View className="flex-row items-center justify-center gap-2">
-            <Icon name="LogOut" size={24} color="#EF4444" />
-            <Text className="text-red-500 font-medium">Log Out</Text>
-          </View>
-        </View> */}
-      </View>
+      </ScrollView>
     </MainLayout>
   );
 }

@@ -1,10 +1,10 @@
 import { Header } from "@/components/header";
 import { MainLayout } from "@/components/layout/main-layout";
 
-export default function LibraryScreen() {
+export default function AnalysisScreen() {
   return (
     <MainLayout>
-      <Header title="Plant Library" description="Browse our plant library" />
+      <Header title="Analysis" description="Analyze your greenhouse data" />
     </MainLayout>
   );
 }

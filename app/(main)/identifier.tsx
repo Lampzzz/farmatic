@@ -1,13 +1,10 @@
 import { Header } from "@/components/header";
 import { MainLayout } from "@/components/layout/main-layout";
 
-export default function ControllerScreen() {
+export default function IdentifierScreen() {
   return (
     <MainLayout>
-      <Header
-        title="Controller"
-        description="Manage your greenhouse controller"
-      />
+      <Header title="Identifier" description="Identify your plant" />
     </MainLayout>
   );
 }
