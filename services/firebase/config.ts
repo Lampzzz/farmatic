@@ -9,13 +9,13 @@ import { getFirestore } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 
 const config = {
-  apiKey: "AIzaSyC31rJQlCDvhoYYQP654m1LmsIG0mMBaf4",
-  authDomain: "farmatic-f3097.firebaseapp.com",
-  projectId: "farmatic-f3097",
-  storageBucket: "farmatic-f3097.firebasestorage.app",
-  messagingSenderId: "676394454104",
-  appId: "1:676394454104:web:8e0401463c5e1804d8ce2d",
-  measurementId: "G-5XEG22YQL6",
+  apiKey: process.env.EXPO_PUBLIC_FIREBASE_API_KEY,
+  authDomain: process.env.EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.EXPO_PUBLIC_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.EXPO_PUBLIC_FIREBASE_APP_ID,
+  measurementId: process.env.EXPO_PUBLIC_FIREBASE_MEASUREMENT_ID,
 };
 
 const app = initializeApp(config);
