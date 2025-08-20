@@ -138,7 +138,7 @@ export default function AddPlantScreen() {
           )}
         />
         <Button
-          label="Save Plant"
+          label="Submit"
           onPress={handleSubmit(onSubmit)}
           isLoading={isSubmitting}
         />

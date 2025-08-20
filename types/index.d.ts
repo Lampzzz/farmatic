@@ -20,6 +20,11 @@ interface PlantLibrary {
 
 interface User {
   id: string;
+  name: string;
   email: string;
-  createdAt: string;
+  phoneNumber?: string;
+  adminId?: string;
+  isActive?: boolean;
+  role: "admin" | "staff";
+  createdAt: any;
 }

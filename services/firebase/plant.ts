@@ -74,6 +74,7 @@ export const getPlantsRealtime = (
     if (onError) {
       onError(error);
     }
+
     return () => {}; // Return empty function if setup fails
   }
 };
