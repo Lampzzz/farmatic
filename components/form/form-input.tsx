@@ -12,6 +12,7 @@ export function FormInput({
   isPassword = false,
   styles,
   iconName,
+  error,
 }: {
   placeholder: string;
   value: string;
@@ -20,6 +21,7 @@ export function FormInput({
   isPassword?: boolean;
   styles?: string;
   iconName?: keyof typeof icons;
+  error?: string;
 }) {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
@@ -47,6 +49,7 @@ export function FormInput({
           </Pressable>
         )}
       </View>
+      {error && <Text className="text-red-500 text-sm mt-1">{error}</Text>}
     </View>
   );
 }

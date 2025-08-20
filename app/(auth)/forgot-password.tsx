@@ -1,4 +1,4 @@
-import Button from "@/components/form/button";
+import { Button } from "@/components/form/button";
 import { FormInput } from "@/components/form/form-input";
 import { Icon } from "@/components/icon";
 import { MainLayout } from "@/components/layout/main-layout";

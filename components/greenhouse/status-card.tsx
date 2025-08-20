@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import { icons } from "lucide-react-native";
 import React from "react";
 import { Text, View } from "react-native";
@@ -7,17 +8,23 @@ export function StatusCard({
   title,
   value,
   icon,
+  iconColor,
+  bgColor = "bg-white",
 }: {
   title: string;
   value: string;
   icon: keyof typeof icons;
+  iconColor?: string;
+  bgColor?: string;
 }) {
   return (
-    <View className="flex-1">
-      <View className="flex-col items-center gap-2 bg-secondary p-4 rounded-xl">
-        <Icon name={icon} size={20} color="white" />
-        <Text className="text-white font-medium text-sm">{title}</Text>
-        <Text className="text-white font-bold text-xl">{value}</Text>
+    <View className={clsx("flex-1  rounded-xl px-2 py-4 shadow-md", bgColor)}>
+      <View className="flex-col items-center gap-2">
+        <Icon name={icon} size={24} color={iconColor || "black"} />
+        <Text className="font-medium text-sm text-gray-500 text-center">
+          {title}
+        </Text>
+        <Text className="font-bold text-xl">{value}</Text>
       </View>
     </View>
   );

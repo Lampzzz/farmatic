@@ -1,16 +1,18 @@
-import { Image, Text, View } from "react-native";
+import { Image, Text, TouchableOpacity, View } from "react-native";
 
 export function PlantCard({
   image,
   title,
   datePlanted,
+  onPress,
 }: {
   image: string;
   title: string;
   datePlanted?: string;
+  onPress: () => void;
 }) {
   return (
-    <View className="flex-1">
+    <TouchableOpacity onPress={onPress} className="flex-1">
       <View className="shadow-md relative h-40">
         <Image
           source={{
@@ -23,6 +25,6 @@ export function PlantCard({
           <Text className="text-white font-bold">{title}</Text>
         </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 }

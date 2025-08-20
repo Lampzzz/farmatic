@@ -1,9 +1,11 @@
 interface Plant {
-  id: number;
+  id?: string;
   name: string;
-  image_url: string;
+  imageUrl: string;
   datePlanted: string | null;
-  status: string;
+  status?: string;
+  createdAt?: any;
+  userId?: string;
 }
 
 interface PlantLibrary {
@@ -14,4 +16,10 @@ interface PlantLibrary {
     thumbnail: string;
   };
   description?: string;
+}
+
+interface User {
+  id: string;
+  email: string;
+  createdAt: string;
 }

@@ -1,18 +1,26 @@
-import { Pressable, Text } from "react-native";
+import { ActivityIndicator, Pressable, Text } from "react-native";
 
-export default function Button({
+export function Button({
   onPress,
   label,
+  isLoading,
 }: {
   onPress: () => void;
   label: string;
+  isLoading?: boolean;
 }) {
   return (
     <Pressable
       onPress={onPress}
-      className="bg-primary rounded-lg py-4 items-center justify-center"
+      disabled={isLoading}
+      style={{ height: 52 }}
+      className="bg-primary rounded-lg items-center justify-center disabled:opacity-50"
     >
-      <Text className="text-white text-lg font-bold">{label}</Text>
+      {isLoading ? (
+        <ActivityIndicator size="small" color="white" />
+      ) : (
+        <Text className="text-white text-lg font-bold">{label}</Text>
+      )}
     </Pressable>
   );
 }

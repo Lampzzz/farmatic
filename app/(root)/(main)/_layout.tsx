@@ -2,7 +2,7 @@ import { Icon } from "@/components/icon";
 import { Tabs } from "expo-router";
 import { TouchableOpacity } from "react-native";
 
-export default function TabLayout() {
+export default function MainLayout() {
   return (
     <Tabs
       initialRouteName="home"

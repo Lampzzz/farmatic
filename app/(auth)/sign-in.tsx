@@ -1,14 +1,37 @@
-import Button from "@/components/form/button";
+import { Button } from "@/components/form/button";
 import { FormInput } from "@/components/form/form-input";
 import { Icon } from "@/components/icon";
 import { MainLayout } from "@/components/layout/main-layout";
+import { login } from "@/services/firebase/auth";
 import { router } from "expo-router";
-import { useState } from "react";
-import { Pressable, Text, View } from "react-native";
+import { Controller, useForm } from "react-hook-form";
+import { Alert, Pressable, Text, ToastAndroid, View } from "react-native";
 
 export default function SignIn() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const {
+    control,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm({
+    defaultValues: { email: "test@gmail.com", password: "admin123" },
+  });
+
+  const onSubmit = async (data: { email: string; password: string }) => {
+    try {
+      const response = await login(data.email, data.password);
+
+      if (!response?.isSuccess) {
+        Alert.alert("Error", response?.error);
+        return;
+      }
+
+      router.replace("/home");
+      ToastAndroid.show(response.message!, ToastAndroid.SHORT);
+    } catch (error: any) {
+      console.error(error);
+      return Alert.alert("Error", error.message);
+    }
+  };
 
   return (
     <MainLayout>
@@ -23,25 +46,51 @@ export default function SignIn() {
               Sign in to continue to your greenhouse
             </Text>
           </View>
-          <FormInput
-            label="Email"
-            placeholder="Enter your email"
-            value={email}
-            onChangeText={setEmail}
-            styles="mb-4"
-            iconName="Mail"
+          <Controller
+            control={control}
+            name="email"
+            rules={{
+              required: "Required",
+            }}
+            render={({ field: { onChange, value } }) => (
+              <FormInput
+                label="Email"
+                placeholder="Enter your email"
+                value={value}
+                onChangeText={onChange}
+                styles="mb-4"
+                iconName="Mail"
+                error={errors.email?.message}
+              />
+            )}
           />
-          <FormInput
-            label="Password"
-            placeholder="Enter your password"
-            value={password}
-            onChangeText={setPassword}
-            isPassword
-            iconName="Lock"
+          <Controller
+            control={control}
+            name="password"
+            rules={{
+              required: "Required",
+            }}
+            render={({ field: { onChange, value } }) => (
+              <FormInput
+                label="Password"
+                placeholder="Enter your password"
+                value={value}
+                onChangeText={onChange}
+                isPassword
+                iconName="Lock"
+                styles="mb-4"
+                error={errors.password?.message}
+              />
+            )}
           />
           <View className="my-6">
-            <Button onPress={() => router.push("/home")} label="Login" />
+            <Button
+              onPress={handleSubmit(onSubmit)}
+              label="Login"
+              isLoading={isSubmitting}
+            />
           </View>
+
           <View className="items-center">
             <Pressable onPress={() => router.push("/forgot-password")}>
               <Text className="text-gray underline">Forgot Password?</Text>
