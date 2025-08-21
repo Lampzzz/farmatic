@@ -27,8 +27,8 @@ export default function AddStaffScreen() {
   }) => {
     try {
       await addStaffMember(data);
-      router.back();
       ToastAndroid.show("Staff member added successfully", ToastAndroid.SHORT);
+      router.back();
     } catch (error: any) {
       Alert.alert("Error", error.message);
     }

@@ -7,13 +7,27 @@ import { SettingsItem } from "@/components/settings-item";
 import { useStaff } from "@/hooks/use-staff";
 import { useUserData } from "@/hooks/use-user-data";
 import { logout } from "@/services/firebase/auth";
-import { formatDate } from "@/utils/date-utils";
+import { formatDate } from "@/utils/date";
 import clsx from "clsx";
-import { Alert, Image, ScrollView, Text, View } from "react-native";
+import { router } from "expo-router";
+import {
+  Alert,
+  Image,
+  RefreshControl,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
 export default function SettingsScreen() {
   const { userData, loading, error } = useUserData();
-  const { staffMembers, loading: staffLoading, error: staffError } = useStaff();
+  const {
+    staffMembers,
+    loading: staffLoading,
+    error: staffError,
+    refresh,
+  } = useStaff();
 
   const handleLogout = async () => {
     return Alert.alert("Logout", "Are you sure you want to logout?", [
@@ -24,6 +38,10 @@ export default function SettingsScreen() {
         style: "destructive",
       },
     ]);
+  };
+
+  const handleRefresh = () => {
+    refresh();
   };
 
   return (
@@ -38,6 +56,9 @@ export default function SettingsScreen() {
         contentContainerStyle={{ padding: 24 }}
         showsVerticalScrollIndicator={false}
         overScrollMode="never"
+        refreshControl={
+          <RefreshControl refreshing={staffLoading} onRefresh={handleRefresh} />
+        }
       >
         <ProfileCard styles="mb-6 items-center justify-center">
           {loading ? (
@@ -105,7 +126,7 @@ export default function SettingsScreen() {
 
         <ProfileCard styles="mb-6" title="Staff Management">
           <View className="mt-4">
-            {staffLoading ? (
+            {staffLoading && staffMembers.length === 0 ? (
               <View className="items-center justify-center py-4">
                 <Text className="text-gray">Loading staff members...</Text>
               </View>
@@ -128,9 +149,7 @@ export default function SettingsScreen() {
                       )}
                     />
                   </View>
-                  {index < staffMembers.length - 1 && (
-                    <View className="border-b border-gray/10 mb-4" />
-                  )}
+                  <View className="border-b border-gray/10 mb-4" />
                 </View>
               ))
             ) : (
@@ -139,8 +158,7 @@ export default function SettingsScreen() {
               </View>
             )}
 
-            {/* <View className="border-b border-gray/10 mt-2 mb-4" />
-            <Pressable
+            <TouchableOpacity
               onPress={() => router.push("/staff/add-staff")}
               className="flex-row flex-1 items-center justify-center gap-2"
             >
@@ -148,7 +166,7 @@ export default function SettingsScreen() {
               <Text className="text-primary font-semibold">
                 Add New Staff Member
               </Text>
-            </Pressable> */}
+            </TouchableOpacity>
           </View>
         </ProfileCard>
 

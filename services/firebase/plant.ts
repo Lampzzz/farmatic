@@ -10,6 +10,7 @@ import {
   Timestamp,
   where,
 } from "firebase/firestore";
+import { uploadToCloudinary } from "../cloudinary";
 import { db } from "./config";
 
 export const addPlant = async (
@@ -17,10 +18,16 @@ export const addPlant = async (
   userId: string
 ) => {
   try {
+    let imageUrl = null;
+    if (data.imageUrl) {
+      imageUrl = await uploadToCloudinary(data.imageUrl);
+    }
+
     const ref = collection(db, "plants");
 
     await addDoc(ref, {
       ...data,
+      imageUrl,
       userId,
       createdAt: Timestamp.now(),
     });
@@ -39,14 +46,12 @@ export const getPlantsRealtime = (
   try {
     const plantsRef = collection(db, "plants");
 
-    // Query plants for the specific user, ordered by creation date
     const q = query(
       plantsRef,
       where("userId", "==", userId),
       orderBy("createdAt", "desc")
     );
 
-    // Set up real-time listener
     const unsubscribe = onSnapshot(
       q,
       (snapshot) => {
@@ -67,7 +72,6 @@ export const getPlantsRealtime = (
       }
     );
 
-    // Return unsubscribe function so caller can clean up
     return unsubscribe;
   } catch (error: any) {
     console.error("Error setting up plants listener:", error);
@@ -75,11 +79,10 @@ export const getPlantsRealtime = (
       onError(error);
     }
 
-    return () => {}; // Return empty function if setup fails
+    return () => {};
   }
 };
 
-// Alternative function without user filtering (gets all plants)
 export const getAllPlantsRealtime = (
   callback: (plants: Plant[]) => void,
   onError?: (error: Error) => void
@@ -87,10 +90,8 @@ export const getAllPlantsRealtime = (
   try {
     const plantsRef = collection(db, "plants");
 
-    // Query all plants, ordered by creation date
     const q = query(plantsRef, orderBy("createdAt", "desc"));
 
-    // Set up real-time listener
     const unsubscribe = onSnapshot(
       q,
       (snapshot) => {
@@ -111,18 +112,16 @@ export const getAllPlantsRealtime = (
       }
     );
 
-    // Return unsubscribe function so caller can clean up
     return unsubscribe;
   } catch (error: any) {
     console.error("Error setting up plants listener:", error);
     if (onError) {
       onError(error);
     }
-    return () => {}; // Return empty function if setup fails
+    return () => {};
   }
 };
 
-// Get a single plant by ID
 export const getPlantById = async (plantId: string): Promise<Plant | null> => {
   try {
     const plantRef = doc(db, "plants", plantId);
@@ -142,7 +141,6 @@ export const getPlantById = async (plantId: string): Promise<Plant | null> => {
   }
 };
 
-// Delete a plant by ID
 export const deletePlant = async (
   plantId: string
 ): Promise<{ isSuccess: boolean; message: string }> => {

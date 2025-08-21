@@ -27,8 +27,6 @@ export default function HomeScreen() {
     ),
   ];
 
-  console.log(JSON.stringify(listData, null, 2));
-
   if (loading) {
     return (
       <MainLayout>
