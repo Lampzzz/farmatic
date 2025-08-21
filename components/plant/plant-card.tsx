@@ -1,18 +1,17 @@
+import { LinearGradient } from "expo-linear-gradient";
 import { Image, Text, TouchableOpacity, View } from "react-native";
 
 export function PlantCard({
   image,
   title,
-  datePlanted,
   onPress,
 }: {
   image: string;
   title: string;
-  datePlanted?: string;
   onPress: () => void;
 }) {
   return (
-    <TouchableOpacity onPress={onPress} className="flex-1">
+    <TouchableOpacity onPress={onPress} className="flex-1 rounded-md">
       <View className="shadow-md relative h-40">
         <Image
           source={{
@@ -21,7 +20,13 @@ export function PlantCard({
           className="w-full h-40 rounded-md absolute top-0 left-0"
           resizeMode="cover"
         />
-        <View className="absolute bottom-0 left-0 right-0 p-4">
+        <LinearGradient
+          colors={["transparent", "rgba(0,0,0,0.3)", "rgba(0,0,0,0.7)"]}
+          style={{ borderBottomLeftRadius: 6, borderBottomRightRadius: 6 }}
+          className="absolute bottom-0 left-0 right-0 h-16 "
+        />
+
+        <View className="absolute bottom-0 left-0 right-0 p-2">
           <Text className="text-white font-bold">{title}</Text>
         </View>
       </View>
