@@ -13,7 +13,7 @@ export default function SignIn() {
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm({
-    defaultValues: { email: "test@gmail.com", password: "admin123" },
+    defaultValues: { email: "lampazaj@gmail.com", password: "test123" },
   });
 
   const onSubmit = async (data: { email: string; password: string }) => {
@@ -21,7 +21,7 @@ export default function SignIn() {
       const response = await login(data.email, data.password);
 
       if (!response?.isSuccess) {
-        Alert.alert("Error", response?.error);
+        Alert.alert("Error", response?.message);
         return;
       }
 
@@ -46,6 +46,7 @@ export default function SignIn() {
               Sign in to continue to your greenhouse
             </Text>
           </View>
+
           <Controller
             control={control}
             name="email"
@@ -64,6 +65,7 @@ export default function SignIn() {
               />
             )}
           />
+
           <Controller
             control={control}
             name="password"
@@ -83,6 +85,7 @@ export default function SignIn() {
               />
             )}
           />
+
           <View className="my-6">
             <Button
               onPress={handleSubmit(onSubmit)}

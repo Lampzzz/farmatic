@@ -5,14 +5,18 @@ export function PlantCard({
   image,
   title,
   onPress,
+  isSelected = false,
 }: {
   image: string;
   title: string;
   onPress: () => void;
+  isSelected?: boolean;
 }) {
   return (
     <TouchableOpacity onPress={onPress} className="flex-1 rounded-md">
-      <View className="shadow-md relative h-40">
+      <View
+        className={`shadow-md relative h-40 ${isSelected ? "ring-2 ring-primary ring-offset-2" : ""}`}
+      >
         <Image
           source={{
             uri: image,
@@ -29,6 +33,12 @@ export function PlantCard({
         <View className="absolute bottom-0 left-0 right-0 p-2">
           <Text className="text-white font-bold">{title}</Text>
         </View>
+
+        {isSelected && (
+          <View className="absolute top-2 right-2 bg-primary rounded-full p-1">
+            <Text className="text-white text-xs font-bold">✓</Text>
+          </View>
+        )}
       </View>
     </TouchableOpacity>
   );

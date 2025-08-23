@@ -12,7 +12,6 @@ import clsx from "clsx";
 import { router } from "expo-router";
 import {
   Alert,
-  Image,
   RefreshControl,
   ScrollView,
   Text,
@@ -72,22 +71,23 @@ export default function SettingsScreen() {
             </View>
           ) : userData ? (
             <>
-              <Image
-                source={{
-                  uri: "https://picsum.photos/400/300?random=1",
-                }}
-                className="w-24 h-24 rounded-full mb-2"
-                resizeMode="cover"
-              />
+              <View className="h-24 w-24 rounded-full bg-primary items-center justify-center mb-2">
+                <Icon name="User" size={40} color="#fff" />
+              </View>
               <Text className="font-bold text-xl">{userData.name}</Text>
               <Text className="text-gray ">{userData.email}</Text>
               <Text className="text-primary font-semibold">
-                {userData.role.charAt(0).toUpperCase() + userData.role.slice(1)}
+                {userData.isAdmin ? "Admin" : "Staff"}
               </Text>
-              <View className="flex-row items-center justify-center gap-2 mt-4">
+              <TouchableOpacity
+                className="flex-row items-center justify-center gap-1 mt-4"
+                onPress={() =>
+                  router.push(`/user/edit-profile?userId=${userData.id}`)
+                }
+              >
                 <Icon name="Pencil" size={12} color="#16A34A" />
-                <Text className="text-primary">Edit Profile</Text>
-              </View>
+                <Text className="text-primary underline">Edit Profile</Text>
+              </TouchableOpacity>
             </>
           ) : (
             <View className="items-center justify-center">
@@ -105,9 +105,7 @@ export default function SettingsScreen() {
               />
               <ProfileInfoRow
                 label="Account Type"
-                value={
-                  userData.role.charAt(0).toUpperCase() + userData.role.slice(1)
-                }
+                value={userData.isAdmin ? "Admin" : "Staff"}
               />
             </>
           ) : (
@@ -137,7 +135,12 @@ export default function SettingsScreen() {
               </View>
             ) : staffMembers.length > 0 ? (
               staffMembers.map((staff, index) => (
-                <View key={staff.id}>
+                <TouchableOpacity
+                  key={staff.id}
+                  onPress={() =>
+                    router.push(`/user/edit-profile?userId=${staff.id}`)
+                  }
+                >
                   <View className="flex-row items-center justify-between mb-4">
                     <View>
                       <Text className="">{staff.name}</Text>
@@ -150,7 +153,7 @@ export default function SettingsScreen() {
                     />
                   </View>
                   <View className="border-b border-gray/10 mb-4" />
-                </View>
+                </TouchableOpacity>
               ))
             ) : (
               <View className="items-center justify-center py-4">
@@ -159,7 +162,7 @@ export default function SettingsScreen() {
             )}
 
             <TouchableOpacity
-              onPress={() => router.push("/staff/add-staff")}
+              onPress={() => router.push("/user/add-staff")}
               className="flex-row flex-1 items-center justify-center gap-2"
             >
               <Icon name="Plus" size={16} color="#16A34A" />

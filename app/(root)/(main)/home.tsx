@@ -88,7 +88,7 @@ export default function HomeScreen() {
                 title={item.name}
                 onPress={() =>
                   router.push({
-                    pathname: "/plant/[id]",
+                    pathname: "/plant/greenhouse/[id]",
                     params: { id: item.id || "" },
                   })
                 }
@@ -96,7 +96,7 @@ export default function HomeScreen() {
             ) : (
               <TouchableOpacity
                 className="flex-1"
-                onPress={() => router.push("/plant/add-plant")}
+                onPress={() => router.push("/plant/select-plant")}
               >
                 <View className="h-40 bg-white items-center justify-center gap-2 rounded-md border border-primary border-dashed">
                   <Icon name="Plus" size={24} color="#16A34A" />

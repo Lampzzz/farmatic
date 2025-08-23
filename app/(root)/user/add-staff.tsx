@@ -2,10 +2,11 @@ import { Button } from "@/components/form/button";
 import { FormInput } from "@/components/form/form-input";
 import { Header } from "@/components/header";
 import { MainLayout } from "@/components/layout/main-layout";
-import { addStaffMember } from "@/services/firebase/staff";
+import { auth } from "@/services/firebase/config";
+import { createStaffMember } from "@/services/firebase/staff";
 import { router } from "expo-router";
 import { Controller, useForm } from "react-hook-form";
-import { Alert, ScrollView, ToastAndroid } from "react-native";
+import { Alert, ScrollView, Text, ToastAndroid, View } from "react-native";
 
 export default function AddStaffScreen() {
   const {
@@ -14,9 +15,10 @@ export default function AddStaffScreen() {
     formState: { errors, isSubmitting },
   } = useForm({
     defaultValues: {
-      name: "",
-      email: "",
-      phoneNumber: "",
+      name: "Gmail Dummy",
+      email: "gdumy7@gmail.com",
+      phoneNumber: "09123456789",
+      password: "test123",
     },
   });
 
@@ -24,11 +26,28 @@ export default function AddStaffScreen() {
     name: string;
     email: string;
     phoneNumber: string;
+    password: string;
   }) => {
     try {
-      await addStaffMember(data);
+      await createStaffMember(data);
       ToastAndroid.show("Staff member added successfully", ToastAndroid.SHORT);
-      router.back();
+
+      // Check if we're still logged in
+      if (auth.currentUser) {
+        router.back();
+      } else {
+        // If we're logged out, show a message and redirect to sign in
+        Alert.alert(
+          "Staff Created Successfully",
+          "The staff member has been added to your team. You have been logged out for security reasons. Please log in again.",
+          [
+            {
+              text: "OK",
+              onPress: () => router.replace("/(auth)/sign-in"),
+            },
+          ]
+        );
+      }
     } catch (error: any) {
       Alert.alert("Error", error.message);
     }
@@ -47,6 +66,13 @@ export default function AddStaffScreen() {
         showsVerticalScrollIndicator={false}
         overScrollMode="never"
       >
+        <View className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+          <Text className="text-blue-800 text-sm">
+            <Text className="font-semibold">Note:</Text> After creating a staff
+            account, you will be logged out for security reasons. You'll need to
+            log in again to continue.
+          </Text>
+        </View>
         <Controller
           control={control}
           name="name"
@@ -109,6 +135,30 @@ export default function AddStaffScreen() {
               iconName="Phone"
               styles="mb-6"
               error={errors.phoneNumber?.message}
+            />
+          )}
+        />
+
+        <Controller
+          control={control}
+          name="password"
+          rules={{
+            required: "Required",
+            pattern: {
+              value: /^.{8,}$/,
+              message: "Minimum 8 characters",
+            },
+          }}
+          render={({ field: { onChange, value } }) => (
+            <FormInput
+              label="Password"
+              placeholder="Enter password"
+              value={value}
+              onChangeText={onChange}
+              iconName="Lock"
+              styles="mb-6"
+              error={errors.password?.message}
+              isPassword
             />
           )}
         />

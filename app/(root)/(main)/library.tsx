@@ -3,9 +3,9 @@ import { Header } from "@/components/header";
 import { MainLayout } from "@/components/layout/main-layout";
 import { PlantCard } from "@/components/plant/plant-card";
 import { getPlants } from "@/services/perenual";
-import { usePathname } from "expo-router";
+import { router, usePathname } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
-import { ActivityIndicator, FlatList, View } from "react-native";
+import { ActivityIndicator, FlatList, Text, View } from "react-native";
 
 export default function LibraryScreen() {
   const [search, setSearch] = useState("");
@@ -16,29 +16,30 @@ export default function LibraryScreen() {
   const pathname = usePathname();
 
   const fetchPlants = useCallback(
-    async (page: number = 1, append: boolean = false) => {
+    async (page: number, append: boolean = false) => {
       try {
         setLoading(true);
         const response = await getPlants(page, 10);
 
-        // Debug: Log the response structure
-        // console.log("API Response:", JSON.stringify(response, null, 2));
+        console.log(`Fetching page ${page}:`, {
+          dataLength: response.data?.length,
+          meta: response.meta,
+        });
 
         if (append) {
-          setPlants((prev) => [...prev, ...response.data]);
+          setPlants((prev) => [...prev, ...(response.data || [])]);
         } else {
-          setPlants(response.data);
+          setPlants(response.data || []);
         }
 
-        // Add safety check for meta property
-        if (response.meta && response.meta.last_page) {
+        if (response.meta?.last_page) {
           setHasMore(page < response.meta.last_page);
         } else {
-          // Fallback: check if we got a full page of results
-          setHasMore(response.data.length === 10);
+          setHasMore((response.data?.length || 0) === 10);
         }
       } catch (error) {
         console.error("Error fetching plants:", error);
+        setHasMore(false);
       } finally {
         setLoading(false);
       }
@@ -46,18 +47,22 @@ export default function LibraryScreen() {
     []
   );
 
+  // Initial load when pathname changes
   useEffect(() => {
+    setPlants([]);
     setCurrentPage(1);
-    fetchPlants(1, false);
-  }, [pathname, fetchPlants]);
+    setHasMore(true);
+  }, [pathname]);
+
+  // Fetch whenever currentPage changes
+  useEffect(() => {
+    fetchPlants(currentPage, currentPage > 1);
+  }, [currentPage, fetchPlants]);
 
   const handleLoadMore = useCallback(() => {
-    if (!loading && hasMore) {
-      const nextPage = currentPage + 1;
-      setCurrentPage(nextPage);
-      fetchPlants(nextPage, true);
-    }
-  }, [loading, hasMore, currentPage, fetchPlants]);
+    if (loading || !hasMore) return;
+    setCurrentPage((prev) => prev + 1);
+  }, [loading, hasMore]);
 
   const renderFooter = () => {
     if (!loading) return null;
@@ -80,7 +85,7 @@ export default function LibraryScreen() {
       </Header>
 
       <FlatList
-        className="px-6 pt-6"
+        className="p-6"
         data={plants}
         keyExtractor={(item) => item.id.toString()}
         showsVerticalScrollIndicator={false}
@@ -94,12 +99,19 @@ export default function LibraryScreen() {
               item.default_image?.thumbnail || "https://via.placeholder.com/150"
             }
             title={item.common_name || ""}
-            onPress={() => {}}
+            onPress={() => router.push(`/plant/library/${item.id}`)}
           />
         )}
         onEndReached={handleLoadMore}
-        onEndReachedThreshold={0.1}
+        onEndReachedThreshold={0.5}
         ListFooterComponent={renderFooter}
+        ListEmptyComponent={
+          !loading ? (
+            <View className="py-8 items-center">
+              <Text className="text-gray-500 text-center">No plants found</Text>
+            </View>
+          ) : null
+        }
       />
     </MainLayout>
   );

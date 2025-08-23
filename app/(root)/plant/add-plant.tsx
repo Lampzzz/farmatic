@@ -6,7 +6,7 @@ import { MainLayout } from "@/components/layout/main-layout";
 import { useAuth } from "@/hooks/use-auth";
 import { addPlant } from "@/services/firebase/plant";
 import { pickImage, takePhoto } from "@/utils/image";
-import { router } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { Controller, useForm } from "react-hook-form";
 import {
   Alert,
@@ -19,18 +19,30 @@ import {
 
 export default function AddPlantScreen() {
   const { user } = useAuth();
+  const params = useLocalSearchParams();
+
+  // Check if we have selected plant data
+  const hasSelectedPlant =
+    params.selectedPlantId &&
+    params.selectedPlantName &&
+    params.selectedPlantImage;
+
   const {
     control,
     handleSubmit,
     formState: { errors, isSubmitting },
     setValue,
+    watch,
   } = useForm({
     defaultValues: {
-      name: "",
+      name: hasSelectedPlant ? (params.selectedPlantName as string) : "",
       datePlanted: "",
-      imageUrl: "",
+      imageUrl: hasSelectedPlant ? (params.selectedPlantImage as string) : "",
     },
   });
+
+  const watchedImageUrl = watch("imageUrl");
+  const watchedName = watch("name");
 
   const handleImagePicker = async () => {
     try {
@@ -52,6 +64,11 @@ export default function AddPlantScreen() {
     } catch (error: any) {
       Alert.alert("Error", error.message);
     }
+  };
+
+  const handleChangePlant = () => {
+    // Go back to plant selection
+    router.push("/plant/select-plant");
   };
 
   const onSubmit = async (data: {
@@ -77,7 +94,11 @@ export default function AddPlantScreen() {
     <MainLayout>
       <Header
         title="Add Plant"
-        description="Add a new plant to your greenhouse"
+        description={
+          hasSelectedPlant
+            ? "Add selected plant to your greenhouse"
+            : "Add a new plant to your greenhouse"
+        }
         isHasBack
       />
 

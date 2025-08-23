@@ -1,13 +1,19 @@
-import { addDoc, collection, serverTimestamp } from "firebase/firestore";
-import { auth, db } from "./config";
+import {
+  createUserWithEmailAndPassword,
+  getAuth,
+  signOut,
+} from "firebase/auth";
+import { doc, serverTimestamp, setDoc } from "firebase/firestore";
+import { app, auth, db } from "./config";
 
-export interface AddStaffData {
+export interface CreateStaffData {
   name: string;
   email: string;
   phoneNumber?: string;
+  password: string;
 }
 
-export const addStaffMember = async (staffData: AddStaffData) => {
+export const createStaffMember = async (staffData: CreateStaffData) => {
   const currentUser = auth.currentUser;
 
   if (!currentUser) {
@@ -24,6 +30,18 @@ export const addStaffMember = async (staffData: AddStaffData) => {
     adminId: currentUser.uid,
   };
 
-  const docRef = await addDoc(collection(db, "users"), newStaffData);
-  return { id: docRef.id, ...newStaffData };
+  const staffAuth = getAuth(app);
+
+  const userCredential = await createUserWithEmailAndPassword(
+    staffAuth,
+    staffData.email,
+    staffData.password
+  );
+
+  await signOut(staffAuth);
+
+  const userDocRef = doc(db, "users", userCredential.user.uid);
+  await setDoc(userDocRef, newStaffData);
+
+  return { id: userCredential.user.uid, ...newStaffData };
 };

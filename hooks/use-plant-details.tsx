@@ -1,62 +1,5 @@
-interface Admin {
-  id: string;
-  name?: string;
-  email: string;
-  phoneNumber?: string;
-  isAdmin?: boolean;
-  createdAt?: any;
-}
-
-interface Staff extends Admin {
-  adminId: string;
-  isActive?: boolean;
-}
-
-interface Plant {
-  id?: string;
-  name: string;
-  imageUrl: string;
-  datePlanted: string | null;
-  status?: string;
-  createdAt?: any;
-  userId?: string;
-  cloudinaryPublicId?: string;
-}
-
-interface PlantLibrary {
-  id: number;
-  common_name: string;
-  scientific_name: string;
-  default_image?: {
-    thumbnail: string;
-  };
-  description?: string;
-}
-
-interface PaginationMeta {
-  to: number;
-  per_page: number;
-  current_page: number;
-  from: number;
-  last_page: number;
-  total: number;
-}
-
-interface PerenualResponse {
-  data: PlantLibrary[];
-  meta: PaginationMeta;
-}
-
-interface User {
-  id: string;
-  name: string;
-  email: string;
-  phoneNumber?: string;
-  adminId?: string;
-  isActive?: boolean;
-  role: "admin" | "staff";
-  createdAt: any;
-}
+import { useEffect, useState } from "react";
+import { getPlantDetails } from "../services/perenual";
 
 interface PlantDetails {
   id: number;
@@ -95,14 +38,9 @@ interface PlantDetails {
     min: string;
     max: string;
   };
-  hardiness_location: {
-    full_url: string;
-    full_iframe: string;
-  };
   flowers: boolean;
   flowering_season: string;
   soil: string[];
-  pest_susceptibility: string | null;
   cones: boolean;
   fruits: boolean;
   edible_fruit: boolean;
@@ -150,8 +88,6 @@ interface PlantDetails {
   }>;
   xWateringQuality: string[];
   xWateringPeriod: string[];
-  xWateringAvgVolumeRequirement: string[];
-  xWateringDepthRequirement: string[];
   xWateringBasedTemperature: {
     unit: string;
     min: number;
@@ -166,4 +102,38 @@ interface PlantDetails {
     max: string;
     unit: string;
   };
+}
+
+export function usePlantDetails(plantId: string | string[] | undefined) {
+  const [plant, setPlant] = useState<PlantDetails | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!plantId) return;
+
+    const fetchPlant = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        const id = Array.isArray(plantId) ? plantId[0] : plantId;
+        if (!id) {
+          throw new Error("Plant ID is required");
+        }
+        const data = await getPlantDetails(id);
+        setPlant(data);
+      } catch (err) {
+        const errorMessage =
+          err instanceof Error ? err.message : "Failed to load plant details";
+        setError(errorMessage);
+        console.error("Error fetching plant details:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPlant();
+  }, [plantId]);
+
+  return { plant, loading, error };
 }

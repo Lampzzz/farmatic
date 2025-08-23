@@ -18,3 +18,22 @@ export const getPlants = async (
     throw error;
   }
 };
+
+export async function getPlantDetails(id: string | number): Promise<any> {
+  try {
+    // Replace YOUR_API_KEY with your actual Perenual API key
+    const response = await fetch(
+      `https://perenual.com/api/v2/species/details/${id}?key=YOUR_API_KEY`
+    );
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error fetching plant details:", error);
+    throw error;
+  }
+}
