@@ -21,11 +21,6 @@ export default function LibraryScreen() {
         setLoading(true);
         const response = await getPlants(page, 10);
 
-        console.log(`Fetching page ${page}:`, {
-          dataLength: response.data?.length,
-          meta: response.meta,
-        });
-
         if (append) {
           setPlants((prev) => [...prev, ...(response.data || [])]);
         } else {
