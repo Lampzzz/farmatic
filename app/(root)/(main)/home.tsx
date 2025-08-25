@@ -1,6 +1,7 @@
 import { Header } from "@/components/header";
 import { Icon } from "@/components/icon";
 import { MainLayout } from "@/components/layout/main-layout";
+import { Loader } from "@/components/loader";
 import { PlantCard } from "@/components/plant/plant-card";
 import { useAuth } from "@/hooks/use-auth";
 import { usePlantsRealtime } from "@/hooks/use-plants";
@@ -71,41 +72,49 @@ export default function HomeScreen() {
           <Text className="text-2xl font-bold">Greenhouse Plants</Text>
         </View>
 
-        <FlatList
-          data={listData}
-          keyExtractor={(item) =>
-            item.id?.toString() || `item-${Math.random()}`
-          }
-          showsVerticalScrollIndicator={false}
-          numColumns={2}
-          columnWrapperStyle={{ gap: 12 }}
-          contentContainerStyle={{ gap: 12 }}
-          renderItem={({ item }) =>
-            "imageUrl" in item ? (
-              <PlantCard
-                key={item.id}
-                image={item.imageUrl}
-                title={item.name}
-                onPress={() =>
-                  router.push({
-                    pathname: "/plant/greenhouse/[id]",
-                    params: { id: item.id || "" },
-                  })
-                }
-              />
-            ) : (
-              <TouchableOpacity
-                className="flex-1"
-                onPress={() => router.push("/plant/select-plant")}
-              >
-                <View className="h-40 bg-white items-center justify-center gap-2 rounded-md border border-primary border-dashed">
-                  <Icon name="Plus" size={24} color="#16A34A" />
-                  <Text className="text-primary font-semibold">Add Plant</Text>
-                </View>
-              </TouchableOpacity>
-            )
-          }
-        />
+        {loading ? (
+          <Loader />
+        ) : (
+          <>
+            <FlatList
+              data={listData}
+              keyExtractor={(item) =>
+                item.id?.toString() || `item-${Math.random()}`
+              }
+              showsVerticalScrollIndicator={false}
+              numColumns={2}
+              columnWrapperStyle={{ gap: 12 }}
+              contentContainerStyle={{ gap: 12 }}
+              renderItem={({ item }) =>
+                "imageUrl" in item ? (
+                  <PlantCard
+                    key={item.id}
+                    image={item.imageUrl}
+                    title={item.name}
+                    onPress={() =>
+                      router.push({
+                        pathname: "/plant/greenhouse/[id]",
+                        params: { id: item.id || "" },
+                      })
+                    }
+                  />
+                ) : (
+                  <TouchableOpacity
+                    className="flex-1"
+                    onPress={() => router.push("/plant/select-plant")}
+                  >
+                    <View className="h-40 bg-white items-center justify-center gap-2 rounded-md border border-primary border-dashed">
+                      <Icon name="Plus" size={24} color="#16A34A" />
+                      <Text className="text-primary font-semibold">
+                        Add Plant
+                      </Text>
+                    </View>
+                  </TouchableOpacity>
+                )
+              }
+            />
+          </>
+        )}
       </View>
     </MainLayout>
   );

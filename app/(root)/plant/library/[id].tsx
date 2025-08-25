@@ -2,9 +2,9 @@ import { Header } from "@/components/header";
 import { Icon } from "@/components/icon";
 import { MainLayout } from "@/components/layout/main-layout";
 import { useFetch } from "@/hooks/use-fetch";
-import { getPlantDetails } from "@/services/perenual";
+import { getPlantDetails, getPlantGuideDetails } from "@/services/perenual";
 import { useLocalSearchParams } from "expo-router";
-import { Image, ScrollView, View } from "react-native";
+import { Image, ScrollView, Text, View } from "react-native";
 
 export default function LibraryPlant() {
   const { id } = useLocalSearchParams();
@@ -14,7 +14,14 @@ export default function LibraryPlant() {
     []
   );
 
-  console.log(JSON.stringify(data, null, 2));
+  const {
+    data: guideData,
+    error: guideError,
+    loading: guideLoading,
+    refetch: guideRefetch,
+  } = useFetch(() => getPlantGuideDetails(id as string), []);
+
+  // console.log(JSON.stringify(guideData, null, 2));
 
   return (
     <MainLayout>
@@ -42,6 +49,9 @@ export default function LibraryPlant() {
             <Icon name="Sprout" size={80} color="#16A34A" />
           </View>
         )}
+        <View className="p-4 bg-white rounded-md">
+          <Text className="text-gray text-lg">{data?.description}</Text>
+        </View>
       </ScrollView>
     </MainLayout>
   );
