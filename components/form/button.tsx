@@ -24,12 +24,12 @@ export function Button({
       ? "border border-primary bg-transparent"
       : "bg-primary";
 
-  const disabledClasses = disabled ? "opacity-50" : "";
+  const disabledClasses = isLoading ? "opacity-50" : "";
 
   return (
     <Pressable
       onPress={onPress}
-      disabled={isLoading || disabled}
+      disabled={isLoading}
       style={{ height: 52 }}
       className={clsx(baseClasses, variantClasses, disabledClasses, styles)}
     >

@@ -1,20 +1,12 @@
 import axios from "axios";
 
-export const getPlants = async (
-  page: number = 1,
-  limit: number = 10,
-  search: string = ""
-): Promise<PerenualResponse> => {
+export const getPlants = async (): Promise<PerenualResponse> => {
   try {
     const response = await axios.get(
       `https://perenual.com/api/v2/species-list`,
       {
         params: {
-          key: "sk-xqpS68a28379effca11887",
-          page,
-          per_page: limit,
-          order: "asc",
-          q: search || undefined,
+          key: process.env.EXPO_PUBLIC_PERENUAL_API_KEY,
         },
       }
     );

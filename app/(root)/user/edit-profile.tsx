@@ -2,41 +2,33 @@ import { Button } from "@/components/form/button";
 import { FormInput } from "@/components/form/form-input";
 import { Header } from "@/components/header";
 import { MainLayout } from "@/components/layout/main-layout";
-import { useUserById } from "@/hooks/use-user-by-id";
-import { useUserData } from "@/hooks/use-user-data";
-import { updateUserProfile } from "@/services/firebase/user";
+import { useAuth } from "@/hooks/use-auth";
+import { useFetch } from "@/hooks/use-fetch";
+import { getUserById, updateUserProfile } from "@/services/firebase/user";
 import { router, useLocalSearchParams } from "expo-router";
 import { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { Alert, ScrollView, Text, ToastAndroid, View } from "react-native";
+import { Alert, ScrollView, ToastAndroid } from "react-native";
 
 export default function EditProfileScreen() {
   const params = useLocalSearchParams();
   const targetUserId = params.userId as string;
 
-  // If a specific userId is provided, fetch that user's data
-  // Otherwise, use current user's data
   const {
-    userData: currentUserData,
-    loading: currentUserLoading,
+    user: currentUserData,
+    isLoading: currentUserLoading,
     error: currentUserError,
-  } = useUserData();
+  } = useAuth();
+
   const {
-    userData: targetUserData,
+    data: targetUserData,
     loading: targetUserLoading,
     error: targetUserError,
-  } = useUserById(targetUserId);
+  } = useFetch(() => getUserById(targetUserId));
 
-  // Determine which data to use
   const userData = targetUserId ? targetUserData : currentUserData;
   const loading = targetUserId ? targetUserLoading : currentUserLoading;
   const error = targetUserId ? targetUserError : currentUserError;
-
-  // Check if current user has permission to edit this profile
-  const canEdit =
-    !targetUserId ||
-    (currentUserData?.role === "admin" && targetUserData?.role === "staff") ||
-    currentUserData?.id === targetUserId;
 
   const {
     control,
@@ -52,7 +44,6 @@ export default function EditProfileScreen() {
     },
   });
 
-  // Update form values when user data is loaded
   useEffect(() => {
     if (userData) {
       reset({
@@ -84,80 +75,12 @@ export default function EditProfileScreen() {
     }
   };
 
-  if (loading) {
-    return (
-      <MainLayout>
-        <Header
-          title="Edit Profile"
-          description="Update your personal information"
-          isHasBack
-        />
-        <ScrollView
-          className="flex-1 p-6"
-          showsVerticalScrollIndicator={false}
-          overScrollMode="never"
-        >
-          <View className="items-center justify-center py-8">
-            <Text className="text-gray">Loading profile...</Text>
-          </View>
-        </ScrollView>
-      </MainLayout>
-    );
-  }
-
-  if (error || !userData) {
-    return (
-      <MainLayout>
-        <Header
-          title="Edit Profile"
-          description="Update your personal information"
-          isHasBack
-        />
-        <ScrollView
-          className="flex-1 p-6"
-          showsVerticalScrollIndicator={false}
-          overScrollMode="never"
-        >
-          <View className="items-center justify-center py-8">
-            <Text className="text-red-500">Error loading profile</Text>
-            <Text className="text-gray text-sm">{error}</Text>
-          </View>
-        </ScrollView>
-      </MainLayout>
-    );
-  }
-
-  // Check if user has permission to edit this profile
-  if (!canEdit) {
-    return (
-      <MainLayout>
-        <Header
-          title="Edit Profile"
-          description="Update your personal information"
-          isHasBack
-        />
-        <ScrollView
-          className="flex-1 p-6"
-          showsVerticalScrollIndicator={false}
-          overScrollMode="never"
-        >
-          <View className="items-center justify-center py-8">
-            <Text className="text-red-500">Access Denied</Text>
-            <Text className="text-gray text-sm">
-              You don't have permission to edit this profile
-            </Text>
-          </View>
-        </ScrollView>
-      </MainLayout>
-    );
-  }
-
   return (
     <MainLayout>
       <Header
         title={
           targetUserId && targetUserId !== currentUserData?.id
-            ? `Edit ${userData.name}'s Profile`
+            ? `Edit ${userData?.name}'s Profile`
             : "Edit Profile"
         }
         description="Update your personal information"
@@ -225,7 +148,7 @@ export default function EditProfileScreen() {
           render={({ field: { onChange, value } }) => (
             <FormInput
               label="Phone Number"
-              placeholder="+63"
+              placeholder="Enter phone number"
               value={value}
               onChangeText={onChange}
               iconName="Phone"

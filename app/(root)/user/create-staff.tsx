@@ -2,11 +2,10 @@ import { Button } from "@/components/form/button";
 import { FormInput } from "@/components/form/form-input";
 import { Header } from "@/components/header";
 import { MainLayout } from "@/components/layout/main-layout";
-import { auth } from "@/services/firebase/config";
-import { createStaffMember } from "@/services/firebase/staff";
+import { createStaffMember } from "@/services/firebase/user";
 import { router } from "expo-router";
 import { Controller, useForm } from "react-hook-form";
-import { Alert, ScrollView, Text, ToastAndroid, View } from "react-native";
+import { Alert, ScrollView, ToastAndroid } from "react-native";
 
 export default function AddStaffScreen() {
   const {
@@ -31,23 +30,7 @@ export default function AddStaffScreen() {
     try {
       await createStaffMember(data);
       ToastAndroid.show("Staff member added successfully", ToastAndroid.SHORT);
-
-      // Check if we're still logged in
-      if (auth.currentUser) {
-        router.back();
-      } else {
-        // If we're logged out, show a message and redirect to sign in
-        Alert.alert(
-          "Staff Created Successfully",
-          "The staff member has been added to your team. You have been logged out for security reasons. Please log in again.",
-          [
-            {
-              text: "OK",
-              onPress: () => router.replace("/(auth)/sign-in"),
-            },
-          ]
-        );
-      }
+      router.back();
     } catch (error: any) {
       Alert.alert("Error", error.message);
     }
@@ -66,13 +49,6 @@ export default function AddStaffScreen() {
         showsVerticalScrollIndicator={false}
         overScrollMode="never"
       >
-        <View className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
-          <Text className="text-blue-800 text-sm">
-            <Text className="font-semibold">Note:</Text> After creating a staff
-            account, you will be logged out for security reasons. You'll need to
-            log in again to continue.
-          </Text>
-        </View>
         <Controller
           control={control}
           name="name"
@@ -145,8 +121,8 @@ export default function AddStaffScreen() {
           rules={{
             required: "Required",
             pattern: {
-              value: /^.{8,}$/,
-              message: "Minimum 8 characters",
+              value: /^.{6,}$/,
+              message: "Minimum 6 characters",
             },
           }}
           render={({ field: { onChange, value } }) => (

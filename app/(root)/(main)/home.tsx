@@ -69,7 +69,9 @@ export default function HomeScreen() {
 
       <View className="p-6">
         <View className="mb-6">
-          <Text className="text-2xl font-bold">Greenhouse Plants</Text>
+          <Text className="text-2xl font-bold text-primary">
+            Greenhouse Plants
+          </Text>
         </View>
 
         {loading ? (

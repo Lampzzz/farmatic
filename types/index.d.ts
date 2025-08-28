@@ -12,6 +12,8 @@ interface Staff extends Admin {
   isActive?: boolean;
 }
 
+type User = Admin | Staff;
+
 interface Plant {
   id?: string;
   name: string;
@@ -45,17 +47,6 @@ interface PaginationMeta {
 interface PerenualResponse {
   data: PlantLibrary[];
   meta: PaginationMeta;
-}
-
-interface User {
-  id: string;
-  name: string;
-  email: string;
-  phoneNumber?: string;
-  adminId?: string;
-  isActive?: boolean;
-  role: "admin" | "staff";
-  createdAt: any;
 }
 
 interface PlantDetails {

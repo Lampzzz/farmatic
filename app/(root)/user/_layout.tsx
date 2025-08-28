@@ -10,7 +10,7 @@ export default function StaffLayout() {
         }}
       />
       <Stack.Screen
-        name="add-staff"
+        name="create-staff"
         options={{
           headerShown: false,
         }}

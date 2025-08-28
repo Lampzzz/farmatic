@@ -15,7 +15,7 @@ export const SettingsItem = ({
   icon,
   iconColor = "#16A34A",
   title,
-  titleColor = "#6B7280",
+  titleColor,
   onPress,
   showBorder = true,
 }: SettingsItemProps) => {
