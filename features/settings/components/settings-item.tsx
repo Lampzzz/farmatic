@@ -1,3 +1,4 @@
+import { Divider } from "@/components/divider";
 import { Icon } from "@/components/icon";
 import { icons } from "lucide-react-native";
 import { Text, TouchableOpacity, View } from "react-native";
@@ -27,7 +28,11 @@ export const SettingsItem = ({
           <Text className={titleColor}>{title}</Text>
         </View>
       </TouchableOpacity>
-      {showBorder && <View className="border-b border-gray/10 my-4" />}
+      {showBorder && (
+        <View className="py-4">
+          <Divider />
+        </View>
+      )}
     </>
   );
 };

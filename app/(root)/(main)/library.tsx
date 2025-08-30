@@ -2,6 +2,7 @@ import { FormInput } from "@/components/form/form-input";
 import { Header } from "@/components/header";
 import { MainLayout } from "@/components/layout/main-layout";
 import { PlantCard } from "@/components/plant/plant-card";
+import { useDebounce } from "@/hooks/use-debounce";
 import { useFetch } from "@/hooks/use-fetch";
 import { getPlants } from "@/services/perenual";
 import { router } from "expo-router";
@@ -10,8 +11,12 @@ import { ActivityIndicator, FlatList, Text, View } from "react-native";
 
 export default function LibraryScreen() {
   const [search, setSearch] = useState("");
+  const debouncedSearch = useDebounce(search);
 
-  const { data, error, loading, refetch } = useFetch(() => getPlants(), []);
+  const { data, error, loading } = useFetch(
+    () => getPlants(debouncedSearch),
+    [debouncedSearch]
+  );
 
   return (
     <MainLayout>
@@ -34,13 +39,16 @@ export default function LibraryScreen() {
         </View>
       ) : (
         <FlatList
-          className="p-6"
-          data={data || []}
+          // className="px-6 pt-6"
+          data={data}
           keyExtractor={(item) => item.id.toString()}
           showsVerticalScrollIndicator={false}
           numColumns={2}
-          columnWrapperStyle={{ gap: 8 }}
-          contentContainerStyle={{ gap: 8, paddingBottom: 20 }}
+          columnWrapperStyle={{ gap: 12 }}
+          contentContainerStyle={{
+            gap: 12,
+            padding: 20,
+          }}
           renderItem={({ item }) => (
             <PlantCard
               key={item.id}
@@ -48,15 +56,11 @@ export default function LibraryScreen() {
                 item.default_image?.thumbnail ||
                 "https://via.placeholder.com/150"
               }
-              title={item.common_name || ""}
+              commonName={item.common_name || ""}
+              scientificName={item.scientific_name || ""}
               onPress={() => router.push(`/plant/library/${item.id}`)}
             />
           )}
-          ListEmptyComponent={
-            <View className="py-8 items-center">
-              <Text className="text-gray-500 text-center">No plants found</Text>
-            </View>
-          }
         />
       )}
     </MainLayout>

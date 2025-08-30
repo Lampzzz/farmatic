@@ -7,7 +7,6 @@ import {
   onSnapshot,
   orderBy,
   query,
-  Timestamp,
   where,
 } from "firebase/firestore";
 import { uploadToCloudinary } from "../cloudinary";
@@ -29,7 +28,7 @@ export const addPlant = async (
       ...data,
       imageUrl,
       userId,
-      createdAt: Timestamp.now(),
+      createdAt: new Date(),
     });
 
     return { isSuccess: true, message: "Plant added successfully" };

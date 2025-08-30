@@ -65,7 +65,11 @@ export function StaffManagementSection({
                 )}
               />
             </View>
-            {index !== staffMembers.length - 1 && <Divider styles="mb-4" />}
+            {index !== staffMembers.length - 1 && (
+              <View className="mb-4">
+                <Divider />
+              </View>
+            )}
           </TouchableOpacity>
         ))
       ) : (

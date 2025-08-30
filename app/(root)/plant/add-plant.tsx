@@ -36,8 +36,8 @@ export default function AddPlantScreen() {
   } = useForm({
     defaultValues: {
       name: hasSelectedPlant ? (params.selectedPlantName as string) : "",
-      datePlanted: "",
       imageUrl: hasSelectedPlant ? (params.selectedPlantImage as string) : "",
+      datePlanted: "",
     },
   });
 

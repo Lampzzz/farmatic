@@ -1,19 +1,32 @@
-import axios from "axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-export const getPlants = async (): Promise<PerenualResponse> => {
+const PLANT_CACHE_KEY = "plant_cache";
+
+export const getPlants = async (search: string = "") => {
   try {
-    const response = await axios.get(
-      `https://perenual.com/api/v2/species-list`,
-      {
-        params: {
-          key: process.env.EXPO_PUBLIC_PERENUAL_API_KEY,
-        },
-      }
-    );
+    const url = `https://perenual.com/api/v2/species-list?key=${process.env.EXPO_PUBLIC_PERENUAL_API_KEY}&q=${search}`;
 
-    return response.data as PerenualResponse;
+    const response = await fetch(url);
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+
+    await AsyncStorage.setItem(PLANT_CACHE_KEY, JSON.stringify(data.data));
+
+    return data.data;
   } catch (error) {
     console.error("Plant API Error", error);
+
+    const cached = await AsyncStorage.getItem(PLANT_CACHE_KEY);
+
+    if (cached) {
+      console.log("Loaded plants from cache");
+      return JSON.parse(cached);
+    }
+
     throw error;
   }
 };
@@ -47,9 +60,9 @@ export async function getPlantGuideDetails(id: string | number): Promise<any> {
     }
 
     const data = await response.json();
-    return data;
+    return data.data[0];
   } catch (error) {
     console.error("Error fetching plant details:", error);
-    throw error;
+    // throw error;
   }
 }
