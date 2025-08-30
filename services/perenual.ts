@@ -2,9 +2,9 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const PLANT_CACHE_KEY = "plant_cache";
 
-export const getPlants = async (search: string = "") => {
+export const getPlants = async (search: string = "", page: number = 1) => {
   try {
-    const url = `https://perenual.com/api/v2/species-list?key=${process.env.EXPO_PUBLIC_PERENUAL_API_KEY}&q=${search}`;
+    const url = `https://perenual.com/api/v2/species-list?key=${process.env.EXPO_PUBLIC_PERENUAL_API_KEY}&q=${search}&page=${page}`;
 
     const response = await fetch(url);
 

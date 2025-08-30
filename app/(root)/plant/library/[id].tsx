@@ -1,6 +1,6 @@
 import { BaseCard } from "@/components/base-card";
+import PlantImagePlaceholder from "@/components/empty-state/plant-image-placeholder";
 import { Header } from "@/components/header";
-import { Icon } from "@/components/icon";
 import { MainLayout } from "@/components/layout/main-layout";
 import { CareInfoRow } from "@/features/library/components/care-info-row";
 import { PlantProfileRow } from "@/features/library/components/plant-profile-row";
@@ -13,19 +13,12 @@ import { Image, ScrollView, Text, View } from "react-native";
 export default function LibraryPlant() {
   const { id } = useLocalSearchParams();
 
-  const { data, error, loading, refetch } = useFetch(
-    () => getPlantDetails(id as string),
+  const { data } = useFetch(() => getPlantDetails(id as string), []);
+
+  const { data: guideData } = useFetch(
+    () => getPlantGuideDetails(id as string),
     []
   );
-
-  const {
-    data: guideData,
-    error: guideError,
-    loading: guideLoading,
-    refetch: guideRefetch,
-  } = useFetch(() => getPlantGuideDetails(id as string), []);
-
-  // console.log(JSON.stringify(guideData?.section, null, 2));
 
   return (
     <MainLayout>
@@ -49,9 +42,7 @@ export default function LibraryPlant() {
             resizeMode="cover"
           />
         ) : (
-          <View className="w-full h-80 rounded-xl overflow-hidden mb-6 bg-green-100 items-center justify-center">
-            <Icon name="Sprout" size={80} color="#16A34A" />
-          </View>
+          <PlantImagePlaceholder />
         )}
 
         <BaseCard styles="mb-6">

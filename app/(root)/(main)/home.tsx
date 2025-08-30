@@ -1,121 +1,67 @@
+import EmptyGreenhousePlant from "@/components/empty-state/empty-greenhouse-plant";
 import { Header } from "@/components/header";
 import { Icon } from "@/components/icon";
 import { MainLayout } from "@/components/layout/main-layout";
 import { Loader } from "@/components/loader";
 import { PlantCard } from "@/components/plant/plant-card";
 import { useAuth } from "@/hooks/use-auth";
-import { usePlantsRealtime } from "@/hooks/use-plants";
+import { useRealTimeFetch } from "@/hooks/use-real-time-fetch";
 import { router } from "expo-router";
-import {
-  ActivityIndicator,
-  FlatList,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { orderBy, where } from "firebase/firestore";
+import { FlatList, Text, TouchableOpacity, View } from "react-native";
 
 export default function HomeScreen() {
   const { user } = useAuth();
-  const { plants, loading, error } = usePlantsRealtime(user?.uid);
 
-  const MAX_ITEMS = 6;
-  const placeholdersCount = Math.max(0, MAX_ITEMS - plants.length);
-
-  const listData = [
-    ...plants.map((plant) => ({ ...plant, __type: "plant" }) as const),
-    ...Array.from({ length: placeholdersCount }).map(
-      (_, index) => ({ id: `add-${index}`, __type: "add" }) as const
-    ),
-  ];
-
-  if (loading) {
-    return (
-      <MainLayout>
-        <Header title="Farmatic" description="Greenhouse Dashboard"></Header>
-        <View className="p-6">
-          <View className="mb-6">
-            <Text className="text-2xl font-bold">Greenhouse Plants</Text>
-          </View>
-          <View className="flex-1 items-center justify-center py-20">
-            <ActivityIndicator size="large" color="#16A34A" />
-            <Text className="text-gray-600 mt-4">Loading your plants...</Text>
-          </View>
-        </View>
-      </MainLayout>
-    );
-  }
-
-  if (error) {
-    return (
-      <MainLayout>
-        <Header title="Farmatic" description="Greenhouse Dashboard"></Header>
-        <View className="p-6">
-          <View className="mb-6">
-            <Text className="text-2xl font-bold">Greenhouse Plants</Text>
-          </View>
-          <View className="flex-1 items-center justify-center py-20">
-            <Text className="text-red-600 text-center">
-              Error loading plants: {error.message}
-            </Text>
-          </View>
-        </View>
-      </MainLayout>
-    );
-  }
+  const userId = user?.isAdmin ? user.id : user?.adminId;
+  const { data, loading } = useRealTimeFetch("plants", [
+    where("userId", "==", userId || ""),
+    orderBy("createdAt", "desc"),
+  ]);
 
   return (
     <MainLayout>
       <Header title="Farmatic" description="Greenhouse Dashboard"></Header>
 
-      <View className="p-6">
-        <View className="mb-6">
-          <Text className="text-2xl font-bold text-primary">
-            Greenhouse Plants
-          </Text>
+      <View className="p-6 flex-1">
+        <View className="mb-6 flex-row items-center justify-between">
+          <Text className="text-2xl font-bold">Greenhouse Plants</Text>
+          <TouchableOpacity
+            onPress={() => router.push("/plant/select-plant")}
+            className="bg-primary rounded-full p-2 w-10 h-10 items-center justify-center"
+          >
+            <Icon name="Plus" size={20} color="white" />
+          </TouchableOpacity>
         </View>
 
         {loading ? (
           <Loader />
+        ) : data.length === 0 ? (
+          <EmptyGreenhousePlant />
         ) : (
-          <>
-            <FlatList
-              data={listData}
-              keyExtractor={(item) =>
-                item.id?.toString() || `item-${Math.random()}`
-              }
-              showsVerticalScrollIndicator={false}
-              numColumns={2}
-              columnWrapperStyle={{ gap: 12 }}
-              contentContainerStyle={{ gap: 12 }}
-              renderItem={({ item }) =>
-                "imageUrl" in item ? (
-                  <PlantCard
-                    key={item.id}
-                    image={item.imageUrl}
-                    title={item.name}
-                    onPress={() =>
-                      router.push({
-                        pathname: "/plant/greenhouse/[id]",
-                        params: { id: item.id || "" },
-                      })
-                    }
-                  />
-                ) : (
-                  <TouchableOpacity
-                    className="flex-1"
-                    onPress={() => router.push("/plant/select-plant")}
-                  >
-                    <View className="h-40 bg-white items-center justify-center gap-2 rounded-md border border-primary border-dashed">
-                      <Icon name="Plus" size={24} color="#16A34A" />
-                      <Text className="text-primary font-semibold">
-                        Add Plant
-                      </Text>
-                    </View>
-                  </TouchableOpacity>
-                )
-              }
-            />
-          </>
+          <FlatList
+            data={data}
+            keyExtractor={(item) =>
+              item.id?.toString() || `item-${Math.random()}`
+            }
+            showsVerticalScrollIndicator={false}
+            numColumns={2}
+            columnWrapperStyle={{ gap: 12 }}
+            contentContainerStyle={{ gap: 12 }}
+            renderItem={({ item }) => (
+              <PlantCard
+                key={item.id}
+                image={item.imageUrl}
+                name={item.name}
+                onPress={() =>
+                  router.push({
+                    pathname: "/plant/greenhouse/[id]",
+                    params: { id: item.id || "" },
+                  })
+                }
+              />
+            )}
+          />
         )}
       </View>
     </MainLayout>

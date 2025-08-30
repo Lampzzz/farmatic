@@ -21,7 +21,6 @@ export default function AddPlantScreen() {
   const { user } = useAuth();
   const params = useLocalSearchParams();
 
-  // Check if we have selected plant data
   const hasSelectedPlant =
     params.selectedPlantId &&
     params.selectedPlantName &&
@@ -40,9 +39,6 @@ export default function AddPlantScreen() {
       datePlanted: "",
     },
   });
-
-  const watchedImageUrl = watch("imageUrl");
-  const watchedName = watch("name");
 
   const handleImagePicker = async () => {
     try {
@@ -77,14 +73,16 @@ export default function AddPlantScreen() {
     datePlanted: string;
   }) => {
     try {
-      const result = await addPlant(data, user?.uid!);
+      const creatorId = user.isAdmin ? user.id : user.adminId;
 
-      if (result.isSuccess) {
-        ToastAndroid.show(result.message, ToastAndroid.SHORT);
-        router.back();
-      } else {
+      const result = await addPlant(data, creatorId);
+
+      if (!result.isSuccess) {
         Alert.alert("Error", result.message);
       }
+
+      ToastAndroid.show(result.message, ToastAndroid.SHORT);
+      router.replace("/home");
     } catch (error: any) {
       Alert.alert("Error", error.message);
     }

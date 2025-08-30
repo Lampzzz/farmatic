@@ -5,9 +5,9 @@ import { Icon } from "@/components/icon";
 import { MainLayout } from "@/components/layout/main-layout";
 import { useAuth } from "@/hooks/use-auth";
 import { usePlantById } from "@/hooks/use-plants";
-import { deletePlant } from "@/services/firebase/plant";
+import { analyzePlantImage, deletePlant } from "@/services/firebase/plant";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
@@ -23,6 +23,19 @@ export default function PlantDetails() {
   const { plant, loading, error } = usePlantById(id as string);
   const { user } = useAuth();
   const [isDeleting, setIsDeleting] = useState(false);
+  const [aiLoading, setAiLoading] = useState(false);
+  const [aiInfo, setAiInfo] = useState<any>(null);
+
+  useEffect(() => {
+    if (plant) {
+      (async () => {
+        setAiLoading(true);
+        const info = await analyzePlantImage(plant.imageUrl);
+        setAiInfo(info);
+        setAiLoading(false);
+      })();
+    }
+  }, [plant]);
 
   if (loading) {
     return (
@@ -114,6 +127,8 @@ export default function PlantDetails() {
       ]
     );
   };
+
+  // console.log(JSON.stringify(aiInfo, null, 2));
 
   return (
     <MainLayout>
@@ -249,6 +264,29 @@ export default function PlantDetails() {
                 statusTextClass: "text-blue-700",
               }}
             />
+          </View>
+        </View>
+
+        <View className="mb-6">
+          <Text className="text-xl font-bold text-gray-800 mb-4">
+            AI Insights
+          </Text>
+          <View className="bg-white rounded-xl p-4 shadow-md">
+            {aiLoading ? (
+              <Text className="text-gray-500">Fetching AI info...</Text>
+            ) : aiInfo ? (
+              <>
+                <Text className="text-lg font-semibold text-gray-900">
+                  {aiInfo.name}
+                </Text>
+                <View className="h-20 bg-gray-100 mb-3" />
+                <Text className="mt-2 text-gray-700 leading-relaxed">
+                  {aiInfo.description}
+                </Text>
+              </>
+            ) : (
+              <Text className="text-gray-500">No AI info available.</Text>
+            )}
           </View>
         </View>
       </ScrollView>

@@ -1,4 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { getAI, getGenerativeModel, GoogleAIBackend } from "firebase/ai";
 import { initializeApp } from "firebase/app";
 import {
   getAuth,
@@ -23,6 +24,9 @@ const app = initializeApp(config);
 const db = getFirestore(app);
 const storage = getStorage(app);
 
+const ai = getAI(app, { backend: new GoogleAIBackend() });
+const model = getGenerativeModel(ai, { model: "gemini-2.5-flash" });
+
 let auth: any;
 
 try {
@@ -38,4 +42,4 @@ try {
   }
 }
 
-export { app, auth, db, storage };
+export { app, auth, db, model, storage };

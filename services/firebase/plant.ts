@@ -1,3 +1,4 @@
+import * as FileSystem from "expo-file-system";
 import {
   addDoc,
   collection,
@@ -10,7 +11,7 @@ import {
   where,
 } from "firebase/firestore";
 import { uploadToCloudinary } from "../cloudinary";
-import { db } from "./config";
+import { db, model } from "./config";
 
 export const addPlant = async (
   data: Pick<Plant, "name" | "imageUrl" | "datePlanted">,
@@ -154,3 +155,59 @@ export const deletePlant = async (
     };
   }
 };
+
+// Call this function to get plant info from the AI
+export interface PlantAnalysis {
+  name: string;
+  description: string;
+  healthStatus: string;
+}
+
+export async function analyzePlantImage(
+  uri: string,
+  mimeType: string
+): Promise<PlantAnalysis> {
+  try {
+    // Convert file -> base64
+    const base64Data = await FileSystem.readAsStringAsync(uri, {
+      encoding: FileSystem.EncodingType.Base64,
+    });
+
+    const prompt = `
+      You are a plant expert.
+      Analyze the provided plant photo.
+      Respond ONLY with valid JSON.
+      Must include: "name", "description", "healthStatus".
+      Keep description 1-2 sentences.
+      Health status must be one of: Healthy, Sick, Growing, Needs Attention
+    `;
+
+    const resultAI = await model.generateContent([
+      { text: prompt },
+      { inlineData: { data: base64Data, mimeType } },
+    ]);
+
+    let text = resultAI.response.text().trim();
+    text = text.replace(/```json|```/g, "").trim();
+
+    let data;
+    try {
+      data = JSON.parse(text || "{}");
+    } catch {
+      data = {
+        name: "Unknown",
+        description: "Could not parse analysis.",
+        healthStatus: "Unknown",
+      };
+    }
+
+    return data;
+  } catch (err) {
+    console.error("AI Error:", err);
+    return {
+      name: "Unknown",
+      description: "Failed to analyze image.",
+      healthStatus: "Unknown",
+    };
+  }
+}

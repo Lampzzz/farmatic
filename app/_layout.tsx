@@ -1,6 +1,7 @@
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
+// import { Provider as PaperProvider } from "react-native-paper";
 import "react-native-reanimated";
 import "../global.css";
 
@@ -15,6 +16,7 @@ export default function RootLayout() {
   }
 
   return (
+    // <PaperProvider>
     <>
       <Stack>
         <Stack.Screen name="(auth)" options={{ headerShown: false }} />
@@ -23,5 +25,6 @@ export default function RootLayout() {
       </Stack>
       <StatusBar style="light" />
     </>
+    // </PaperProvider>
   );
 }

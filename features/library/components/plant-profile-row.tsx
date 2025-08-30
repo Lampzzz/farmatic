@@ -21,12 +21,7 @@ export const PlantProfileRow = ({
 }) => {
   return (
     <>
-      <View
-        className={clsx(
-          "flex-row items-center justify-between bg-red-200",
-          styles
-        )}
-      >
+      <View className={clsx("flex-row items-center justify-between", styles)}>
         <View className="flex-row items-center gap-2">
           <Icon name={icon} size={20} color={iconColor} />
           <Text className="font-semibold text-lg text-primary">{label}</Text>

@@ -82,7 +82,7 @@ export const createAdmin = async (id: string, email: string) => {
 
     if (userDoc.exists()) {
       if (!userDoc.data()?.isAdmin) {
-        throw new Error("User is not an admin, cannot use this function.");
+        return;
       }
       return;
     }

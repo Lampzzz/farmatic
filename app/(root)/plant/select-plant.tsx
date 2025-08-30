@@ -83,29 +83,28 @@ export default function SelectPlantScreen() {
           iconName="Search"
           styles="mb-6"
         />
-
-        <FlatList
-          data={data}
-          keyExtractor={(item) => item.id.toString()}
-          showsVerticalScrollIndicator={false}
-          numColumns={2}
-          columnWrapperStyle={{ gap: 8 }}
-          contentContainerStyle={{ gap: 8, paddingBottom: 20 }}
-          renderItem={({ item }) => (
-            <PlantCard
-              key={item.id}
-              image={
-                item.default_image?.thumbnail ||
-                "https://via.placeholder.com/150"
-              }
-              commonName={item.common_name || ""}
-              scientificName={item.scientific_name || []}
-              onPress={() => handlePlantSelect(item)}
-              isSelected={selectedPlant?.id === item.id}
-            />
-          )}
-        />
       </View>
+
+      <FlatList
+        data={data}
+        keyExtractor={(item) => item.id.toString()}
+        showsVerticalScrollIndicator={false}
+        numColumns={2}
+        columnWrapperStyle={{ gap: 12 }}
+        contentContainerStyle={{
+          gap: 12,
+          paddingHorizontal: 20,
+          paddingBottom: 20,
+        }}
+        renderItem={({ item }) => (
+          <PlantCard
+            image={item.default_image?.thumbnail}
+            name={item.common_name}
+            onPress={() => handlePlantSelect(item)}
+            isSelected={selectedPlant?.id === item.id}
+          />
+        )}
+      />
     </MainLayout>
   );
 }

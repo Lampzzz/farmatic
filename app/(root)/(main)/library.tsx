@@ -6,17 +6,38 @@ import { useDebounce } from "@/hooks/use-debounce";
 import { useFetch } from "@/hooks/use-fetch";
 import { getPlants } from "@/services/perenual";
 import { router } from "expo-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ActivityIndicator, FlatList, Text, View } from "react-native";
 
 export default function LibraryScreen() {
   const [search, setSearch] = useState("");
   const debouncedSearch = useDebounce(search);
 
+  const [page, setPage] = useState(1);
+  const [plants, setPlants] = useState<any[]>([]);
+  const [loadingMore, setLoadingMore] = useState(false);
+
   const { data, error, loading } = useFetch(
-    () => getPlants(debouncedSearch),
-    [debouncedSearch]
+    () => getPlants(debouncedSearch, page),
+    [debouncedSearch, page]
   );
+
+  useEffect(() => {
+    if (data && page === 1) {
+      setPlants(data);
+    } else if (data && page > 1) {
+      setPlants((prev) => [...prev, ...data]);
+    }
+
+    setLoadingMore(false);
+  }, [data]);
+
+  const handleLoadMore = () => {
+    if (!loadingMore && data?.length > 0) {
+      setLoadingMore(true);
+      setPage((prev) => prev + 1);
+    }
+  };
 
   return (
     <MainLayout>
@@ -24,12 +45,15 @@ export default function LibraryScreen() {
         <FormInput
           placeholder="Search for a plant"
           value={search}
-          onChangeText={setSearch}
+          onChangeText={(text) => {
+            setSearch(text);
+            setPage(1);
+          }}
           iconName="Search"
         />
       </Header>
 
-      {loading ? (
+      {loading && page === 1 ? (
         <View className="flex-1 items-center justify-center">
           <ActivityIndicator size="large" color="#22c55e" />
         </View>
@@ -39,8 +63,7 @@ export default function LibraryScreen() {
         </View>
       ) : (
         <FlatList
-          // className="px-6 pt-6"
-          data={data}
+          data={plants}
           keyExtractor={(item) => item.id.toString()}
           showsVerticalScrollIndicator={false}
           numColumns={2}
@@ -51,16 +74,20 @@ export default function LibraryScreen() {
           }}
           renderItem={({ item }) => (
             <PlantCard
-              key={item.id}
-              image={
-                item.default_image?.thumbnail ||
-                "https://via.placeholder.com/150"
-              }
-              commonName={item.common_name || ""}
-              scientificName={item.scientific_name || ""}
+              image={item.default_image?.thumbnail}
+              name={item.common_name}
               onPress={() => router.push(`/plant/library/${item.id}`)}
             />
           )}
+          onEndReached={handleLoadMore}
+          onEndReachedThreshold={0.5}
+          ListFooterComponent={
+            loadingMore ? (
+              <View className="py-4">
+                <ActivityIndicator size="small" color="#22c55e" />
+              </View>
+            ) : null
+          }
         />
       )}
     </MainLayout>
