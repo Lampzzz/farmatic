@@ -1,9 +1,29 @@
-import { Text, View } from "react-native";
+import { AlertCircle } from "lucide-react-native";
+import React from "react";
+import { Text, TouchableOpacity, View } from "react-native";
 
-export const Error = ({ message }: { message: string }) => {
+type ErrorMessageProps = {
+  message?: string;
+  onRetry?: () => void;
+};
+
+export function Error({
+  message = "Something went wrong",
+  onRetry,
+}: ErrorMessageProps) {
   return (
-    <View className="flex-1 items-center justify-center py-20">
-      <Text className="text-gray text-center">{message}</Text>
+    <View className="p-6 items-center justify-center flex-1">
+      <AlertCircle size={48} color="red" strokeWidth={2.5} className="mb-4" />
+      <Text className="text-lg font-bold text-red-600 mb-2">{message}</Text>
+
+      {onRetry && (
+        <TouchableOpacity
+          onPress={onRetry}
+          className="bg-red-500 px-4 py-2 rounded-xl"
+        >
+          <Text className="text-white font-semibold">Try Again</Text>
+        </TouchableOpacity>
+      )}
     </View>
   );
-};
+}

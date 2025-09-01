@@ -7,7 +7,7 @@ import { router } from "expo-router";
 import { Controller, useForm } from "react-hook-form";
 import { Alert, Pressable, Text, ToastAndroid, View } from "react-native";
 
-export default function SignIn() {
+export const SignIn = () => {
   const {
     control,
     handleSubmit,
@@ -18,18 +18,17 @@ export default function SignIn() {
 
   const onSubmit = async (data: { email: string; password: string }) => {
     try {
-      const response = await login(data.email, data.password);
+      const { isSuccess, message } = await login(data.email, data.password);
 
-      if (!response?.isSuccess) {
-        Alert.alert("Error", response?.message);
+      if (!isSuccess) {
+        Alert.alert("Error", message);
         return;
       }
 
       router.replace("/home");
-      ToastAndroid.show(response.message!, ToastAndroid.SHORT);
+      ToastAndroid.show(message!, ToastAndroid.SHORT);
     } catch (error: any) {
-      console.error(error);
-      return Alert.alert("Error", error.message);
+      Alert.alert("Error", error.message);
     }
   };
 
@@ -46,7 +45,6 @@ export default function SignIn() {
               Sign in to continue to your greenhouse
             </Text>
           </View>
-
           <Controller
             control={control}
             name="email"
@@ -65,7 +63,6 @@ export default function SignIn() {
               />
             )}
           />
-
           <Controller
             control={control}
             name="password"
@@ -85,7 +82,6 @@ export default function SignIn() {
               />
             )}
           />
-
           <View className="my-6">
             <Button
               onPress={handleSubmit(onSubmit)}
@@ -93,7 +89,6 @@ export default function SignIn() {
               isLoading={isSubmitting}
             />
           </View>
-
           <View className="items-center">
             <Pressable onPress={() => router.push("/forgot-password")}>
               <Text className="text-gray underline">Forgot Password?</Text>
@@ -103,4 +98,6 @@ export default function SignIn() {
       </View>
     </MainLayout>
   );
-}
+};
+
+export default SignIn;

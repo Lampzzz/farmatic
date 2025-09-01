@@ -1,11 +1,10 @@
 import { Header } from "@/components/header";
 import { MainLayout } from "@/components/layout/main-layout";
-import { Alert, View } from "react-native";
-import { IdentifyMethod } from "./components/identify-method";
-import { HowItWorks } from "./sections/how-it-works";
-
 import { analyzePlantImage } from "@/services/firebase/plant";
 import { getImageType, pickImage, takePhoto } from "@/utils/image";
+import { Alert, View } from "react-native";
+import { HowItWorks } from "./sections/how-it-works";
+import { IdentifyMethod } from "./sections/identify-method";
 
 export default function IdentifierScreen() {
   const handleUploadImage = async () => {
@@ -14,9 +13,7 @@ export default function IdentifierScreen() {
       if (!image) return;
 
       const type = getImageType(image.uri);
-      const result = await analyzePlantImage(image.uri, type);
-
-      Alert.alert("Plant Analysis", JSON.stringify(result, null, 2));
+      await analyzePlantImage(image.uri, type);
     } catch (err) {
       console.error(err);
       Alert.alert("Error", "Could not analyze the image.");
@@ -29,9 +26,7 @@ export default function IdentifierScreen() {
       if (!image) return;
 
       const type = getImageType(image.uri);
-      const result = await analyzePlantImage(image.uri, type);
-
-      Alert.alert("Plant Analysis", JSON.stringify(result, null, 2));
+      await analyzePlantImage(image.uri, type);
     } catch (err) {
       console.error(err);
       Alert.alert("Error", "Could not analyze the photo.");

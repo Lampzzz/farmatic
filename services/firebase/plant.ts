@@ -5,6 +5,7 @@ import {
   deleteDoc,
   doc,
   getDoc,
+  getDocs,
   onSnapshot,
   orderBy,
   query,
@@ -156,7 +157,6 @@ export const deletePlant = async (
   }
 };
 
-// Call this function to get plant info from the AI
 export interface PlantAnalysis {
   name: string;
   description: string;
@@ -168,7 +168,6 @@ export async function analyzePlantImage(
   mimeType: string
 ): Promise<PlantAnalysis> {
   try {
-    // Convert file -> base64
     const base64Data = await FileSystem.readAsStringAsync(uri, {
       encoding: FileSystem.EncodingType.Base64,
     });
@@ -211,3 +210,32 @@ export async function analyzePlantImage(
     };
   }
 }
+
+export const togglePlantBookmark = async (userId: string, plantId: string) => {
+  try {
+    const bookmarksRef = collection(db, "plantBookmarks");
+
+    const q = query(
+      bookmarksRef,
+      where("userId", "==", userId),
+      where("plantId", "==", plantId)
+    );
+
+    const snapshot = await getDocs(q);
+
+    if (!snapshot.empty) {
+      snapshot.forEach(async (docSnap) => {
+        await deleteDoc(docSnap.ref);
+      });
+    } else {
+      await addDoc(bookmarksRef, {
+        userId,
+        plantId,
+        createdAt: new Date(),
+      });
+    }
+  } catch (error: any) {
+    console.error("Error toggling plant bookmark:", error);
+    throw error;
+  }
+};

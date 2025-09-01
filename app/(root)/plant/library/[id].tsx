@@ -4,14 +4,20 @@ import { Header } from "@/components/header";
 import { MainLayout } from "@/components/layout/main-layout";
 import { CareInfoRow } from "@/features/library/components/care-info-row";
 import { PlantProfileRow } from "@/features/library/components/plant-profile-row";
+import { useAuth } from "@/hooks/use-auth";
 import { useFetch } from "@/hooks/use-fetch";
+import { useRealTimeFetch } from "@/hooks/use-real-time-fetch";
+import { togglePlantBookmark } from "@/services/firebase/plant";
 import { getPlantDetails, getPlantGuideDetails } from "@/services/perenual";
 import clsx from "clsx";
 import { useLocalSearchParams } from "expo-router";
+import { where } from "firebase/firestore";
 import { Image, ScrollView, Text, View } from "react-native";
 
 export default function LibraryPlant() {
   const { id } = useLocalSearchParams();
+  const { user } = useAuth();
+  const userId = user?.isAdmin ? user.id : user?.adminId;
 
   const { data } = useFetch(() => getPlantDetails(id as string), []);
 
@@ -20,12 +26,21 @@ export default function LibraryPlant() {
     []
   );
 
+  const { data: bookmarks } = useRealTimeFetch("plantBookmarks", [
+    where("userId", "==", userId || ""),
+    where("plantId", "==", id as string),
+  ]);
+
   return (
     <MainLayout>
       <Header
         title={data?.common_name}
         description={data?.scientific_name}
-        isHasBack
+        showBackButton
+        rightIcon={bookmarks?.length > 0 ? "BookmarkCheck" : "Bookmark"}
+        onRightIconPress={() => {
+          togglePlantBookmark(userId, id as string);
+        }}
       />
       <ScrollView
         className="flex-1"

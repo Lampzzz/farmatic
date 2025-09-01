@@ -5,13 +5,8 @@ import { Redirect, Stack } from "expo-router";
 export default function AuthLayout() {
   const { isAuthenticated, isLoading } = useAuth();
 
-  if (isLoading) {
-    return <Loader />;
-  }
-
-  if (isAuthenticated) {
-    return <Redirect href="/home" />;
-  }
+  if (isLoading) return <Loader />;
+  if (isAuthenticated) return <Redirect href="/home" />;
 
   return (
     <Stack screenOptions={{ headerShown: false }}>

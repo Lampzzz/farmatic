@@ -1,7 +1,6 @@
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-// import { Provider as PaperProvider } from "react-native-paper";
 import "react-native-reanimated";
 import "../global.css";
 
@@ -10,13 +9,9 @@ export default function RootLayout() {
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
   });
 
-  if (!loaded) {
-    // Async font loading only occurs in development.
-    return null;
-  }
+  if (!loaded) return null;
 
   return (
-    // <PaperProvider>
     <>
       <Stack>
         <Stack.Screen name="(auth)" options={{ headerShown: false }} />
@@ -25,6 +20,5 @@ export default function RootLayout() {
       </Stack>
       <StatusBar style="light" />
     </>
-    // </PaperProvider>
   );
 }

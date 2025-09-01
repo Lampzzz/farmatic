@@ -1,13 +1,15 @@
+import { Error } from "@/components/error";
 import { FormInput } from "@/components/form/form-input";
 import { Header } from "@/components/header";
 import { MainLayout } from "@/components/layout/main-layout";
+import { Loader } from "@/components/loader";
 import { PlantCard } from "@/components/plant/plant-card";
 import { useDebounce } from "@/hooks/use-debounce";
 import { useFetch } from "@/hooks/use-fetch";
 import { getPlants } from "@/services/perenual";
 import { router } from "expo-router";
 import { useEffect, useState } from "react";
-import { ActivityIndicator, FlatList, Text, View } from "react-native";
+import { ActivityIndicator, FlatList, View } from "react-native";
 
 export default function LibraryScreen() {
   const [search, setSearch] = useState("");
@@ -43,24 +45,20 @@ export default function LibraryScreen() {
     <MainLayout>
       <Header title="Plant Library" description="Browse our plant library">
         <FormInput
+          iconName="Search"
           placeholder="Search for a plant"
           value={search}
           onChangeText={(text) => {
             setSearch(text);
             setPage(1);
           }}
-          iconName="Search"
         />
       </Header>
 
       {loading && page === 1 ? (
-        <View className="flex-1 items-center justify-center">
-          <ActivityIndicator size="large" color="#22c55e" />
-        </View>
+        <Loader />
       ) : error ? (
-        <View className="flex-1 items-center justify-center px-6">
-          <Text className="text-red-500 text-center mb-2">{error}</Text>
-        </View>
+        <Error message={error} />
       ) : (
         <FlatList
           data={plants}

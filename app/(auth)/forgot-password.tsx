@@ -7,7 +7,7 @@ import { router } from "expo-router";
 import { Controller, useForm } from "react-hook-form";
 import { Alert, Pressable, Text, View } from "react-native";
 
-export default function ForgotPassword() {
+export const ForgotPassword = () => {
   const {
     control,
     handleSubmit,
@@ -22,13 +22,14 @@ export default function ForgotPassword() {
   const onSubmit = async (data: { email: string }) => {
     try {
       const { isSuccess } = await forgotPassword(data.email);
-      if (isSuccess) {
-        // ToastAndroid.show("Password reset email sent", ToastAndroid.LONG);
-        Alert.alert("Success", "Password reset email sent");
-        reset();
+      if (!isSuccess) {
+        Alert.alert("Error", "Failed to send password reset email");
+        return;
       }
+
+      Alert.alert("Success", "Password reset email sent");
+      reset();
     } catch (error) {
-      console.log(error);
       Alert.alert("Error", "Failed to send password reset email");
     }
   };
@@ -76,4 +77,6 @@ export default function ForgotPassword() {
       </View>
     </MainLayout>
   );
-}
+};
+
+export default ForgotPassword;

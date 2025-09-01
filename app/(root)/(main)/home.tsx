@@ -2,6 +2,7 @@ import EmptyGreenhousePlant from "@/components/empty-state/empty-greenhouse-plan
 import { Header } from "@/components/header";
 import { Icon } from "@/components/icon";
 import { MainLayout } from "@/components/layout/main-layout";
+import { ScreenContainer } from "@/components/layout/screen-container";
 import { Loader } from "@/components/loader";
 import { PlantCard } from "@/components/plant/plant-card";
 import { useAuth } from "@/hooks/use-auth";
@@ -14,6 +15,7 @@ export default function HomeScreen() {
   const { user } = useAuth();
 
   const userId = user?.isAdmin ? user.id : user?.adminId;
+
   const { data, loading } = useRealTimeFetch("plants", [
     where("userId", "==", userId || ""),
     orderBy("createdAt", "desc"),
@@ -22,8 +24,7 @@ export default function HomeScreen() {
   return (
     <MainLayout>
       <Header title="Farmatic" description="Greenhouse Dashboard"></Header>
-
-      <View className="p-6 flex-1">
+      <ScreenContainer>
         <View className="mb-6 flex-row items-center justify-between">
           <Text className="text-2xl font-bold">Greenhouse Plants</Text>
           <TouchableOpacity
@@ -50,20 +51,19 @@ export default function HomeScreen() {
             contentContainerStyle={{ gap: 12 }}
             renderItem={({ item }) => (
               <PlantCard
-                key={item.id}
                 image={item.imageUrl}
                 name={item.name}
                 onPress={() =>
                   router.push({
                     pathname: "/plant/greenhouse/[id]",
-                    params: { id: item.id || "" },
+                    params: { id: item.id },
                   })
                 }
               />
             )}
           />
         )}
-      </View>
+      </ScreenContainer>
     </MainLayout>
   );
 }
