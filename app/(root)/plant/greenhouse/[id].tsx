@@ -5,9 +5,9 @@ import { Icon } from "@/components/icon";
 import { MainLayout } from "@/components/layout/main-layout";
 import { useAuth } from "@/hooks/use-auth";
 import { usePlantById } from "@/hooks/use-plants";
-import { analyzePlantImage, deletePlant } from "@/services/firebase/plant";
+import { deletePlant } from "@/services/firebase/plant";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   ActivityIndicator,
   Alert,
@@ -25,17 +25,6 @@ export default function PlantDetails() {
   const [isDeleting, setIsDeleting] = useState(false);
   const [aiLoading, setAiLoading] = useState(false);
   const [aiInfo, setAiInfo] = useState<any>(null);
-
-  useEffect(() => {
-    if (plant) {
-      (async () => {
-        setAiLoading(true);
-        const info = await analyzePlantImage(plant.imageUrl);
-        setAiInfo(info);
-        setAiLoading(false);
-      })();
-    }
-  }, [plant]);
 
   if (loading) {
     return (
@@ -135,8 +124,7 @@ export default function PlantDetails() {
       <Header
         title="Plant Details"
         description="View your plant information"
-        isHasBack
-        isHasRightIcon
+        showBackButton
         rightIcon="Trash"
         onRightIconPress={confirmDelete}
       />

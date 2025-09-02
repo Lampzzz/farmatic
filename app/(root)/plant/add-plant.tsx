@@ -97,7 +97,7 @@ export default function AddPlantScreen() {
             ? "Add selected plant to your greenhouse"
             : "Add a new plant to your greenhouse"
         }
-        isHasBack
+        showBackButton
       />
 
       <View className="p-6">

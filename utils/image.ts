@@ -1,3 +1,4 @@
+import * as FileSystem from "expo-file-system";
 import * as ImagePicker from "expo-image-picker";
 
 export interface ImagePickerResult {
@@ -6,6 +7,30 @@ export interface ImagePickerResult {
   fileName: string;
   fileSize?: number;
 }
+
+export const saveToDocuments = async (uri: string): Promise<string> => {
+  if (!uri) {
+    throw new Error("saveToDocuments: URI is required.");
+  }
+
+  const fileName = uri.split("/").pop();
+  if (!fileName) {
+    throw new Error(
+      `saveToDocuments: Could not extract file name from URI: ${uri}`
+    );
+  }
+
+  if (!FileSystem.documentDirectory) {
+    throw new Error(
+      "saveToDocuments: Document directory is not available on this platform."
+    );
+  }
+
+  const newPath = FileSystem.documentDirectory + fileName;
+  await FileSystem.copyAsync({ from: uri, to: newPath });
+
+  return newPath;
+};
 
 export const pickImage = async (): Promise<ImagePickerResult | null> => {
   try {
@@ -23,14 +48,14 @@ export const pickImage = async (): Promise<ImagePickerResult | null> => {
       allowsEditing: true,
       aspect: [4, 3],
       quality: 0.8,
-      allowsMultipleSelection: false,
     });
 
     if (!result.canceled && result.assets && result.assets.length > 0) {
       const asset = result.assets[0];
+      const savedUri = await saveToDocuments(asset.uri);
 
       return {
-        uri: asset.uri,
+        uri: savedUri,
         type: asset.type || "image/jpeg",
         fileName: asset.fileName || "plant_image.jpg",
         fileSize: asset.fileSize,
@@ -62,9 +87,10 @@ export const takePhoto = async (): Promise<ImagePickerResult | null> => {
 
     if (!result.canceled && result.assets && result.assets.length > 0) {
       const asset = result.assets[0];
+      const savedUri = await saveToDocuments(asset.uri);
 
       return {
-        uri: asset.uri,
+        uri: savedUri,
         type: asset.type || "image/jpeg",
         fileName: asset.fileName || "plant_photo.jpg",
         fileSize: asset.fileSize,

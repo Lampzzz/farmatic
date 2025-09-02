@@ -1,0 +1,9 @@
+Farmatic
+
+Features Todo
+
+- new screen for plant ai identier output
+- controller
+- analysis history
+- search library add scientific name
+- greenhouse plant button for updating current plant status

@@ -8,7 +8,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { useFetch } from "@/hooks/use-fetch";
 import { useRealTimeFetch } from "@/hooks/use-real-time-fetch";
 import { togglePlantBookmark } from "@/services/firebase/plant";
-import { getPlantDetails, getPlantGuideDetails } from "@/services/perenual";
+import { getPlantDetails } from "@/services/perenual";
 import clsx from "clsx";
 import { useLocalSearchParams } from "expo-router";
 import { where } from "firebase/firestore";
@@ -21,15 +21,12 @@ export default function LibraryPlant() {
 
   const { data } = useFetch(() => getPlantDetails(id as string), []);
 
-  const { data: guideData } = useFetch(
-    () => getPlantGuideDetails(id as string),
-    []
-  );
-
   const { data: bookmarks } = useRealTimeFetch("plantBookmarks", [
     where("userId", "==", userId || ""),
     where("plantId", "==", id as string),
   ]);
+
+  // console.log("🌱 Plant Details ✅:", JSON.stringify(data, null, 2));
 
   return (
     <MainLayout>
@@ -135,10 +132,10 @@ export default function LibraryPlant() {
           </Text>
         </View>
         <BaseCard styles="mb-6">
-          {guideData?.section.map((item: any, index: number) => (
+          {data?.section?.map((item: any, index: number) => (
             <View
               key={item.type}
-              className={clsx(index !== guideData.section.length - 1 && "mb-4")}
+              className={clsx(index !== data.section.length - 1 && "mb-4")}
             >
               <CareInfoRow
                 icon="Clock"

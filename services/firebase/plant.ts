@@ -158,32 +158,71 @@ export const deletePlant = async (
 };
 
 export interface PlantAnalysis {
-  name: string;
+  scientific_name: string;
+  common_name: string;
   description: string;
   healthStatus: string;
 }
 
+async function isPlantImage(
+  base64Data: string,
+  mimeType: string
+): Promise<boolean> {
+  try {
+    const checkPrompt = `
+      Determine if the provided photo is of a plant.
+      Respond ONLY with "true" or "false".
+    `;
+
+    const result = await model.generateContent([
+      { text: checkPrompt },
+      { inlineData: { data: base64Data, mimeType } },
+    ]);
+
+    const answer = result.response.text().trim().toLowerCase();
+    return answer === "true";
+  } catch (err) {
+    console.error("Plant check failed:", err);
+    return false;
+  }
+}
+
 export async function analyzePlantImage(
   uri: string,
-  mimeType: string
+  mimeType: string,
+  base64?: string
 ): Promise<PlantAnalysis> {
   try {
-    const base64Data = await FileSystem.readAsStringAsync(uri, {
-      encoding: FileSystem.EncodingType.Base64,
-    });
+    let base64Data: string | undefined = base64;
+
+    if (!base64Data && uri) {
+      base64Data = await FileSystem.readAsStringAsync(uri, {
+        encoding: FileSystem.EncodingType.Base64,
+      });
+    }
+
+    const isPlant = await isPlantImage(base64Data || "", mimeType);
+    if (!isPlant) {
+      return {
+        scientific_name: "N/A",
+        common_name: "Not a Plant",
+        description: "The uploaded photo does not appear to be a plant.",
+        healthStatus: "Unknown",
+      };
+    }
 
     const prompt = `
       You are a plant expert.
       Analyze the provided plant photo.
       Respond ONLY with valid JSON.
-      Must include: "name", "description", "healthStatus".
+      Must include: "scientific_name", "common_name", "description", "healthStatus".
       Keep description 1-2 sentences.
       Health status must be one of: Healthy, Sick, Growing, Needs Attention
     `;
 
     const resultAI = await model.generateContent([
       { text: prompt },
-      { inlineData: { data: base64Data, mimeType } },
+      { inlineData: { data: base64Data || "", mimeType } },
     ]);
 
     let text = resultAI.response.text().trim();
@@ -194,7 +233,8 @@ export async function analyzePlantImage(
       data = JSON.parse(text || "{}");
     } catch {
       data = {
-        name: "Unknown",
+        scientific_name: "Unknown",
+        common_name: "Unknown",
         description: "Could not parse analysis.",
         healthStatus: "Unknown",
       };
@@ -204,7 +244,8 @@ export async function analyzePlantImage(
   } catch (err) {
     console.error("AI Error:", err);
     return {
-      name: "Unknown",
+      scientific_name: "Unknown",
+      common_name: "Unknown",
       description: "Failed to analyze image.",
       healthStatus: "Unknown",
     };

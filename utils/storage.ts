@@ -1,30 +1,43 @@
-import { MMKV } from "react-native-mmkv";
+// utils/storage.ts
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-export const storage = new MMKV();
+export const storage = {
+  async setItem<T>(key: string, value: T) {
+    try {
+      if (Array.isArray(value)) {
+        const existingStr = await AsyncStorage.getItem(key);
+        const existingData: T[] = existingStr ? JSON.parse(existingStr) : [];
 
-export const setItem = (key: string, value: any) => {
-  if (typeof value === "string") {
-    storage.set(key, value);
-  } else {
-    storage.set(key, JSON.stringify(value));
-  }
-};
+        const mergedData = [...existingData];
+        for (const item of value) {
+          if (!existingData.find((e: any) => e.id === (item as any).id)) {
+            mergedData.push(item);
+          }
+        }
 
-export const getItem = <T>(key: string): T | null => {
-  const value = storage.getString(key);
-  if (!value) return null;
+        await AsyncStorage.setItem(key, JSON.stringify(mergedData));
+      } else {
+        await AsyncStorage.setItem(key, JSON.stringify(value));
+      }
+    } catch (e) {
+      console.error(`Error saving ${key}`, e);
+    }
+  },
+  async getItem<T>(key: string): Promise<T | null> {
+    try {
+      const value = await AsyncStorage.getItem(key);
+      return value ? JSON.parse(value) : null;
+    } catch (e) {
+      console.error(`Error reading ${key}`, e);
+      return null;
+    }
+  },
 
-  try {
-    return JSON.parse(value) as T;
-  } catch {
-    return value as unknown as T;
-  }
-};
-
-export const removeItem = (key: string) => {
-  storage.delete(key);
-};
-
-export const hasItem = (key: string) => {
-  return storage.contains(key);
+  async removeItem(key: string) {
+    try {
+      await AsyncStorage.removeItem(key);
+    } catch (e) {
+      console.error(`Error removing ${key}`, e);
+    }
+  },
 };

@@ -62,7 +62,7 @@ export default function LibraryScreen() {
       ) : (
         <FlatList
           data={plants}
-          keyExtractor={(item) => item.id.toString()}
+          keyExtractor={(item, index) => `${item.id}-${index}`}
           showsVerticalScrollIndicator={false}
           numColumns={2}
           columnWrapperStyle={{ gap: 12 }}

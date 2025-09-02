@@ -1,145 +1,75 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
-
-const PLANT_LIST_KEY = "plant_list";
-const PLANT_DETAILS_KEY = "plant_details";
+import {
+  PERENUAL_API_KEY,
+  PLANT_DETAILS_KEY,
+  PLANT_LIST_KEY,
+} from "@/constants";
+import { storage } from "@/utils/storage";
 
 export const getPlants = async (search: string = "", page: number = 1) => {
   try {
-    const url = `https://perenual.com/api/v2/species-list?key=${process.env.EXPO_PUBLIC_PERENUAL_API_KEY}&q=${search}&page=${page}`;
-
+    const url = `https://perenual.com/api/v2/species-list?key=${PERENUAL_API_KEY}&q=${search}&page=${page}`;
     const response = await fetch(url);
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
+    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
 
     const data = await response.json();
 
-    const cached = await AsyncStorage.getItem(PLANT_LIST_KEY);
-    let cachedPlants: any[] = cached ? JSON.parse(cached) : [];
-
-    const merged = [
-      ...cachedPlants.filter(
-        (cachedPlant) =>
-          !data.data.some((plant: any) => plant.id === cachedPlant.id)
-      ),
-      ...data.data,
-    ];
-
-    await AsyncStorage.setItem(PLANT_LIST_KEY, JSON.stringify(merged));
+    await storage.setItem(PLANT_LIST_KEY, data.data);
 
     return data.data;
   } catch (error) {
-    console.error("Plant API Error", error);
-
-    const cached = await AsyncStorage.getItem(PLANT_LIST_KEY);
+    const cached = await storage.getItem<any[]>(PLANT_LIST_KEY);
 
     if (cached) {
-      console.log("Loaded plants from cache");
-      return JSON.parse(cached);
+      console.log("Loaded plants from cache ✅");
+      return cached;
     }
 
-    return [];
+    throw error;
   }
 };
 
-export async function getPlantDetails(id: string | number): Promise<any> {
+export const getPlantDetails = async (id: number | string) => {
   try {
-    const response = await fetch(
-      `https://perenual.com/api/v2/species/details/${id}?key=${process.env.EXPO_PUBLIC_PERENUAL_API_KEY}`
+    // 1️⃣ Fetch plant details
+    const detailRes = await fetch(
+      `https://perenual.com/api/v2/species/details/${id}?key=${PERENUAL_API_KEY}`
     );
+    if (!detailRes.ok)
+      throw new Error(`HTTP error! status: ${detailRes.status}`);
+    const plantData = await detailRes.json();
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    console.error("Error fetching plant details:", error);
-    throw error;
-  }
-}
-
-export async function getPlantGuideDetails(id: string | number): Promise<any> {
-  try {
-    const response = await fetch(
-      `https://perenual.com/api/species-care-guide-list?key=${process.env.EXPO_PUBLIC_PERENUAL_API_KEY}&species_id=${id}`
+    // 2️⃣ Fetch care guide sections
+    const guideRes = await fetch(
+      `https://perenual.com/api/species-care-guide-list?key=${PERENUAL_API_KEY}&species_id=${id}`
     );
+    const guideData = guideRes.ok ? await guideRes.json() : null;
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
+    // Add care guide section to plant data
+    plantData.care_guide = guideData?.data?.[0]?.section || [];
 
-    const data = await response.json();
-    return data.data[0];
+    // 3️⃣ Merge with cached data
+    const cached = (await storage.getItem<any[]>(PLANT_DETAILS_KEY)) || [];
+    const exists = cached.find((p) => p.id === id);
+
+    const updated = exists
+      ? cached.map((p) => (p.id === id ? plantData : p))
+      : [...cached, plantData];
+
+    // 4️⃣ Save to AsyncStorage
+    await storage.setItem(PLANT_DETAILS_KEY, updated);
+
+    return plantData;
   } catch (error) {
-    console.error("Error fetching plant details:", error);
-  }
-}
+    // Fallback to cache if API fails
+    const cached = await storage.getItem<any[]>(PLANT_DETAILS_KEY);
+    const plant = cached?.find((p) => p.id === id);
 
-export async function getFullPlantDetails(id: string | number): Promise<any> {
-  try {
-    const [detailsResponse, guideResponse] = await Promise.all([
-      fetch(
-        `https://perenual.com/api/v2/species/details/${id}?key=${process.env.EXPO_PUBLIC_PERENUAL_API_KEY}`
-      ),
-      fetch(
-        `https://perenual.com/api/species-care-guide-list?key=${process.env.EXPO_PUBLIC_PERENUAL_API_KEY}&species_id=${id}`
-      ),
-    ]);
-
-    if (!detailsResponse.ok) {
-      throw new Error(`Plant details error! status: ${detailsResponse.status}`);
-    }
-    if (!guideResponse.ok) {
-      throw new Error(`Plant guide error! status: ${guideResponse.status}`);
-    }
-
-    const detailsData = await detailsResponse.json();
-    const guideData = await guideResponse.json();
-
-    const mergedData = {
-      ...detailsData,
-      care_guide: guideData.data?.[0]?.section || [],
-    };
-
-    const cached = await AsyncStorage.getItem(PLANT_DETAILS_KEY);
-    let plantCache: any[] = cached ? JSON.parse(cached) : [];
-
-    const existingIndex = plantCache.findIndex((p) => p.id === mergedData.id);
-
-    if (existingIndex !== -1) {
-      const oldData = plantCache[existingIndex];
-      if (JSON.stringify(oldData) !== JSON.stringify(mergedData)) {
-        plantCache[existingIndex] = mergedData;
-        await AsyncStorage.setItem(
-          PLANT_DETAILS_KEY,
-          JSON.stringify(plantCache)
-        );
-      } else {
-        console.log(`No changes for plant ${id}, keeping cache`);
-      }
-    } else {
-      console.log(`Adding new plant ${id} to cache`);
-      plantCache.push(mergedData);
-      await AsyncStorage.setItem(PLANT_DETAILS_KEY, JSON.stringify(plantCache));
-    }
-
-    return mergedData;
-  } catch (error) {
-    console.error("Error fetching full plant details:", error);
-
-    const cached = await AsyncStorage.getItem(PLANT_DETAILS_KEY);
-    if (cached) {
-      const plantCache: any[] = JSON.parse(cached);
-      const found = plantCache.find((p) => p.id === id);
-      if (found) {
-        console.log(`Loaded plant ${id} from cache`);
-        return found;
-      }
+    if (plant) {
+      console.log(`Loaded plant ${id} details from cache ✅`);
+      return plant;
     }
 
     throw error;
   }
-}
+};

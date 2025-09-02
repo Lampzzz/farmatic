@@ -55,7 +55,7 @@ export default function SelectPlantScreen() {
       <Header
         title="Select Plant"
         description="Choose a plant from our library or add manually"
-        isHasBack
+        showBackButton
       />
 
       <View className="flex-row gap-3 px-6 mt-6">
