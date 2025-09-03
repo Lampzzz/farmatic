@@ -13,13 +13,15 @@ import {
 } from "firebase/firestore";
 import { uploadToCloudinary } from "../cloudinary";
 import { db, model } from "./config";
+import { createController } from "./controller";
 
 export const addPlant = async (
-  data: Pick<Plant, "name" | "imageUrl" | "datePlanted">,
+  data: Pick<Plant, "name" | "imageUrl" | "datePlanted" | "zoneNumber">,
   userId: string
 ) => {
   try {
     let imageUrl = null;
+
     if (data.imageUrl) {
       imageUrl = await uploadToCloudinary(data.imageUrl);
     }
@@ -32,6 +34,8 @@ export const addPlant = async (
       userId,
       createdAt: new Date(),
     });
+
+    await createController(userId, data.zoneNumber);
 
     return { isSuccess: true, message: "Plant added successfully" };
   } catch (error: any) {

@@ -29,7 +29,7 @@ export default function SelectPlantScreen() {
         pathname: "/plant/add-plant",
         params: {
           selectedPlantId: selectedPlant.id.toString(),
-          selectedPlantName: selectedPlant.common_name,
+          selectedPlantName: selectedPlant.scientific_name,
           selectedPlantImage: selectedPlant.default_image?.thumbnail || "",
         },
       });
@@ -37,7 +37,6 @@ export default function SelectPlantScreen() {
   };
 
   const handleSkip = () => {
-    // Navigate to add-plant without selected plant
     router.push("/plant/add-plant");
   };
 
@@ -99,7 +98,7 @@ export default function SelectPlantScreen() {
         renderItem={({ item }) => (
           <PlantCard
             image={item.default_image?.thumbnail}
-            name={item.common_name}
+            name={item.scientific_name}
             onPress={() => handlePlantSelect(item)}
             isSelected={selectedPlant?.id === item.id}
           />

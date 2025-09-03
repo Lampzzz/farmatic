@@ -1,5 +1,5 @@
 import { icons } from "lucide-react-native";
-import React, { useState } from "react";
+import React from "react";
 import { Switch, Text, View } from "react-native";
 import { Icon } from "../icon";
 
@@ -31,25 +31,16 @@ function hexToRgba(hex: string, alpha: number): string {
 export function ControllerCard({
   title,
   icon,
-  initiallyOn = false,
-  statusOnText = "On",
+  value = false,
   colorScheme,
   onToggle,
 }: {
   title: string;
   icon: keyof typeof icons;
-  initiallyOn?: boolean;
-  statusOnText?: string;
+  value?: boolean;
   colorScheme: ColorScheme;
-  onToggle?: (value: boolean) => void;
+  onToggle?: () => void;
 }) {
-  const [isOn, setIsOn] = useState<boolean>(initiallyOn);
-
-  const handleToggle = (value: boolean) => {
-    setIsOn(value);
-    onToggle?.(value);
-  };
-
   const onTrackColor = hexToRgba(colorScheme.switchOnColor, 0.25);
 
   return (
@@ -65,14 +56,14 @@ export function ControllerCard({
         </View>
 
         <Switch
-          value={isOn}
-          onValueChange={handleToggle}
+          value={value}
+          onValueChange={onToggle}
           trackColor={{ false: "#e5e7eb", true: onTrackColor }}
-          thumbColor={isOn ? colorScheme.switchOnColor : "#d1d5db"}
+          thumbColor={value ? colorScheme.switchOnColor : "#d1d5db"}
         />
       </View>
 
-      {isOn && (
+      {/* {isOn && (
         <View
           className={`mt-4 rounded-xl px-4 py-3 ${colorScheme.statusBgClass}`}
         >
@@ -80,7 +71,7 @@ export function ControllerCard({
             className={`font-medium ${colorScheme.statusTextClass}`}
           >{`Status: ${statusOnText}`}</Text>
         </View>
-      )}
+      )} */}
     </View>
   );
 }

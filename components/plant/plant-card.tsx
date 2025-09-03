@@ -7,11 +7,13 @@ export function PlantCard({
   name,
   onPress,
   isSelected = false,
+  zoneNumber,
 }: {
   image: string;
   name: string;
   onPress: () => void;
   isSelected?: boolean;
+  zoneNumber?: number;
 }) {
   const imageUrl =
     image || "https://dummyimage.com/150x150/cccccc/000000&text=No+Image";
@@ -32,6 +34,13 @@ export function PlantCard({
           className="absolute bottom-0 left-0 right-0 h-16 "
         />
 
+        {zoneNumber && (
+          <View className="absolute top-0 right-0 p-2 bg-primary rounded-bl-lg">
+            <Text className="text-white font-bold text-sm">
+              Zone {zoneNumber}
+            </Text>
+          </View>
+        )}
         <View className="absolute bottom-0 left-0 right-0 p-2">
           <Text className="text-white font-bold">{name || "N/A"}</Text>
         </View>

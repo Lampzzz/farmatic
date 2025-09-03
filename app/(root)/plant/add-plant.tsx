@@ -37,6 +37,7 @@ export default function AddPlantScreen() {
       name: hasSelectedPlant ? (params.selectedPlantName as string) : "",
       imageUrl: hasSelectedPlant ? (params.selectedPlantImage as string) : "",
       datePlanted: "",
+      zoneNumber: 1,
     },
   });
 
@@ -62,15 +63,11 @@ export default function AddPlantScreen() {
     }
   };
 
-  const handleChangePlant = () => {
-    // Go back to plant selection
-    router.push("/plant/select-plant");
-  };
-
   const onSubmit = async (data: {
     name: string;
     imageUrl: string;
     datePlanted: string;
+    zoneNumber: number;
   }) => {
     try {
       const creatorId = user.isAdmin ? user.id : user.adminId;
@@ -189,6 +186,37 @@ export default function AddPlantScreen() {
               styles="mb-6"
               error={errors.datePlanted?.message}
             />
+          )}
+        />
+        <Controller
+          control={control}
+          name="zoneNumber"
+          render={({ field: { onChange, value } }) => (
+            <View className="bg-white mb-6">
+              <Text className="font-medium mb-2">Zone</Text>
+              <View className="flex-row gap-3">
+                <TouchableOpacity
+                  onPress={() => onChange(1)}
+                  className={`flex-1 items-center justify-center px-4 py-3 rounded-lg border ${value === 1 ? "bg-primary border-primary" : "bg-gray/10 border-gray/20"}`}
+                >
+                  <Text
+                    className={`${value === 1 ? "text-white" : "text-gray-700"}`}
+                  >
+                    Zone 1
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => onChange(2)}
+                  className={`flex-1 items-center justify-center px-4 py-3 rounded-lg border ${value === 2 ? "bg-primary border-primary" : "bg-gray/10 border-gray/20"}`}
+                >
+                  <Text
+                    className={`${value === 2 ? "text-white" : "text-gray-700"}`}
+                  >
+                    Zone 2
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </View>
           )}
         />
         <Button

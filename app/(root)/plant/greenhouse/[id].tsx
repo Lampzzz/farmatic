@@ -1,3 +1,4 @@
+import { Button } from "@/components/form/button";
 import { ControllerCard } from "@/components/greenhouse/controller-card";
 import { StatusCard } from "@/components/greenhouse/status-card";
 import { Header } from "@/components/header";
@@ -5,8 +6,11 @@ import { Icon } from "@/components/icon";
 import { MainLayout } from "@/components/layout/main-layout";
 import { useAuth } from "@/hooks/use-auth";
 import { usePlantById } from "@/hooks/use-plants";
+import { useRealTimeFetch } from "@/hooks/use-real-time-fetch";
+import { toggleController } from "@/services/firebase/controller";
 import { deletePlant } from "@/services/firebase/plant";
 import { useLocalSearchParams, useRouter } from "expo-router";
+import { limit, where } from "firebase/firestore";
 import { useState } from "react";
 import {
   ActivityIndicator,
@@ -25,6 +29,14 @@ export default function PlantDetails() {
   const [isDeleting, setIsDeleting] = useState(false);
   const [aiLoading, setAiLoading] = useState(false);
   const [aiInfo, setAiInfo] = useState<any>(null);
+
+  const userId = user?.isAdmin ? user.id : user?.adminId;
+
+  const { data: controller } = useRealTimeFetch("controllers", [
+    where("userId", "==", userId || ""),
+    where("zoneNumber", "==", plant?.zoneNumber || ""),
+    limit(1),
+  ]);
 
   if (loading) {
     return (
@@ -117,7 +129,9 @@ export default function PlantDetails() {
     );
   };
 
-  // console.log(JSON.stringify(aiInfo, null, 2));
+  const handleToggleController = (value: boolean, name: string) => {
+    toggleController(controller?.[0]?.id, value ? false : true, name);
+  };
 
   return (
     <MainLayout>
@@ -141,21 +155,6 @@ export default function PlantDetails() {
             className="w-full h-full"
             resizeMode="cover"
           />
-          <View className="absolute inset-0 bg-black/20" />
-          <View className="absolute bottom-0 left-0 right-0 p-6">
-            <Text className="text-white text-3xl font-bold mb-2">
-              {/* {plant.name} */}
-            </Text>
-            {plant.status && (
-              <View
-                className={`px-3 py-1 rounded-full self-start ${getStatusColor(plant.status)}`}
-              >
-                <Text className="text-sm font-medium capitalize">
-                  {plant.status}
-                </Text>
-              </View>
-            )}
-          </View>
         </View>
         <View className="mb-6">
           <Text className="text-xl font-bold text-gray-800 mb-4">
@@ -170,15 +169,14 @@ export default function PlantDetails() {
             <View className="flex-row justify-between mb-3">
               <Text className="text-gray-500">Date Planted</Text>
               <Text className="text-gray-800 font-medium">
-                {/* {formatDate(plant.datePlanted) || "Aug 17, 2025"} */}
-                Aug 17, 2025
+                {formatDate(plant.datePlanted) || "Not specified"}
               </Text>
             </View>
             <View className="h-px bg-gray-100 mb-3" />
             <View className="flex-row justify-between">
               <Text className="text-gray-500">Status</Text>
               <Text className="text-gray-800 font-medium capitalize">
-                {plant.status || "Healthy"}
+                {plant.status || "Not specified"}
               </Text>
             </View>
           </View>
@@ -208,7 +206,7 @@ export default function PlantDetails() {
             />
           </View>
         </View>
-        <View>
+        <View className="mb-6">
           <Text className="text-xl font-bold text-gray-800 mb-4">
             Controller
           </Text>
@@ -216,8 +214,10 @@ export default function PlantDetails() {
             <ControllerCard
               title="Ventilation Fan"
               icon="Fan"
-              initiallyOn
-              statusOnText="Running"
+              value={controller?.[0]?.fan}
+              onToggle={() =>
+                handleToggleController(controller?.[0]?.fan, "fan")
+              }
               colorScheme={{
                 iconBgClass: "bg-green-100",
                 iconColor: "#059669",
@@ -229,8 +229,10 @@ export default function PlantDetails() {
             <ControllerCard
               title="Grow Light"
               icon="Lightbulb"
-              initiallyOn
-              statusOnText="On"
+              value={controller?.[0]?.light}
+              onToggle={() =>
+                handleToggleController(controller?.[0]?.light, "light")
+              }
               colorScheme={{
                 iconBgClass: "bg-yellow-100",
                 iconColor: "#f59e0b",
@@ -242,8 +244,10 @@ export default function PlantDetails() {
             <ControllerCard
               title="Sprinkler"
               icon="Droplet"
-              initiallyOn={false}
-              statusOnText="Active"
+              value={controller?.[0]?.sprinkler}
+              onToggle={() =>
+                handleToggleController(controller?.[0]?.sprinkler, "sprinkler")
+              }
               colorScheme={{
                 iconBgClass: "bg-blue-100",
                 iconColor: "#60a5fa",
@@ -277,6 +281,7 @@ export default function PlantDetails() {
             )}
           </View>
         </View>
+        <Button label="Analyze Plant" onPress={() => {}} />
       </ScrollView>
     </MainLayout>
   );

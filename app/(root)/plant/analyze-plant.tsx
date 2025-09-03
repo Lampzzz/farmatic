@@ -1,3 +1,4 @@
+import { BaseCard } from "@/components/base-card";
 import { Header } from "@/components/header";
 import { MainLayout } from "@/components/layout/main-layout";
 import { ScreenContainer } from "@/components/layout/screen-container";
@@ -68,8 +69,9 @@ const AnalyzePlant = () => {
             resizeMode="cover"
           />
         </View>
-        <Text>{result.description}</Text>
-        <Text>{result.healthStatus}</Text>
+        <BaseCard styles="mb-6">
+          <Text className="text-gray text-lg">{result.description}</Text>
+        </BaseCard>
       </ScreenContainer>
     </MainLayout>
   );

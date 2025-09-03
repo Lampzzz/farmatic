@@ -1,6 +1,5 @@
 import EmptyGreenhousePlant from "@/components/empty-state/empty-greenhouse-plant";
 import { Header } from "@/components/header";
-import { Icon } from "@/components/icon";
 import { MainLayout } from "@/components/layout/main-layout";
 import { ScreenContainer } from "@/components/layout/screen-container";
 import { Loader } from "@/components/loader";
@@ -9,7 +8,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { useRealTimeFetch } from "@/hooks/use-real-time-fetch";
 import { router } from "expo-router";
 import { orderBy, where } from "firebase/firestore";
-import { FlatList, Text, TouchableOpacity, View } from "react-native";
+import { FlatList, Text, View } from "react-native";
 
 export default function HomeScreen() {
   const { user } = useAuth();
@@ -23,16 +22,21 @@ export default function HomeScreen() {
 
   return (
     <MainLayout>
-      <Header title="Farmatic" description="Greenhouse Dashboard"></Header>
+      <Header
+        title="Farmatic"
+        description="Greenhouse Dashboard"
+        rightIcon="Plus"
+        onRightIconPress={() => router.push("/plant/select-plant")}
+      />
       <ScreenContainer>
         <View className="mb-6 flex-row items-center justify-between">
           <Text className="text-2xl font-bold">Greenhouse Plants</Text>
-          <TouchableOpacity
+          {/* <TouchableOpacity
             onPress={() => router.push("/plant/select-plant")}
             className="bg-primary rounded-full p-2 w-10 h-10 items-center justify-center"
           >
             <Icon name="Plus" size={20} color="white" />
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
 
         {loading ? (
@@ -53,6 +57,7 @@ export default function HomeScreen() {
               <PlantCard
                 image={item.imageUrl}
                 name={item.name}
+                zoneNumber={item.zoneNumber}
                 onPress={() =>
                   router.push({
                     pathname: "/plant/greenhouse/[id]",

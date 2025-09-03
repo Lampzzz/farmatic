@@ -73,8 +73,8 @@ export default function LibraryScreen() {
           renderItem={({ item }) => (
             <PlantCard
               image={item.default_image?.thumbnail}
-              name={item.common_name}
-              onPress={() => router.push(`/plant/library/${item.id}`)}
+              name={item.scientific_name}
+              onPress={() => router.push(`/plant/plant-library/${item.id}`)}
             />
           )}
           onEndReached={handleLoadMore}
