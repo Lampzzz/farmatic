@@ -256,14 +256,19 @@ export async function analyzePlantImage(
   }
 }
 
-export const togglePlantBookmark = async (userId: string, plantId: string) => {
+export const togglePlantBookmark = async (
+  userId: string,
+  plantId: string,
+  plantName: string,
+  plantImageUrl: string
+) => {
   try {
     const bookmarksRef = collection(db, "plantBookmarks");
 
     const q = query(
       bookmarksRef,
       where("userId", "==", userId),
-      where("plantId", "==", plantId)
+      where("plant.id", "==", plantId)
     );
 
     const snapshot = await getDocs(q);
@@ -274,8 +279,12 @@ export const togglePlantBookmark = async (userId: string, plantId: string) => {
       });
     } else {
       await addDoc(bookmarksRef, {
+        plant: {
+          id: plantId,
+          name: plantName,
+          imageUrl: plantImageUrl,
+        },
         userId,
-        plantId,
         createdAt: new Date(),
       });
     }

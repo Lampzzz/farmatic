@@ -12,7 +12,7 @@ import { getPlantDetails } from "@/services/perenual";
 import clsx from "clsx";
 import { useLocalSearchParams } from "expo-router";
 import { where } from "firebase/firestore";
-import { Image, ScrollView, Text, View } from "react-native";
+import { Image, ScrollView, Text, ToastAndroid, View } from "react-native";
 
 export default function LibraryPlant() {
   const { id } = useLocalSearchParams();
@@ -23,8 +23,23 @@ export default function LibraryPlant() {
 
   const { data: bookmarks } = useRealTimeFetch("plantBookmarks", [
     where("userId", "==", userId || ""),
-    where("plantId", "==", id as string),
+    where("plant.id", "==", id as string),
   ]);
+
+  const handleBookmark = () => {
+    togglePlantBookmark(
+      userId,
+      id as string,
+      data?.scientific_name[0] || "",
+      data?.default_image?.thumbnail || ""
+    );
+
+    if (bookmarks?.length > 0) {
+      ToastAndroid.show("Plant Unsaved", ToastAndroid.SHORT);
+    } else {
+      ToastAndroid.show("Plant Saved", ToastAndroid.SHORT);
+    }
+  };
 
   return (
     <MainLayout>
@@ -33,9 +48,7 @@ export default function LibraryPlant() {
         description={data?.scientific_name}
         showBackButton
         rightIcon={bookmarks?.length > 0 ? "BookmarkCheck" : "Bookmark"}
-        onRightIconPress={() => {
-          togglePlantBookmark(userId, id as string);
-        }}
+        onRightIconPress={handleBookmark}
       />
       <ScrollView
         className="flex-1"
