@@ -191,6 +191,48 @@ async function isPlantImage(
   }
 }
 
+export async function analyzePlantHealth(
+  plantName: string,
+  uri: string,
+  mimeType: string,
+  base64?: string
+): Promise<string | null> {
+  try {
+    let base64Data: string | undefined = base64;
+
+    if (!base64Data && uri) {
+      base64Data = await FileSystem.readAsStringAsync(uri, {
+        encoding: FileSystem.EncodingType.Base64,
+      });
+    }
+
+    const isPlant = await isPlantImage(base64Data || "", mimeType);
+
+    if (!isPlant) return null;
+
+    const prompt = `
+      You are a plant expert.
+      Analyze the provided photo of a ${plantName}.
+      Respond ONLY with plain text.
+      Write a clear description of the plant's current condition
+      in 3-5 sentences.
+      Avoid JSON, bullet points, or extra formatting.
+    `;
+
+    const resultAI = await model.generateContent([
+      { text: prompt },
+      { inlineData: { data: base64Data || "", mimeType } },
+    ]);
+
+    const text = resultAI.response.text().trim();
+
+    return text;
+  } catch (err) {
+    console.error("AI Error:", err);
+    return "Failed to analyze the plant's condition.";
+  }
+}
+
 export async function analyzePlantImage(
   uri: string,
   mimeType: string,

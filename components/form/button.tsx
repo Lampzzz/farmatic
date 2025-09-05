@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import { ActivityIndicator, Pressable, Text } from "react-native";
+import { ActivityIndicator, Text, TouchableOpacity } from "react-native";
 
 export function Button({
   onPress,
@@ -27,7 +27,8 @@ export function Button({
   const disabledClasses = isLoading ? "opacity-50" : "";
 
   return (
-    <Pressable
+    <TouchableOpacity
+      activeOpacity={0.8}
       onPress={onPress}
       disabled={isLoading}
       style={{ height: 52 }}
@@ -49,6 +50,6 @@ export function Button({
           {label}
         </Text>
       )}
-    </Pressable>
+    </TouchableOpacity>
   );
 }

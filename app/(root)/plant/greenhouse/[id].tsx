@@ -8,7 +8,8 @@ import { useAuth } from "@/hooks/use-auth";
 import { usePlantById } from "@/hooks/use-plants";
 import { useRealTimeFetch } from "@/hooks/use-real-time-fetch";
 import { toggleController } from "@/services/firebase/controller";
-import { deletePlant } from "@/services/firebase/plant";
+import { analyzePlantHealth, deletePlant } from "@/services/firebase/plant";
+import { getImageType, pickImage, takePhoto } from "@/utils/image";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { limit, where } from "firebase/firestore";
 import { useState } from "react";
@@ -133,6 +134,44 @@ export default function PlantDetails() {
     toggleController(controller?.[0]?.id, value ? false : true, name);
   };
 
+  const handleSelectImage = async (mode: "camera" | "gallery") => {
+    try {
+      const image = mode === "camera" ? await takePhoto() : await pickImage();
+
+      if (!image) return;
+
+      const type = getImageType(image.uri);
+
+      const result = await analyzePlantHealth(plant.name, image.uri, type);
+
+      if (result) {
+        setAiInfo(result);
+      }
+    } catch (err) {
+      console.error(err);
+      Alert.alert("Error", "Could not analyze the image.");
+    }
+  };
+
+  const analyzePlant = async () => {
+    return Alert.alert(
+      "Upload Plant Photo",
+      "Select a source to analyze your plant",
+      [
+        {
+          text: "Gallery",
+          style: "cancel",
+          onPress: async () => await handleSelectImage("gallery"),
+        },
+        {
+          text: "Camera",
+          style: "cancel",
+          onPress: async () => await handleSelectImage("camera"),
+        },
+      ]
+    );
+  };
+
   return (
     <MainLayout>
       <Header
@@ -227,7 +266,7 @@ export default function PlantDetails() {
               }}
             />
             <ControllerCard
-              title="Grow Light"
+              title="Light"
               icon="Lightbulb"
               value={controller?.[0]?.light}
               onToggle={() =>
@@ -267,21 +306,15 @@ export default function PlantDetails() {
             {aiLoading ? (
               <Text className="text-gray-500">Fetching AI info...</Text>
             ) : aiInfo ? (
-              <>
-                <Text className="text-lg font-semibold text-gray-900">
-                  {aiInfo.name}
-                </Text>
-                <View className="h-20 bg-gray-100 mb-3" />
-                <Text className="mt-2 text-gray-700 leading-relaxed">
-                  {aiInfo.description}
-                </Text>
-              </>
+              <Text className="mt-2 text-gray-700 leading-relaxed">
+                {aiInfo}
+              </Text>
             ) : (
               <Text className="text-gray-500">No AI info available.</Text>
             )}
           </View>
         </View>
-        <Button label="Analyze Plant" onPress={() => {}} />
+        <Button label="Analyze Plant" onPress={analyzePlant} />
       </ScrollView>
     </MainLayout>
   );
