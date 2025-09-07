@@ -3,13 +3,14 @@ import { Header } from "@/components/header";
 import { MainLayout } from "@/components/layout/main-layout";
 import { Loader } from "@/components/loader";
 import { PlantCard } from "@/components/plant/plant-card";
+import { analysisHistory } from "@/constants";
 import { useAuth } from "@/hooks/use-auth";
 import { useRealTimeFetch } from "@/hooks/use-real-time-fetch";
 import { router } from "expo-router";
 import { where } from "firebase/firestore";
 import { Bookmark, Clock } from "lucide-react-native";
 import { useState } from "react";
-import { FlatList, Text, TouchableOpacity, View } from "react-native";
+import { FlatList, Image, Text, TouchableOpacity, View } from "react-native";
 
 export default function AnalysisScreen() {
   const [activeTab, setActiveTab] = useState<"saved" | "history">("saved");
@@ -57,10 +58,12 @@ export default function AnalysisScreen() {
 
   const renderAnalysisHistory = () => (
     <View className="flex-1">
-      <Text className="text-xl font-bold  mb-4">Your Analysis History (0)</Text>
+      <Text className="text-xl font-bold  mb-4">
+        Your Analysis History ({analysisHistory?.length})
+      </Text>
       {loading ? (
         <Loader />
-      ) : savedPlants?.length === 0 ? (
+      ) : analysisHistory?.length === 0 ? (
         <EmptyState
           title="No Analysis History Yet"
           description="Your analysis history will appear here. Start by analyzing your first plant."
@@ -69,20 +72,27 @@ export default function AnalysisScreen() {
         />
       ) : (
         <FlatList
-          data={savedPlants}
+          data={analysisHistory}
           keyExtractor={(item) =>
             item.id?.toString() || `item-${Math.random()}`
           }
+          key={analysisHistory.length}
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{ gap: 12 }}
-          columnWrapperStyle={{ gap: 12 }}
-          numColumns={2}
+          // columnWrapperStyle={{ gap: 12 }}
+          // numColumns={1}
           renderItem={({ item }) => (
-            <PlantCard
-              image={item.plant.imageUrl}
-              name={item.plant.name}
-              onPress={() => router.push(`/plant/plant-library/${item.id}`)}
-            />
+            <View className="flex-1 bg-white rounded-2xl p-4 shadow-md flex-row items-center gap-4">
+              <Image
+                source={{ uri: item.image }}
+                className="w-24 h-24 rounded-2xl"
+              />
+              <View className="flex-1">
+                <Text className="font-semibold">{item.name}</Text>
+                <Text className="text-gray text-sm">{item.healthStatus}</Text>
+                <Text className="text-gray text-sm">{item.createdAt}</Text>
+              </View>
+            </View>
           )}
         />
       )}

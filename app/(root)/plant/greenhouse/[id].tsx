@@ -214,8 +214,9 @@ export default function PlantDetails() {
             <View className="h-px bg-gray-100 mb-3" />
             <View className="flex-row justify-between">
               <Text className="text-gray-500">Status</Text>
-              <Text className="text-gray-800 font-medium capitalize">
-                {plant.status || "Not specified"}
+              <Text className="text-gray-800 font-medium ">
+                {/* {plant.status || "Not specified"} */}
+                Not specified
               </Text>
             </View>
           </View>

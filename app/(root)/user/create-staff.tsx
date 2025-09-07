@@ -14,10 +14,10 @@ export default function AddStaffScreen() {
     formState: { errors, isSubmitting },
   } = useForm({
     defaultValues: {
-      name: "Gmail Dummy",
-      email: "gdumy7@gmail.com",
-      phoneNumber: "09123456789",
-      password: "test123",
+      name: "",
+      email: "",
+      phoneNumber: "",
+      password: "",
     },
   });
 
@@ -41,7 +41,7 @@ export default function AddStaffScreen() {
       <Header
         title="Add New Staff"
         description="Add a new staff member to your team"
-        isHasBack
+        showBackButton
       />
 
       <ScrollView

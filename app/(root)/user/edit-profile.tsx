@@ -84,7 +84,7 @@ export default function EditProfileScreen() {
             : "Edit Profile"
         }
         description="Update your personal information"
-        isHasBack
+        showBackButton
       />
 
       <ScrollView
@@ -148,7 +148,7 @@ export default function EditProfileScreen() {
           render={({ field: { onChange, value } }) => (
             <FormInput
               label="Phone Number"
-              placeholder="Enter phone number"
+              placeholder="Enter phone number "
               value={value}
               onChangeText={onChange}
               iconName="Phone"
