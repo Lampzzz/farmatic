@@ -5,7 +5,8 @@ import { Icon } from "@/components/icon";
 import { MainLayout } from "@/components/layout/main-layout";
 import { useAuth } from "@/hooks/use-auth";
 import { addPlant } from "@/services/firebase/plant";
-import { pickImage, takePhoto } from "@/utils/image";
+import { getImageType, pickImage, takePhoto } from "@/utils/image";
+import dayjs from "dayjs";
 import { router, useLocalSearchParams } from "expo-router";
 import { Controller, useForm } from "react-hook-form";
 import {
@@ -31,12 +32,12 @@ export default function AddPlantScreen() {
     handleSubmit,
     formState: { errors, isSubmitting },
     setValue,
-    watch,
   } = useForm({
     defaultValues: {
       name: hasSelectedPlant ? (params.selectedPlantName as string) : "",
       imageUrl: hasSelectedPlant ? (params.selectedPlantImage as string) : "",
-      datePlanted: "",
+      imageType: "",
+      datePlanted: dayjs().format("MMMM DD, YYYY"),
       zoneNumber: 1,
     },
   });
@@ -44,7 +45,10 @@ export default function AddPlantScreen() {
   const handleImagePicker = async () => {
     try {
       const result = await pickImage();
+
       if (result) {
+        const type = getImageType(result.uri);
+        setValue("imageType", type);
         setValue("imageUrl", result.uri);
       }
     } catch (error: any) {
@@ -56,6 +60,8 @@ export default function AddPlantScreen() {
     try {
       const result = await takePhoto();
       if (result) {
+        const type = getImageType(result.uri);
+        setValue("imageType", type);
         setValue("imageUrl", result.uri);
       }
     } catch (error: any) {
@@ -66,6 +72,7 @@ export default function AddPlantScreen() {
   const onSubmit = async (data: {
     name: string;
     imageUrl: string;
+    imageType: string;
     datePlanted: string;
     zoneNumber: number;
   }) => {
@@ -175,21 +182,6 @@ export default function AddPlantScreen() {
         />
         <Controller
           control={control}
-          name="datePlanted"
-          render={({ field: { onChange, value } }) => (
-            <FormInput
-              label="Date Planted"
-              placeholder="MM-DD-YYYY"
-              value={value}
-              onChangeText={onChange}
-              iconName="Calendar"
-              styles="mb-6"
-              error={errors.datePlanted?.message}
-            />
-          )}
-        />
-        <Controller
-          control={control}
           name="zoneNumber"
           render={({ field: { onChange, value } }) => (
             <View className="bg-white mb-6">
@@ -217,6 +209,21 @@ export default function AddPlantScreen() {
                 </TouchableOpacity>
               </View>
             </View>
+          )}
+        />
+        <Controller
+          control={control}
+          name="datePlanted"
+          render={({ field: { onChange, value } }) => (
+            <FormInput
+              label="Date Planted"
+              placeholder="MM-DD-YYYY"
+              value={value}
+              onChangeText={onChange}
+              iconName="Calendar"
+              styles="mb-6"
+              error={errors.datePlanted?.message}
+            />
           )}
         />
         <Button

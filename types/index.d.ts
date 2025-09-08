@@ -24,6 +24,26 @@ interface Plant {
   createdAt?: any;
   userId?: string;
   cloudinaryPublicId?: string;
+  analysis?: {
+    healthStatus?: string;
+    thresholds?: {
+      fan?: {
+        temperature?: string;
+        humidity?: string;
+      };
+      light?: {
+        intensity?: string;
+      };
+      sprinkler?: {
+        soil_moisture?: string;
+      };
+    };
+    estimatedOutcome?: {
+      status?: string;
+      timeframe?: string;
+      notes?: string;
+    };
+  };
 }
 
 interface PlantLibrary {

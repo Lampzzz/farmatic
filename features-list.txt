@@ -3,5 +3,14 @@ Farmatic
 Features Todo
 
 - analysis history
-- search library add scientific name
-- greenhouse plant button for updating current plant status
+- user activity log
+- automatic controller
+- date planted 
+
+Validation Todo
+- check if the name and the plant image is the same when adding the greenhouse plant
+
+
+Refactor
+- change ai number thresholds recommendation into string
+- features folder

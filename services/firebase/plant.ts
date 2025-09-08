@@ -15,10 +15,15 @@ import { uploadToCloudinary } from "../cloudinary";
 import { db, model } from "./config";
 import { createController } from "./controller";
 
-export const addPlant = async (
-  data: Pick<Plant, "name" | "imageUrl" | "datePlanted" | "zoneNumber">,
-  userId: string
-) => {
+interface PlantData {
+  name: string;
+  imageUrl: string;
+  datePlanted: string;
+  zoneNumber: number;
+  imageType: string;
+}
+
+export const addPlant = async (data: PlantData, userId: string) => {
   try {
     let imageUrl = null;
 
@@ -28,14 +33,21 @@ export const addPlant = async (
 
     const ref = collection(db, "plants");
 
+    await createController(userId, data.zoneNumber);
+
+    const analysis = await analyzePlantHealth(
+      data.name,
+      data.imageUrl,
+      data.imageType
+    );
+
     await addDoc(ref, {
       ...data,
       imageUrl,
       userId,
       createdAt: new Date(),
+      analysis,
     });
-
-    await createController(userId, data.zoneNumber);
 
     return { isSuccess: true, message: "Plant added successfully" };
   } catch (error: any) {
@@ -196,7 +208,7 @@ export async function analyzePlantHealth(
   uri: string,
   mimeType: string,
   base64?: string
-): Promise<string | null> {
+) {
   try {
     let base64Data: string | undefined = base64;
 
@@ -213,10 +225,35 @@ export async function analyzePlantHealth(
     const prompt = `
       You are a plant expert.
       Analyze the provided photo of a ${plantName}.
-      Respond ONLY with plain text.
-      Write a clear description of the plant's current condition
-      in 3-5 sentences.
-      Avoid JSON, bullet points, or extra formatting.
+      
+      The result should be in the following format:
+      {
+        "common_name": string,
+        "scientific_name": string,
+        "description": string (2-3 sentences),
+        "healthStatus": string (healthy, sick, growing, needs attention, dead, harvestable),
+        "thresholds": {
+          "fan": {
+            "humidity": string (percentage, e.g. 60),
+            "temperature": string (°C),
+          },
+          "light": {
+            "intensity": string (low, medium, high)
+          },
+          "sprinkler": {
+            "soil_moisture": string (percentage, e.g. 45)
+          }
+        }
+        "estimatedOutcome": {
+          "status": "edible" | "marketable" | "needs care" | "remove",
+          "timeframe": "string (if applicable, e.g. '1-2 weeks until harvest')",
+          "notes": "string (short explanation for the decision)"
+        }
+      }
+
+      Rules:
+      - Respond ONLY with valid JSON.
+      - Do not include extra commentary or text outside of the JSON.
     `;
 
     const resultAI = await model.generateContent([
@@ -224,12 +261,42 @@ export async function analyzePlantHealth(
       { inlineData: { data: base64Data || "", mimeType } },
     ]);
 
-    const text = resultAI.response.text().trim();
+    let text = resultAI.response.text().trim();
+    text = text.replace(/```json|```/g, "").trim();
 
-    return text;
+    let data;
+    try {
+      data = JSON.parse(text);
+    } catch (err) {
+      console.error("Failed to parse AI response:", err, text);
+      data = {
+        healthStatus: "Unknown",
+        description: "Could not analyze the plant properly.",
+        controller_recommendations: {
+          fan: { humidity: 0, temperature: 0 },
+          light: { intensity: "Low" },
+          sprinkler: { soil_moisture: 0 },
+        },
+        estimatedOutcome: {
+          status: "Unknown",
+          timeframe: "Unknown",
+          notes: "Could not analyze the plant properly.",
+        },
+      };
+    }
+
+    return data;
   } catch (err) {
     console.error("AI Error:", err);
-    return "Failed to analyze the plant's condition.";
+    return {
+      healthStatus: "Unknown",
+      description: "Could not analyze the plant properly.",
+      controller_recommendations: {
+        fan: { humidity: 0, temperature: 0 },
+        light: { intensity: "Low" },
+        sprinkler: { soil_moisture: 0 },
+      },
+    };
   }
 }
 
@@ -263,7 +330,7 @@ export async function analyzePlantImage(
       Respond ONLY with valid JSON.
       Must include: "scientific_name", "common_name", "description", "healthStatus".
       Keep description 1-2 sentences.
-      Health status must be one of: Healthy, Sick, Growing, Needs Attention
+      Health status must be one of: healthy, sick, growing, needs attention
     `;
 
     const resultAI = await model.generateContent([

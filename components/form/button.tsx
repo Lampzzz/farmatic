@@ -7,18 +7,19 @@ export function Button({
   isLoading,
   variant = "primary",
   styles = "",
-  disabled = false,
   textSize = "text-lg",
+  buttonHeight = 52,
 }: {
   onPress: () => void;
   label: string;
   isLoading?: boolean;
   variant?: "primary" | "outline";
   styles?: string;
-  disabled?: boolean;
   textSize?: string;
+  buttonHeight?: number;
 }) {
   const baseClasses = "rounded-lg items-center justify-center";
+
   const variantClasses =
     variant === "outline"
       ? "border border-primary bg-transparent"
@@ -31,7 +32,7 @@ export function Button({
       activeOpacity={0.8}
       onPress={onPress}
       disabled={isLoading}
-      style={{ height: 52 }}
+      style={{ height: buttonHeight }}
       className={clsx(baseClasses, variantClasses, disabledClasses, styles)}
     >
       {isLoading ? (

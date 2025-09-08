@@ -30,3 +30,16 @@ export const toggleController = async (
     throw new Error(error.message);
   }
 };
+
+export const autoControlController = async (
+  id: string,
+  value: boolean,
+  name: string
+) => {
+  try {
+    const controllerDocRef = doc(db, "controllers", id);
+    await updateDoc(controllerDocRef, { [name]: value });
+  } catch (error: any) {
+    throw new Error(error.message);
+  }
+};

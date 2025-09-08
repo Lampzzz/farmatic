@@ -1,6 +1,6 @@
 import clsx from "clsx";
 import { View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 
 export function MainLayout({
   children,
@@ -12,8 +12,10 @@ export function MainLayout({
   backgroundColor?: string;
 }) {
   return (
-    <SafeAreaView className={clsx("flex-1", backgroundColor)} edges={["top"]}>
-      <View className={clsx("bg-background flex-1", styles)}>{children}</View>
-    </SafeAreaView>
+    <SafeAreaProvider>
+      <SafeAreaView className={clsx("flex-1", backgroundColor)} edges={["top"]}>
+        <View className={clsx("bg-background flex-1", styles)}>{children}</View>
+      </SafeAreaView>
+    </SafeAreaProvider>
   );
 }

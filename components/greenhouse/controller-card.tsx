@@ -1,6 +1,6 @@
 import { icons } from "lucide-react-native";
 import React from "react";
-import { Switch, Text, View } from "react-native";
+import { Text, TouchableOpacity, View } from "react-native";
 import { Icon } from "../icon";
 
 type ColorScheme = {
@@ -34,12 +34,14 @@ export function ControllerCard({
   value = false,
   colorScheme,
   onToggle,
+  onSettings,
 }: {
   title: string;
   icon: keyof typeof icons;
   value?: boolean;
   colorScheme: ColorScheme;
   onToggle?: () => void;
+  onSettings?: () => void;
 }) {
   const onTrackColor = hexToRgba(colorScheme.switchOnColor, 0.25);
 
@@ -55,23 +57,26 @@ export function ControllerCard({
           <Text className="ml-3 font-semibold text-gray-800">{title}</Text>
         </View>
 
-        <Switch
-          value={value}
-          onValueChange={onToggle}
-          trackColor={{ false: "#e5e7eb", true: onTrackColor }}
-          thumbColor={value ? colorScheme.switchOnColor : "#d1d5db"}
-        />
+        <View className="flex-row items-center">
+          {/* <Switch
+            value={value}
+            onValueChange={onToggle}
+            trackColor={{ false: "#e5e7eb", true: onTrackColor }}
+            thumbColor={value ? colorScheme.switchOnColor : "#d1d5db"}
+          /> */}
+          <TouchableOpacity onPress={onSettings}>
+            <Icon name="Settings" size={20} color="#6B7280" />
+          </TouchableOpacity>
+        </View>
       </View>
 
-      {/* {isOn && (
-        <View
-          className={`mt-4 rounded-xl px-4 py-3 ${colorScheme.statusBgClass}`}
-        >
-          <Text
-            className={`font-medium ${colorScheme.statusTextClass}`}
-          >{`Status: ${statusOnText}`}</Text>
-        </View>
-      )} */}
+      <View
+        className={`mt-4 rounded-xl px-4 py-3 ${colorScheme.statusBgClass}`}
+      >
+        <Text
+          className={`font-medium ${colorScheme.statusTextClass}`}
+        >{`Status: ${value ? "Running" : "Off"}`}</Text>
+      </View>
     </View>
   );
 }
