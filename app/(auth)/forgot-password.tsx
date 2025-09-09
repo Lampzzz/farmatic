@@ -22,6 +22,7 @@ export const ForgotPassword = () => {
   const onSubmit = async (data: { email: string }) => {
     try {
       const { isSuccess } = await forgotPassword(data.email);
+
       if (!isSuccess) {
         Alert.alert("Error", "Failed to send password reset email");
         return;

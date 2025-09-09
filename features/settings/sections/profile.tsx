@@ -28,7 +28,9 @@ export function ProfileSection() {
       </Text>
       <TouchableOpacity
         className="flex-row items-center justify-center gap-2 mt-4"
-        onPress={() => router.push(`/user/edit-profile?userId=${user?.id}`)}
+        onPress={() =>
+          router.push(`/user/edit-user-profile?userId=${user?.id}`)
+        }
       >
         <Icon name="Pencil" size={12} color="#16A34A" />
         <Text className="text-primary underline">Edit Profile</Text>

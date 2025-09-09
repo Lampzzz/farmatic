@@ -1,4 +1,3 @@
-import React from "react";
 import { ScrollView, ScrollViewProps, View, ViewProps } from "react-native";
 
 type ScreenContainerProps = {
@@ -14,8 +13,10 @@ export const ScreenContainer: React.FC<ScreenContainerProps> = ({
   if (scrollable) {
     return (
       <ScrollView
-        className="p-6 flex-1"
+        className="flex-1"
+        contentContainerStyle={{ padding: 24 }}
         showsVerticalScrollIndicator={false}
+        overScrollMode="never"
         {...(props as ScrollViewProps)}
       >
         {children}

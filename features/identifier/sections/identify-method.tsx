@@ -3,15 +3,12 @@ import { Icon } from "@/components/icon";
 import React from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 
-type IdentifyMethodProps = {
+interface Props {
   onTakePicture: () => void;
   onUploadImage: () => void;
-};
+}
 
-export const IdentifyMethod = ({
-  onTakePicture,
-  onUploadImage,
-}: IdentifyMethodProps) => {
+export const IdentifyMethod = ({ onTakePicture, onUploadImage }: Props) => {
   return (
     <BaseCard styles="mb-6">
       <Text className="text-center text-primary text-xl font-bold mb-6">

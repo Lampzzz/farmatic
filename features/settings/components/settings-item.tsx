@@ -3,7 +3,7 @@ import { Icon } from "@/components/icon";
 import { icons } from "lucide-react-native";
 import { Text, TouchableOpacity, View } from "react-native";
 
-interface SettingsItemProps {
+interface Props {
   icon: keyof typeof icons;
   iconColor?: string;
   title: string;
@@ -19,7 +19,7 @@ export const SettingsItem = ({
   titleColor,
   onPress,
   showBorder = true,
-}: SettingsItemProps) => {
+}: Props) => {
   return (
     <>
       <TouchableOpacity onPress={onPress}>

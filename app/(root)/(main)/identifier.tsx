@@ -1,5 +1,7 @@
-import IdentifierScreen from "@/features/identifier";
+import { IdentifierScreen } from "@/features/identifier";
 
-export default function Identifier() {
+const Identifier = () => {
   return <IdentifierScreen />;
-}
+};
+
+export default Identifier;

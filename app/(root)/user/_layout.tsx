@@ -4,13 +4,13 @@ export default function StaffLayout() {
   return (
     <Stack>
       <Stack.Screen
-        name="edit-profile"
+        name="edit-user-profile"
         options={{
           headerShown: false,
         }}
       />
       <Stack.Screen
-        name="create-staff"
+        name="add-staff-member"
         options={{
           headerShown: false,
         }}

@@ -9,6 +9,7 @@ export function Button({
   styles = "",
   textSize = "text-lg",
   buttonHeight = 52,
+  disabled,
 }: {
   onPress: () => void;
   label: string;
@@ -17,6 +18,7 @@ export function Button({
   styles?: string;
   textSize?: string;
   buttonHeight?: number;
+  disabled?: boolean;
 }) {
   const baseClasses = "rounded-lg items-center justify-center";
 
@@ -31,7 +33,7 @@ export function Button({
     <TouchableOpacity
       activeOpacity={0.8}
       onPress={onPress}
-      disabled={isLoading}
+      disabled={isLoading || disabled}
       style={{ height: buttonHeight }}
       className={clsx(baseClasses, variantClasses, disabledClasses, styles)}
     >

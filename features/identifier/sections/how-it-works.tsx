@@ -2,7 +2,7 @@ import { BaseCard } from "@/components/base-card";
 import { Text, View } from "react-native";
 import { InstructionStep } from "../components/instruction-step";
 
-export function HowItWorks() {
+export const HowItWorks = () => {
   return (
     <BaseCard styles="mb-6">
       <Text className="text-primary text-xl font-bold mb-4">How It Works</Text>
@@ -23,4 +23,4 @@ export function HowItWorks() {
       </View>
     </BaseCard>
   );
-}
+};

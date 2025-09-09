@@ -2,7 +2,7 @@ import React from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 import { Icon } from "./icon";
 
-export function EmptyState({
+export const EmptyState = ({
   title,
   description,
   buttonText,
@@ -10,9 +10,9 @@ export function EmptyState({
 }: {
   title: string;
   description: string;
-  buttonText: string;
-  onPress: () => void;
-}) {
+  buttonText?: string;
+  onPress?: () => void;
+}) => {
   return (
     <View className="flex-1 items-center justify-center px-6">
       <Icon name="Sprout" size={64} color="#16A34A" />
@@ -30,4 +30,4 @@ export function EmptyState({
       </TouchableOpacity>
     </View>
   );
-}
+};

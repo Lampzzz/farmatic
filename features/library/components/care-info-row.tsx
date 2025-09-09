@@ -3,19 +3,14 @@ import clsx from "clsx";
 import { icons } from "lucide-react-native";
 import { Text, View } from "react-native";
 
-type CareInfoRowProps = {
+interface Props {
   icon: keyof typeof icons;
   title: string;
   description: string;
   styles?: string;
-};
+}
 
-export function CareInfoRow({
-  icon,
-  title,
-  description,
-  styles,
-}: CareInfoRowProps) {
+export const CareInfoRow = ({ icon, title, description, styles }: Props) => {
   return (
     <View className={clsx("flex-row gap-3", styles)}>
       <View
@@ -33,4 +28,4 @@ export function CareInfoRow({
       </View>
     </View>
   );
-}
+};

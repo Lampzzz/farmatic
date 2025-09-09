@@ -27,7 +27,7 @@ export function StaffManagementSection({
       <View className="flex-row items-center justify-between">
         <Text className="text-xl font-bold">Staff Management</Text>
         <TouchableOpacity
-          onPress={() => router.push("/user/create-staff")}
+          onPress={() => router.push("/user/add-staff-member")}
           className="bg-primary rounded-full p-2 w-8 h-8 items-center justify-center"
         >
           <Icon name="Plus" size={16} color="white" />
@@ -47,7 +47,9 @@ export function StaffManagementSection({
         staffMembers.map((staff, index) => (
           <TouchableOpacity
             key={staff.id}
-            onPress={() => router.push(`/user/edit-profile?userId=${staff.id}`)}
+            onPress={() =>
+              router.push(`/user/edit-user-profile?userId=${staff.id}`)
+            }
           >
             <View
               className={clsx(

@@ -4,6 +4,15 @@ import clsx from "clsx";
 import { icons } from "lucide-react-native";
 import { Text, View } from "react-native";
 
+interface Props {
+  icon: keyof typeof icons;
+  iconColor?: string;
+  label: string;
+  value: string;
+  styles?: string;
+  showDivider?: boolean;
+}
+
 export const PlantProfileRow = ({
   icon,
   iconColor = "#16A34A",
@@ -11,14 +20,7 @@ export const PlantProfileRow = ({
   value,
   styles = "",
   showDivider = true,
-}: {
-  icon: keyof typeof icons;
-  iconColor?: string;
-  label: string;
-  value: string;
-  styles?: string;
-  showDivider?: boolean;
-}) => {
+}: Props) => {
   return (
     <>
       <View className={clsx("flex-row items-center justify-between", styles)}>
