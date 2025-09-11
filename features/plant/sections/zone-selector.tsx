@@ -9,7 +9,7 @@ export const ZoneSelector = ({ onChange, value }: Props) => {
   return (
     <View className="bg-white mb-6">
       <Text className="font-medium mb-2">Zone</Text>
-      <View className="flex-row gap-3">
+      <View className="flex-row gap-4">
         {[1, 2].map((zone) => (
           <TouchableOpacity
             key={zone}

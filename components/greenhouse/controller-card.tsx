@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import { icons } from "lucide-react-native";
 import React from "react";
 import { Text, TouchableOpacity, View } from "react-native";
@@ -6,7 +7,7 @@ import { Icon } from "../icon";
 type ColorScheme = {
   iconBgClass: string;
   iconColor: string;
-  switchOnColor: string; // hex
+  switchOnColor: string;
   statusBgClass: string;
   statusTextClass: string;
 };
@@ -50,7 +51,10 @@ export function ControllerCard({
       <View className="flex-row items-center justify-between">
         <View className="flex-row items-center">
           <View
-            className={`w-10 h-10 rounded-full items-center justify-center ${colorScheme.iconBgClass}`}
+            className={clsx(
+              colorScheme.iconBgClass,
+              "w-10 h-10 rounded-full  items-center justify-center"
+            )}
           >
             <Icon name={icon} size={20} color={colorScheme.iconColor} />
           </View>
@@ -71,10 +75,10 @@ export function ControllerCard({
       </View>
 
       <View
-        className={`mt-4 rounded-xl px-4 py-3 ${colorScheme.statusBgClass}`}
+        className={clsx(colorScheme.statusBgClass, "mt-4 rounded-xl px-4 py-3")}
       >
         <Text
-          className={`font-medium ${colorScheme.statusTextClass}`}
+          className={clsx(colorScheme.statusTextClass, "font-medium")}
         >{`Status: ${value ? "Running" : "Off"}`}</Text>
       </View>
     </View>

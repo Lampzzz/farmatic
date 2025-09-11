@@ -1,46 +1,38 @@
 import { Button } from "@/components/form/button";
 import { Header } from "@/components/header";
+import { Image } from "@/components/image";
 import { MainLayout } from "@/components/layout/main-layout";
 import { ScreenContainer } from "@/components/layout/screen-container";
+import { Loader } from "@/components/loader";
 import { useAuth } from "@/hooks/use-auth";
 import { useFetch } from "@/hooks/use-fetch";
 import { useRealTimeFetch } from "@/hooks/use-real-time-fetch";
+import { analyzePlant } from "@/services/firebase/ai";
 import { toggleController } from "@/services/firebase/controller";
-import {
-  analyzePlantHealth,
-  deletePlant,
-  getPlantById,
-} from "@/services/firebase/plant";
+import { deletePlant, getPlant } from "@/services/firebase/firestore/plant";
 import { getImageType, pickImage, takePhoto } from "@/utils/image";
 import { useRouter } from "expo-router";
 import { limit, where } from "firebase/firestore";
 import { useState } from "react";
-import { Alert, Image, View } from "react-native";
+import { Alert } from "react-native";
 import { Controller, ControllerModal } from "../sections/controller";
 import { EnvironmentalStatus } from "../sections/environmental-status";
 import { PlantInfoSection } from "../sections/plant-info";
 
 export const GreenhousePlantDetailsScreen = ({ id }: { id: string }) => {
   const router = useRouter();
-  const { userId } = useAuth();
+  const { adminId, user } = useAuth();
+  const { data: plant, loading } = useFetch(() => getPlant(id as string), []);
   const [isModalVisible, setIsModalVisible] = useState(false);
 
-  const { data: plant } = useFetch(() => getPlantById(id as string), []);
-
-  const [selectedController, setSelectedController] = useState<
-    "fan" | "light" | "sprinkler" | null
-  >(null);
-
-  const openModal = (name: "fan" | "light" | "sprinkler" | null) => {
-    setSelectedController(name);
-    setIsModalVisible(true);
-  };
-
   const { data: controller } = useRealTimeFetch("controllers", [
-    where("userId", "==", userId || ""),
+    where("userId", "==", adminId || ""),
     where("zoneNumber", "==", plant?.zoneNumber || ""),
     limit(1),
   ]);
+
+  if (loading) return <Loader />;
+  if (!plant) return null;
 
   const confirmDelete = () => {
     if (!plant?.id) return;
@@ -79,14 +71,22 @@ export const GreenhousePlantDetailsScreen = ({ id }: { id: string }) => {
       if (!image) return;
 
       const type = getImageType(image.uri);
-      const result = await analyzePlantHealth(plant.name, image.uri, type);
+
+      await analyzePlant({
+        plantId: plant.id as string,
+        analyzerId: user?.id as string,
+        adminId: adminId as string,
+        plantName: plant.name,
+        imageUri: image.uri,
+        imageType: type,
+      });
     } catch (err) {
       console.error(err);
       Alert.alert("Error", "Could not analyze the image.");
     }
   };
 
-  const analyzePlant = async () => {
+  const handlePress = async () => {
     return Alert.alert(
       "Upload Plant Photo",
       "Select a source to analyze your plant",
@@ -105,8 +105,6 @@ export const GreenhousePlantDetailsScreen = ({ id }: { id: string }) => {
     );
   };
 
-  if (!plant) return null;
-
   return (
     <>
       <MainLayout>
@@ -119,14 +117,8 @@ export const GreenhousePlantDetailsScreen = ({ id }: { id: string }) => {
         />
 
         <ScreenContainer scrollable>
-          <View className="relative h-80 rounded-xl overflow-hidden mb-6 shadow-md">
-            <Image
-              source={{ uri: plant.imageUrl }}
-              className="w-full h-full"
-              resizeMode="cover"
-            />
-          </View>
-          <PlantInfoSection plant={plant} />
+          <Image uri={plant?.imageUrl} contentFit="cover" styles="h-80 mb-6" />
+          <PlantInfoSection styles="mb-6" plant={plant} />
           <EnvironmentalStatus
             temp={plant.analysis?.temperature}
             humidity={plant.analysis?.humidity}
@@ -137,7 +129,7 @@ export const GreenhousePlantDetailsScreen = ({ id }: { id: string }) => {
             handleToggleController={handleToggleController}
             openModal={() => {}}
           />
-          <Button label="Analyze Plant" onPress={analyzePlant} />
+          <Button label="Analyze Plant" onPress={handlePress} />
         </ScreenContainer>
       </MainLayout>
 

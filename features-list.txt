@@ -12,5 +12,3 @@ Validation Todo
 
 
 Refactor
-- change ai number thresholds recommendation into string
-- features folder

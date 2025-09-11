@@ -3,7 +3,7 @@ import { Header } from "@/components/header";
 import { MainLayout } from "@/components/layout/main-layout";
 import { ScreenContainer } from "@/components/layout/screen-container";
 import { Loader } from "@/components/loader";
-import { analyzePlantImage } from "@/services/firebase/plant";
+import { analyzePlant } from "@/services/firebase/ai";
 import { getBase64Data } from "@/utils/image";
 import { useEffect, useState } from "react";
 import { Image, Text, View } from "react-native";
@@ -27,7 +27,16 @@ export const PlantAnalysisScreen = ({
       try {
         const base64Data = await getBase64Data(imageUri);
 
-        const result = await analyzePlantImage(imageUri, type, base64Data);
+        const result = await analyzePlant({
+          plantId: null,
+          analyzerId: "",
+          adminId: "",
+          plantName: "",
+          imageUri,
+          imageType: type,
+          base64: base64Data,
+        });
+
         setResult(result);
       } catch (err) {
         console.error(err);

@@ -1,20 +1,24 @@
 import { Button } from "@/components/form/button";
 import { FormInput } from "@/components/form/form-input";
 import { ControllerCard } from "@/components/greenhouse/controller-card";
+import clsx from "clsx";
 import { Modal, Text, View } from "react-native";
 
 interface Props {
   controller: any;
   handleToggleController: (value: boolean, name: string) => void;
   openModal: (name: string) => void;
+  styles?: string;
 }
 
 export const Controller = ({
   controller,
   handleToggleController,
   openModal,
+  styles,
 }: Props) => (
-  <View className="mb-6">
+  <View className={clsx(styles, "mb-6")}>
+    <Text className="text-xl font-bold text-gray-800 mb-4">Controller</Text>
     <ControllerCard
       title="Fan"
       icon="Fan"

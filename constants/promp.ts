@@ -5,25 +5,29 @@ export const ANALYZE_GREENHOUSE_PLANT = (plantName: string) => {
   
   The result should be in the following format:
   {
-    "common_name": string,
-    "scientific_name": string,
+    "commoName": string,
+    "scientificName": string,
     "description": string (2-3 sentences),
     "healthStatus": string (healthy, sick, growing, needs attention, dead, harvestable),
     "thresholds": {
-      "fan": { "humidity": string, "temperature": string },
-      "light": { "intensity": string },
-      "sprinkler": { "soil_moisture": string }
-    },
-    "estimatedOutcome": {
-      "status": "edible" | "marketable" | "needs care" | "remove",
-      "timeframe": string,
-      "notes": string
+      "fan": { 
+        "humidity": string (recommended max humidity percentage as a number, e.g. "60"), 
+        "temperature": string (recommended max temperature in °F, e.g. "78") 
+      },
+      "light": { 
+        "intensity": string (recommended minimum lux level as a number, e.g. "5000") 
+      },
+      "sprinkler": { 
+        "soil_moisture": string (recommended minimum soil moisture percentage, e.g. "30") 
+      }
     }
   }
 
   Rules:
   - Respond ONLY with valid JSON.
-  - Do not include extra commentary or text outside of the JSON.
+  - All threshold values must be numeric values but wrapped as strings, e.g. "78".
+  - Do not return descriptive ranges like "30-60%" or "Bright light". Instead, pick the most recommended numeric value.
+  - Do not include commentary outside the JSON.
 `;
 };
 

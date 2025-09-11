@@ -4,7 +4,7 @@ import { ScreenContainer } from "@/components/layout/screen-container";
 import { useAuth } from "@/hooks/use-auth";
 import { useFetch } from "@/hooks/use-fetch";
 import { useRealTimeFetch } from "@/hooks/use-real-time-fetch";
-import { togglePlantBookmark } from "@/services/firebase/plant";
+import { togglePlantBookmark } from "@/services/firebase/firestore/bookmarks";
 import { getPlantDetails } from "@/services/perenual";
 import { where } from "firebase/firestore";
 import { ToastAndroid } from "react-native";
@@ -14,19 +14,19 @@ import { PlantImage } from "../sections/plant-image";
 import { PlantProfile } from "../sections/plant-profile";
 
 export const PlantLibraryDetailsScreen = ({ id }: { id: string }) => {
-  const { userId } = useAuth();
+  const { adminId } = useAuth();
 
   const { data } = useFetch(() => getPlantDetails(id as string), []);
   if (!data) return null;
 
   const { data: bookmarks } = useRealTimeFetch("plantBookmarks", [
-    where("userId", "==", userId || ""),
+    where("userId", "==", adminId || ""),
     where("plant.id", "==", id as string),
   ]);
 
   const handleBookmark = () => {
     togglePlantBookmark(
-      userId,
+      adminId,
       id as string,
       data?.scientific_name[0] || "",
       data?.default_image?.thumbnail || ""

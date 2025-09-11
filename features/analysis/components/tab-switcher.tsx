@@ -19,7 +19,7 @@ export const TabSwitcher = ({
   onTabChange,
 }: TabSwitcherProps) => {
   return (
-    <View className="flex-row bg-white rounded-2xl mb-6 shadow-md">
+    <View className="flex-row bg-white rounded-2xl my-6 shadow-md overflow-hidden">
       {tabs.map((tab, index) => {
         const isActive = activeTab === tab.key;
 
@@ -34,7 +34,7 @@ export const TabSwitcher = ({
           <TouchableOpacity
             key={tab.key}
             onPress={() => onTabChange(tab.key)}
-            className={`flex-1 flex-row items-center justify-center py-3 px-4 ${roundedClass} ${
+            className={`flex-1 flex-row gap-2 items-center justify-center py-3 px-4 ${roundedClass} ${
               isActive ? "bg-green-100" : "bg-white"
             }`}
           >

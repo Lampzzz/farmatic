@@ -15,7 +15,7 @@ export const SelectPlantScreen = () => {
   const debouncedSearch = useDebounce(search);
   const [selectedPlant, setSelectedPlant] = useState<PlantLibrary | null>(null);
 
-  const { data, error, loading } = useFetch(
+  const { data, loading } = useFetch(
     () => getPlants(debouncedSearch),
     [debouncedSearch]
   );
@@ -48,7 +48,7 @@ export const SelectPlantScreen = () => {
         showBackButton
       />
 
-      <View className="flex-row gap-3 px-6 mt-6">
+      <View className="flex-row gap-4 px-6 my-6">
         <Button
           label="Skip & Add Manually"
           onPress={handleSkip}

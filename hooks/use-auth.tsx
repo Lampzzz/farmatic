@@ -8,7 +8,7 @@ export const useAuth = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const userId = user?.isAdmin ? user.id : user?.adminId;
+  const adminId = user?.isAdmin ? user.id : user?.adminId;
 
   useEffect(() => {
     let unsubUser: (() => void) | null = null;
@@ -46,5 +46,5 @@ export const useAuth = () => {
     };
   }, []);
 
-  return { isAuthenticated, user, isLoading, error, userId };
+  return { isAuthenticated, user, isLoading, error, adminId };
 };

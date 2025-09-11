@@ -1,5 +1,6 @@
 import { Icon } from "@/components/icon";
-import { Image, Text, TouchableOpacity, View } from "react-native";
+import { Image } from "@/components/image";
+import { Text, TouchableOpacity, View } from "react-native";
 
 interface Props {
   value: string;
@@ -21,11 +22,13 @@ export const ImagePicker = ({
       <Text className="font-medium mb-2">Plant Image</Text>
       {value ? (
         <View className="h-48 border border-gray/20 rounded-xl items-center justify-center relative">
-          <Image
+          {/* <Image
             source={{ uri: value }}
             className="w-full h-48 rounded-xl"
             resizeMode="cover"
-          />
+          /> */}
+          <Image uri={value} styles="w-full h-48" />
+
           <TouchableOpacity
             onPress={() => onChange("")}
             className="absolute top-2 right-2 bg-black/50 rounded-full p-1"
