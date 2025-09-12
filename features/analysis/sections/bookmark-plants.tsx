@@ -5,14 +5,14 @@ import { router } from "expo-router";
 import { FlatList } from "react-native";
 
 interface Props {
-  savedPlants: any[];
+  data: any[];
   loading: boolean;
 }
 
-export const BookmarkPlants = ({ savedPlants, loading }: Props) => {
+export const BookmarkPlants = ({ data, loading }: Props) => {
   if (loading) return <Loader />;
 
-  if (!savedPlants || savedPlants.length === 0) {
+  if (!data || data.length === 0) {
     return (
       <EmptyState
         title="No Saved Plants Yet"
@@ -25,7 +25,7 @@ export const BookmarkPlants = ({ savedPlants, loading }: Props) => {
 
   return (
     <FlatList
-      data={savedPlants}
+      data={data}
       keyExtractor={(item) => item.id?.toString() || `item-${Math.random()}`}
       showsVerticalScrollIndicator={false}
       contentContainerStyle={{ gap: 12 }}
@@ -33,9 +33,9 @@ export const BookmarkPlants = ({ savedPlants, loading }: Props) => {
       numColumns={2}
       renderItem={({ item }) => (
         <PlantCard
-          image={item.plant.imageUrl}
-          name={item.plant.name}
-          onPress={() => router.push(`/plant/plant-library/${item.id}`)}
+          image={item.imageUrl}
+          name={item.name}
+          onPress={() => router.push(`/plant/library/${item.id}`)}
         />
       )}
     />

@@ -1,8 +1,6 @@
 import { Button } from "@/components/form/button";
 import { FormInput } from "@/components/form/form-input";
 import { Header } from "@/components/header";
-import { Icon } from "@/components/icon";
-import { Image } from "@/components/image";
 import { MainLayout } from "@/components/layout/main-layout";
 import { useAuth } from "@/hooks/use-auth";
 import { createPlant } from "@/services/firebase/firestore/plant";
@@ -10,13 +8,8 @@ import { getImageType, pickImage, takePhoto } from "@/utils/image";
 import dayjs from "dayjs";
 import { router } from "expo-router";
 import { Controller, useForm } from "react-hook-form";
-import {
-  Alert,
-  Text,
-  ToastAndroid,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { Alert, ToastAndroid, View } from "react-native";
+import { ImagePicker } from "../sections/image-picker";
 import { ZoneSelector } from "../sections/zone-selector";
 
 interface Props {
@@ -25,13 +18,13 @@ interface Props {
   selectedPlantImage?: string;
 }
 
-export const AddPlantScreen = (params: Props) => {
+export const AddPlantScreen = (selectedPlant: Props) => {
   const { adminId } = useAuth();
 
   const hasSelectedPlant =
-    params.selectedPlantId &&
-    params.selectedPlantName &&
-    params.selectedPlantImage;
+    selectedPlant.selectedPlantId &&
+    selectedPlant.selectedPlantName &&
+    selectedPlant.selectedPlantImage;
 
   const {
     control,
@@ -40,8 +33,10 @@ export const AddPlantScreen = (params: Props) => {
     setValue,
   } = useForm({
     defaultValues: {
-      name: hasSelectedPlant ? (params.selectedPlantName as string) : "",
-      imageUrl: hasSelectedPlant ? (params.selectedPlantImage as string) : "",
+      name: hasSelectedPlant ? (selectedPlant.selectedPlantName as string) : "",
+      imageUrl: hasSelectedPlant
+        ? (selectedPlant.selectedPlantImage as string)
+        : "",
       imageType: "",
       datePlanted: dayjs().format("MMMM DD, YYYY"),
       zoneNumber: 1,
@@ -114,55 +109,13 @@ export const AddPlantScreen = (params: Props) => {
           name="imageUrl"
           rules={{ required: "Required" }}
           render={({ field: { value, onChange } }) => (
-            <View className="bg-white mb-6">
-              <Text className="font-medium mb-2">Plant Image</Text>
-              {value ? (
-                <View className="h-48 border border-gray/20 rounded-xl items-center justify-center relative">
-                  <Image uri={value} styles="w-full h-48" />
-
-                  <TouchableOpacity
-                    onPress={() => onChange("")}
-                    className="absolute top-2 right-2 bg-black/50 rounded-full p-1"
-                  >
-                    <Icon name="X" size={20} color="white" />
-                  </TouchableOpacity>
-                </View>
-              ) : (
-                <View className="h-48 border border-gray/20 rounded-xl">
-                  <View className="flex-1 items-center justify-center gap-4">
-                    <Text className="text-gray text-center mb-2">
-                      Choose how to add your plant image
-                    </Text>
-                    <View className="flex-row gap-4">
-                      <TouchableOpacity
-                        onPress={handleImagePicker}
-                        className="items-center gap-2"
-                      >
-                        <View className="bg-primary/10 p-3 rounded-full">
-                          <Icon name="Image" size={24} color="#16A34A" />
-                        </View>
-                        <Text className="text-primary text-sm">Gallery</Text>
-                      </TouchableOpacity>
-
-                      <TouchableOpacity
-                        onPress={handleTakePhoto}
-                        className="items-center gap-2"
-                      >
-                        <View className="bg-primary/10 p-3 rounded-full">
-                          <Icon name="Camera" size={24} color="#16A34A" />
-                        </View>
-                        <Text className="text-primary text-sm">Camera</Text>
-                      </TouchableOpacity>
-                    </View>
-                  </View>
-                </View>
-              )}
-              {errors.imageUrl && (
-                <Text className="text-red-500 text-sm mt-1">
-                  {errors.imageUrl.message as string}
-                </Text>
-              )}
-            </View>
+            <ImagePicker
+              value={value}
+              onChange={onChange}
+              handleImagePicker={handleImagePicker}
+              handleTakePhoto={handleTakePhoto}
+              errors={errors}
+            />
           )}
         />
         <Controller

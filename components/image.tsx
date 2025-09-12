@@ -9,6 +9,8 @@ interface Props {
   contentFit?: "cover" | "contain" | "fill" | "none" | "scale-down";
   placeholder?: any;
   fallback?: any;
+  width?: number;
+  height?: number;
 }
 
 export const Image = ({
@@ -17,9 +19,11 @@ export const Image = ({
   contentFit = "cover",
   placeholder,
   fallback,
+  width,
+  height,
 }: Props) => {
   return (
-    <View className={clsx(styles, "overflow-hidden rounded-xl")}>
+    <View className={clsx(styles, "overflow-hidden")} style={{ width, height }}>
       <ExpoImage
         source={uri ? { uri } : fallback}
         style={{ width: "100%", height: "100%" }}

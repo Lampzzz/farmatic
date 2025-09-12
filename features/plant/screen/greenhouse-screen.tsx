@@ -9,10 +9,10 @@ import { Text, View } from "react-native";
 import { GreenhousePlantList } from "../sections/greenhouse-plant-list";
 
 export const GreenhouseScreen = () => {
-  const { userId } = useAuth();
+  const { adminId } = useAuth();
 
   const { data, loading } = useRealTimeFetch("plants", [
-    where("userId", "==", userId || ""),
+    where("userId", "==", adminId || ""),
     orderBy("createdAt", "desc"),
   ]);
 

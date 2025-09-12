@@ -42,8 +42,6 @@ export const analyzePlant = async ({
       analysis: { ...result, imageUrl: imageUri },
     });
 
-    // console.log(JSON.stringify(result, null, 2));
-
     return result;
   } catch (err) {
     console.error("AI Error:", err);

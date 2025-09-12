@@ -9,14 +9,18 @@ import { TabSwitcher } from "../components/tab-switcher";
 import { AnalysisHistory } from "../sections/analysis-history";
 import { BookmarkPlants } from "../sections/bookmark-plants";
 
+type AnalysisActiveTab = "bookmark" | "history";
+
 export const AnalysisScreen = () => {
-  const { userId } = useAuth();
-  const [activeTab, setActiveTab] = useState<"bookmark" | "history">(
-    "bookmark"
-  );
+  const { adminId } = useAuth();
+  const [activeTab, setActiveTab] = useState<AnalysisActiveTab>("bookmark");
 
   const { data: savedPlants, loading } = useRealTimeFetch("plantBookmarks", [
-    where("userId", "==", userId || ""),
+    where("userId", "==", adminId || ""),
+  ]);
+
+  const { data: analysisHistory } = useRealTimeFetch("analyses", [
+    where("adminId", "==", adminId || ""),
   ]);
 
   const tabs = [
@@ -40,9 +44,9 @@ export const AnalysisScreen = () => {
 
         <View className="flex-1">
           {activeTab === "bookmark" ? (
-            <BookmarkPlants savedPlants={savedPlants} loading={loading} />
+            <BookmarkPlants data={savedPlants} loading={loading} />
           ) : (
-            <AnalysisHistory savedPlants={savedPlants} loading={loading} />
+            <AnalysisHistory data={analysisHistory} loading={loading} />
           )}
         </View>
       </View>

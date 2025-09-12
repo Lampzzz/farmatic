@@ -14,22 +14,24 @@ export const createPlant = async (data: any, userId: string) => {
 
     const ref = collection(db, "plants");
 
+    const plantRef = await addDoc(ref, {
+      ...data,
+      imageUrl,
+      userId,
+      createdAt: new Date(),
+    });
+
+    const plantId = plantRef.id;
+
     await createController(userId, data.zoneNumber);
 
     await analyzePlant({
-      plantId: null,
+      plantId,
       analyzerId: userId,
       adminId: userId,
       plantName: data.name,
       imageUri: data.imageUrl,
       imageType: data.imageType,
-    });
-
-    await addDoc(ref, {
-      ...data,
-      imageUrl,
-      userId,
-      createdAt: new Date(),
     });
 
     return { isSuccess: true, message: "Plant added successfully" };

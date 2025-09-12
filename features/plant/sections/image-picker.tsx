@@ -17,27 +17,26 @@ export const ImagePicker = ({
   handleTakePhoto,
   errors,
 }: Props) => {
+  console.log(value);
   return (
-    <View className="bg-white mb-6">
+    <View className="mb-6">
       <Text className="font-medium mb-2">Plant Image</Text>
-      {value ? (
-        <View className="h-48 border border-gray/20 rounded-xl items-center justify-center relative">
-          {/* <Image
-            source={{ uri: value }}
-            className="w-full h-48 rounded-xl"
-            resizeMode="cover"
-          /> */}
-          <Image uri={value} styles="w-full h-48" />
+      <View
+        className="border border-gray/20 rounded-xl items-center justify-center relative bg-white"
+        style={{ width: "100%", height: 192 }}
+      >
+        {value ? (
+          <>
+            <Image uri={value} styles="w-full h-full rounded-xl" />
 
-          <TouchableOpacity
-            onPress={() => onChange("")}
-            className="absolute top-2 right-2 bg-black/50 rounded-full p-1"
-          >
-            <Icon name="X" size={20} color="white" />
-          </TouchableOpacity>
-        </View>
-      ) : (
-        <View className="h-48 border border-gray/20 rounded-xl">
+            <TouchableOpacity
+              onPress={() => onChange("")}
+              className="absolute top-2 right-2 bg-black/50 rounded-full p-2"
+            >
+              <Icon name="X" size={20} color="white" />
+            </TouchableOpacity>
+          </>
+        ) : (
           <View className="flex-1 items-center justify-center gap-4">
             <Text className="text-gray text-center mb-2">
               Choose how to add your plant image
@@ -47,9 +46,10 @@ export const ImagePicker = ({
                 onPress={handleImagePicker}
                 className="items-center gap-2"
               >
-                <View className="bg-primary/10 p-3 rounded-full">
+                <View className="bg-primary/10 items-center justify-center rounded-full">
                   <Icon name="Image" size={24} color="#16A34A" />
                 </View>
+
                 <Text className="text-primary text-sm">Gallery</Text>
               </TouchableOpacity>
 
@@ -64,8 +64,8 @@ export const ImagePicker = ({
               </TouchableOpacity>
             </View>
           </View>
-        </View>
-      )}
+        )}
+      </View>
       {errors.imageUrl && (
         <Text className="text-red-500 text-sm mt-1">
           {errors.imageUrl.message as string}
