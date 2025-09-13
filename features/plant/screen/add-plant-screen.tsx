@@ -1,22 +1,34 @@
 import { Button } from "@/components/form/button";
 import { FormInput } from "@/components/form/form-input";
+import { FormSelect } from "@/components/form/form-select";
 import { Header } from "@/components/header";
 import { MainLayout } from "@/components/layout/main-layout";
+import { ScreenContainer } from "@/components/layout/screen-container";
 import { useAuth } from "@/hooks/use-auth";
 import { createPlant } from "@/services/firebase/firestore/plant";
 import { getImageType, pickImage, takePhoto } from "@/utils/image";
 import dayjs from "dayjs";
 import { router } from "expo-router";
 import { Controller, useForm } from "react-hook-form";
-import { Alert, ToastAndroid, View } from "react-native";
+import { Alert, ToastAndroid } from "react-native";
 import { ImagePicker } from "../sections/image-picker";
-import { ZoneSelector } from "../sections/zone-selector";
 
 interface Props {
   selectedPlantId?: string;
   selectedPlantName?: string;
   selectedPlantImage?: string;
 }
+
+const plantSpots = [
+  { label: "Spot 1", value: 1 },
+  { label: "Spot 2", value: 2 },
+  { label: "Spot 3", value: 3 },
+];
+
+const zones = [
+  { label: "Zone 1", value: 1 },
+  { label: "Zone 2", value: 2 },
+];
 
 export const AddPlantScreen = (selectedPlant: Props) => {
   const { adminId } = useAuth();
@@ -40,6 +52,7 @@ export const AddPlantScreen = (selectedPlant: Props) => {
       imageType: "",
       datePlanted: dayjs().format("MMMM DD, YYYY"),
       zoneNumber: 1,
+      plantSpot: 1,
     },
   });
 
@@ -76,6 +89,7 @@ export const AddPlantScreen = (selectedPlant: Props) => {
     imageType: string;
     datePlanted: string;
     zoneNumber: number;
+    plantSpot: number;
   }) => {
     try {
       const result = await createPlant(data, adminId);
@@ -103,7 +117,7 @@ export const AddPlantScreen = (selectedPlant: Props) => {
         showBackButton
       />
 
-      <View className="p-6">
+      <ScreenContainer scrollable>
         <Controller
           control={control}
           name="imageUrl"
@@ -138,7 +152,28 @@ export const AddPlantScreen = (selectedPlant: Props) => {
           control={control}
           name="zoneNumber"
           render={({ field: { onChange, value } }) => (
-            <ZoneSelector onChange={onChange} value={value} />
+            <FormSelect
+              label="Zone Number"
+              placeholder="Select zone number"
+              options={zones}
+              onChange={onChange}
+              value={value}
+              styles="mb-6"
+            />
+          )}
+        />
+        <Controller
+          control={control}
+          name="plantSpot"
+          render={({ field: { onChange, value } }) => (
+            <FormSelect
+              label="Plant Spot"
+              placeholder="Select plant spot"
+              options={plantSpots}
+              onChange={onChange}
+              value={value}
+              styles="mb-6"
+            />
           )}
         />
         <Controller
@@ -161,7 +196,7 @@ export const AddPlantScreen = (selectedPlant: Props) => {
           onPress={handleSubmit(onSubmit)}
           isLoading={isSubmitting}
         />
-      </View>
+      </ScreenContainer>
     </MainLayout>
   );
 };

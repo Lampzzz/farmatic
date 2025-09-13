@@ -17,7 +17,6 @@ export const ImagePicker = ({
   handleTakePhoto,
   errors,
 }: Props) => {
-  console.log(value);
   return (
     <View className="mb-6">
       <Text className="font-medium mb-2">Plant Image</Text>

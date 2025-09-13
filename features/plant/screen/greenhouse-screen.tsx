@@ -12,7 +12,7 @@ export const GreenhouseScreen = () => {
   const { adminId } = useAuth();
 
   const { data, loading } = useRealTimeFetch("plants", [
-    where("userId", "==", adminId || ""),
+    where("adminId", "==", adminId || ""),
     orderBy("createdAt", "desc"),
   ]);
 

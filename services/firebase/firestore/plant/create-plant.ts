@@ -2,7 +2,6 @@ import { cloudinaryUpload } from "@/services/cloudinary";
 import { addDoc, collection } from "firebase/firestore";
 import { analyzePlant } from "../../ai";
 import { db } from "../../config";
-import { createController } from "../../controller";
 
 export const createPlant = async (data: any, userId: string) => {
   try {
@@ -17,13 +16,11 @@ export const createPlant = async (data: any, userId: string) => {
     const plantRef = await addDoc(ref, {
       ...data,
       imageUrl,
-      userId,
+      adminId: userId,
       createdAt: new Date(),
     });
 
     const plantId = plantRef.id;
-
-    await createController(userId, data.zoneNumber);
 
     await analyzePlant({
       plantId,

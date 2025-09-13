@@ -6,6 +6,7 @@ import {
   getReactNativePersistence,
   initializeAuth,
 } from "firebase/auth";
+import { getDatabase } from "firebase/database";
 import { getFirestore } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 
@@ -22,6 +23,10 @@ const config = {
 const app = initializeApp(config);
 
 const db = getFirestore(app);
+const realTimeDB = getDatabase(
+  app,
+  "https://farmatic-f3097-default-rtdb.firebaseio.com"
+);
 const storage = getStorage(app);
 
 const ai = getAI(app, { backend: new GoogleAIBackend() });
@@ -42,4 +47,4 @@ try {
   }
 }
 
-export { app, auth, db, model, storage };
+export { app, auth, db, model, realTimeDB, storage };

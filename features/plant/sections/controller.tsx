@@ -1,70 +1,76 @@
 import { Button } from "@/components/form/button";
 import { FormInput } from "@/components/form/form-input";
 import { ControllerCard } from "@/components/greenhouse/controller-card";
+import { useRealtimeDatabase } from "@/hooks/use-real-time-databases";
 import clsx from "clsx";
 import { Modal, Text, View } from "react-native";
+import { getSprinkler } from "../utils";
 
 interface Props {
-  controller: any;
-  handleToggleController: (value: boolean, name: string) => void;
   openModal: (name: string) => void;
   styles?: string;
+  zoneNumber: number;
+  plantSpot: number;
 }
 
 export const Controller = ({
-  controller,
-  handleToggleController,
   openModal,
   styles,
-}: Props) => (
-  <View className={clsx(styles, "mb-6")}>
-    <Text className="text-xl font-bold text-gray-800 mb-4">Controller</Text>
-    <ControllerCard
-      title="Fan"
-      icon="Fan"
-      value={controller?.[0]?.fan}
-      onToggle={() => handleToggleController(controller?.[0]?.fan, "fan")}
-      onSettings={() => {}}
-      colorScheme={{
-        iconBgClass: "bg-green-100",
-        iconColor: "#059669",
-        switchOnColor: "#10b981",
-        statusBgClass: "bg-green-50",
-        statusTextClass: "text-green-700",
-      }}
-    />
-    <ControllerCard
-      title="Light"
-      icon="Lightbulb"
-      value={controller?.[0]?.light}
-      onToggle={() => handleToggleController(controller?.[0]?.light, "light")}
-      onSettings={() => {}}
-      colorScheme={{
-        iconBgClass: "bg-yellow-100",
-        iconColor: "#f59e0b",
-        switchOnColor: "#f59e0b",
-        statusBgClass: "bg-yellow-50",
-        statusTextClass: "text-yellow-700",
-      }}
-    />
-    <ControllerCard
-      title="Sprinkler"
-      icon="Droplet"
-      value={controller?.[0]?.sprinkler}
-      onToggle={() =>
-        handleToggleController(controller?.[0]?.sprinkler, "sprinkler")
-      }
-      onSettings={() => {}}
-      colorScheme={{
-        iconBgClass: "bg-blue-100",
-        iconColor: "#60a5fa",
-        switchOnColor: "#60a5fa",
-        statusBgClass: "bg-blue-50",
-        statusTextClass: "text-blue-700",
-      }}
-    />
-  </View>
-);
+  zoneNumber,
+  plantSpot,
+}: Props) => {
+  const { data } = useRealtimeDatabase("controls");
+  const zoneData = zoneNumber == 1 ? data?.zone1 : data?.zone2;
+  const sprinkler = getSprinkler(zoneData, plantSpot);
+
+  return (
+    <View className={clsx(styles, "mb-6")}>
+      <Text className="text-xl font-bold text-gray-800 mb-4">Controller</Text>
+      <ControllerCard
+        title="Fan"
+        icon="Fan"
+        value={zoneData?.fan}
+        onToggle={() => {}}
+        onSettings={() => {}}
+        colorScheme={{
+          iconBgClass: "bg-green-100",
+          iconColor: "#059669",
+          switchOnColor: "#10b981",
+          statusBgClass: "bg-green-50",
+          statusTextClass: "text-green-700",
+        }}
+      />
+      <ControllerCard
+        title="Light"
+        icon="Lightbulb"
+        value={zoneData?.light}
+        onToggle={() => {}}
+        onSettings={() => {}}
+        colorScheme={{
+          iconBgClass: "bg-yellow-100",
+          iconColor: "#f59e0b",
+          switchOnColor: "#f59e0b",
+          statusBgClass: "bg-yellow-50",
+          statusTextClass: "text-yellow-700",
+        }}
+      />
+      <ControllerCard
+        title="Sprinkler"
+        icon="Droplet"
+        value={sprinkler}
+        onToggle={() => {}}
+        onSettings={() => {}}
+        colorScheme={{
+          iconBgClass: "bg-blue-100",
+          iconColor: "#60a5fa",
+          switchOnColor: "#60a5fa",
+          statusBgClass: "bg-blue-50",
+          statusTextClass: "text-blue-700",
+        }}
+      />
+    </View>
+  );
+};
 
 interface ControllerModalProps {
   visible: boolean;
