@@ -13,6 +13,9 @@ module.exports = {
         gray: "#6B7280",
         "icon-background": "#15803D",
       },
+      fontFamily: {
+        mono: ["SpaceMono"],
+      },
     },
   },
   plugins: [],

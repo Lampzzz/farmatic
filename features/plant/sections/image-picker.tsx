@@ -26,7 +26,7 @@ export const ImagePicker = ({
       >
         {value ? (
           <>
-            <Image uri={value} styles="w-full h-full rounded-xl" />
+            <Image uri={value} styles="rounded-xl" />
 
             <TouchableOpacity
               onPress={() => onChange("")}

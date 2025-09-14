@@ -1,56 +1,50 @@
-// import { Icon } from "@/components/icon";
-// import { useState } from "react";
-// import { Text, TouchableOpacity, View } from "react-native";
-// import { DatePickerModal } from "react-native-paper-dates";
+import DateTimePicker from "@react-native-community/datetimepicker";
+import clsx from "clsx";
+import React, { useState } from "react";
+import { Platform, Text, TouchableOpacity, View } from "react-native";
+import { Icon } from "../icon";
 
-// type Props = {
-//   label: string;
-//   value?: string;
-//   onChange: (date: string) => void;
-//   error?: string;
-//   placeholder?: string;
-// };
+export const DatePicker = ({
+  handleChange,
+  label,
+  value,
+  styles,
+}: {
+  handleChange: (date: Date | undefined) => void;
+  label?: string;
+  value: Date;
+  styles?: string;
+}) => {
+  const [show, setShow] = useState(false);
 
-// export function DatePicker({
-//   label,
-//   value,
-//   onChange,
-//   error,
-//   placeholder = "MM-DD-YYYY",
-// }: Props) {
-//   const [open, setOpen] = useState(false);
+  const onChange = (event: any, selectedDate?: Date) => {
+    setShow(Platform.OS === "ios");
 
-//   const handleConfirm = (params: { date: Date }) => {
-//     setOpen(false);
-//     if (params.date) {
-//       const formatted = params.date.toISOString().split("T")[0];
-//       onChange(formatted);
-//     }
-//   };
+    if (selectedDate) {
+      handleChange(selectedDate);
+    }
+  };
 
-//   return (
-//     <View className="mb-6">
-//       <Text className="font-medium mb-2">{label}</Text>
-//       <TouchableOpacity
-//         onPress={() => setOpen(true)}
-//         className="flex-row items-center justify-between border border-gray/20 rounded-xl px-4 py-3 bg-white"
-//       >
-//         <Text className={`text-base ${value ? "text-black" : "text-gray"}`}>
-//           {value || placeholder}
-//         </Text>
-//         <Icon name="Calendar" size={20} color="#16A34A" />
-//       </TouchableOpacity>
-
-//       {error && <Text className="text-red-500 text-sm mt-1">{error}</Text>}
-
-//       <DatePickerModal
-//         locale="en"
-//         mode="single"
-//         visible={open}
-//         date={value ? new Date(value) : undefined}
-//         onDismiss={() => setOpen(false)}
-//         onConfirm={handleConfirm}
-//       />
-//     </View>
-//   );
-// }
+  return (
+    <View className={clsx(styles)}>
+      {label && <Text className="font-medium mb-2">{label}</Text>}
+      <TouchableOpacity
+        onPress={() => setShow(true)}
+        className="bg-white border border-gray/20 rounded-xl px-4 py-1 flex-row items-center justify-between gap-2"
+        style={{ height: 50 }}
+      >
+        <Icon name="Calendar" size={20} color="gray" />
+        <Text className="flex-1">{value.toDateString()}</Text>
+      </TouchableOpacity>
+      {show && (
+        <DateTimePicker
+          value={value}
+          mode="date"
+          display="default"
+          onChange={onChange}
+          style={{ backgroundColor: "white" }}
+        />
+      )}
+    </View>
+  );
+};

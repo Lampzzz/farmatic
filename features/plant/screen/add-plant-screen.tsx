@@ -1,4 +1,5 @@
 import { Button } from "@/components/form/button";
+import { DatePicker } from "@/components/form/date-picker";
 import { FormInput } from "@/components/form/form-input";
 import { FormSelect } from "@/components/form/form-select";
 import { Header } from "@/components/header";
@@ -7,7 +8,6 @@ import { ScreenContainer } from "@/components/layout/screen-container";
 import { useAuth } from "@/hooks/use-auth";
 import { createPlant } from "@/services/firebase/firestore/plants";
 import { getImageType, pickImage, takePhoto } from "@/utils/image";
-import dayjs from "dayjs";
 import { router } from "expo-router";
 import { Controller, useForm } from "react-hook-form";
 import { Alert, ToastAndroid } from "react-native";
@@ -50,7 +50,7 @@ export const AddPlantScreen = (selectedPlant: Props) => {
         ? (selectedPlant.selectedPlantImage as string)
         : "",
       imageType: "",
-      datePlanted: dayjs().format("MMMM DD, YYYY"),
+      datePlanted: new Date(),
       zoneNumber: 1,
       plantSpot: 1,
     },
@@ -87,7 +87,7 @@ export const AddPlantScreen = (selectedPlant: Props) => {
     name: string;
     imageUrl: string;
     imageType: string;
-    datePlanted: string;
+    datePlanted: Date;
     zoneNumber: number;
     plantSpot: number;
   }) => {
@@ -159,6 +159,7 @@ export const AddPlantScreen = (selectedPlant: Props) => {
               onChange={onChange}
               value={value}
               styles="mb-6"
+              iconName="Layers2"
             />
           )}
         />
@@ -173,6 +174,7 @@ export const AddPlantScreen = (selectedPlant: Props) => {
               onChange={onChange}
               value={value}
               styles="mb-6"
+              iconName="MapPin"
             />
           )}
         />
@@ -180,14 +182,11 @@ export const AddPlantScreen = (selectedPlant: Props) => {
           control={control}
           name="datePlanted"
           render={({ field: { onChange, value } }) => (
-            <FormInput
+            <DatePicker
               label="Date Planted"
-              placeholder="MM-DD-YYYY"
-              value={value}
-              onChangeText={onChange}
-              iconName="Calendar"
+              handleChange={onChange}
+              value={value as Date}
               styles="mb-6"
-              error={errors.datePlanted?.message}
             />
           )}
         />

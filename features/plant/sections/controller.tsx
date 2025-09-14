@@ -1,6 +1,6 @@
 import { Button } from "@/components/form/button";
 import { FormInput } from "@/components/form/form-input";
-import { ControllerCard } from "@/components/greenhouse/controller-card";
+import { ControllerCard } from "@/features/plant/components/controller-card";
 import { useRealtimeDatabase } from "@/hooks/use-real-time-databases";
 import clsx from "clsx";
 import { Modal, Text, View } from "react-native";

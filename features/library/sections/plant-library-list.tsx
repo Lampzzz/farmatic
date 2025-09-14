@@ -1,6 +1,6 @@
 import { EmptyState } from "@/components/empty-state";
 import { Loader } from "@/components/loader";
-import { PlantCard } from "@/components/plant/plant-card";
+import { PlantCard } from "@/features/plant/components/plant-card";
 import { router } from "expo-router";
 import { ActivityIndicator, FlatList, View } from "react-native";
 

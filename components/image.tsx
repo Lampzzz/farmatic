@@ -3,14 +3,16 @@ import { Image as ExpoImage } from "expo-image";
 import React from "react";
 import { ActivityIndicator, View } from "react-native";
 
+type DimensionValue = number | `${number}%` | undefined;
+
 interface Props {
   uri?: string | null;
   styles?: string;
   contentFit?: "cover" | "contain" | "fill" | "none" | "scale-down";
   placeholder?: any;
   fallback?: any;
-  width?: number;
-  height?: number;
+  width?: DimensionValue;
+  height?: DimensionValue;
 }
 
 export const Image = ({
@@ -19,8 +21,8 @@ export const Image = ({
   contentFit = "cover",
   placeholder,
   fallback,
-  width,
-  height,
+  width = "100%",
+  height = "100%",
 }: Props) => {
   return (
     <View className={clsx(styles, "overflow-hidden")} style={{ width, height }}>
