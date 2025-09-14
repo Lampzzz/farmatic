@@ -1,7 +1,7 @@
 import { FirebaseError } from "firebase/app";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../config";
-import { createAdmin } from "../user";
+import { createAdmin } from "../firestore/users";
 
 export const login = async (email: string, password: string) => {
   try {

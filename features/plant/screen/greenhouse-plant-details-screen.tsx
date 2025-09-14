@@ -8,7 +8,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { useFetch } from "@/hooks/use-fetch";
 import { useRealTimeFetch } from "@/hooks/use-real-time-fetch";
 import { analyzePlant } from "@/services/firebase/ai";
-import { deletePlant, getPlant } from "@/services/firebase/firestore/plant";
+import { deletePlant, getPlant } from "@/services/firebase/firestore/plants";
 import { getImageType, pickImage, takePhoto } from "@/utils/image";
 import { useRouter } from "expo-router";
 import { limit, orderBy, where } from "firebase/firestore";

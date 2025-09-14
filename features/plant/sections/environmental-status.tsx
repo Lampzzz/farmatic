@@ -1,5 +1,5 @@
 import { useRealtimeDatabase } from "@/hooks/use-real-time-databases";
-import { updateAutoController } from "@/services/firebase/firestore/controller";
+import { updateAutoController } from "@/services/firebase/firestore/controllers";
 import { useEffect } from "react";
 import { Text, View } from "react-native";
 import { EnvironmentalStatusCard } from "../components/environmental-status-card";

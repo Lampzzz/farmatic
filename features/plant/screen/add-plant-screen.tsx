@@ -5,7 +5,7 @@ import { Header } from "@/components/header";
 import { MainLayout } from "@/components/layout/main-layout";
 import { ScreenContainer } from "@/components/layout/screen-container";
 import { useAuth } from "@/hooks/use-auth";
-import { createPlant } from "@/services/firebase/firestore/plant";
+import { createPlant } from "@/services/firebase/firestore/plants";
 import { getImageType, pickImage, takePhoto } from "@/utils/image";
 import dayjs from "dayjs";
 import { router } from "expo-router";

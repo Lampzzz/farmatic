@@ -3,7 +3,7 @@ import { FormInput } from "@/components/form/form-input";
 import { Header } from "@/components/header";
 import { MainLayout } from "@/components/layout/main-layout";
 import { ScreenContainer } from "@/components/layout/screen-container";
-import { createStaffMember } from "@/services/firebase/user";
+import { createStaff } from "@/services/firebase/firestore/users";
 import { router } from "expo-router";
 import { Controller, useForm } from "react-hook-form";
 import { Alert, ToastAndroid } from "react-native";
@@ -29,7 +29,7 @@ export const AddStaffMemberScreen = () => {
     password: string;
   }) => {
     try {
-      await createStaffMember(data);
+      await createStaff(data);
       ToastAndroid.show("Staff member added successfully", ToastAndroid.SHORT);
       router.back();
     } catch (error: any) {

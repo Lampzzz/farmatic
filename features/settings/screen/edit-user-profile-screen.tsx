@@ -5,7 +5,7 @@ import { MainLayout } from "@/components/layout/main-layout";
 import { ScreenContainer } from "@/components/layout/screen-container";
 import { useAuth } from "@/hooks/use-auth";
 import { useFetch } from "@/hooks/use-fetch";
-import { getUserById, updateUserProfile } from "@/services/firebase/user";
+import { editProfile, getUser } from "@/services/firebase/firestore/users";
 import { router } from "expo-router";
 import { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
@@ -28,7 +28,7 @@ export const EditUserProfileScreen = ({ userId }: Props) => {
     data: targetUserData,
     loading: targetUserLoading,
     error: targetUserError,
-  } = useFetch(() => getUserById(targetUserId));
+  } = useFetch(() => getUser(targetUserId));
 
   const userData = targetUserId ? targetUserData : currentUserData;
   const loading = targetUserId ? targetUserLoading : currentUserLoading;
@@ -71,7 +71,7 @@ export const EditUserProfileScreen = ({ userId }: Props) => {
     }
 
     try {
-      await updateUserProfile(userData.id, data);
+      await editProfile(userData.id, data);
       ToastAndroid.show("Profile updated successfully", ToastAndroid.SHORT);
       router.back();
     } catch (error: any) {

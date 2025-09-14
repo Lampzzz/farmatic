@@ -1,7 +1,7 @@
 import { ANALYZE_GREENHOUSE_PLANT } from "@/constants";
 import { generateResult } from "@/utils/ai/generate-result";
 import { getBase64Data } from "@/utils/image";
-import { createAnalysis } from "../firestore/plant/create-analysis";
+import { createAnalysis } from "../firestore/plants/create-analysis";
 import { isPlantImage } from "./is-image-plant";
 
 interface Props {

@@ -1,6 +1,6 @@
 import { BaseCard } from "@/components/base-card";
 import { Divider } from "@/components/divider";
-import { ProfileInfoRow } from "@/components/profile-info-row";
+import { ProfileInfoRow } from "@/features/settings/components/profile-info-row";
 import { useUserData } from "@/hooks/use-user-data";
 import { formatDate } from "@/utils/date";
 import { Text } from "react-native";
