@@ -2,7 +2,7 @@ import { BaseCard } from "@/components/base-card";
 import { Icon } from "@/components/icon";
 import { useAuth } from "@/hooks/use-auth";
 import { router } from "expo-router";
-import { Image, Text, TouchableOpacity, View } from "react-native";
+import { Text, TouchableOpacity, View } from "react-native";
 
 export function ProfileSection() {
   const { user } = useAuth();
@@ -10,16 +10,10 @@ export function ProfileSection() {
   return (
     <BaseCard styles="mb-6 items-center justify-center">
       <View
-        className="overflow-hidden bg-gray-200 mb-2"
+        className="overflow-hidden bg-primary mb-2 items-center justify-center"
         style={{ width: 100, height: 100, borderRadius: 50 }}
       >
-        <Image
-          source={{
-            uri: "https://cdn-icons-png.flaticon.com/512/149/149071.png",
-          }}
-          className="w-full h-full"
-          resizeMode="cover"
-        />
+        <Icon name="User" size={50} color="white" />
       </View>
       <Text className="font-bold text-xl">{user?.name || "N/A"}</Text>
       <Text className="text-gray ">{user?.email}</Text>

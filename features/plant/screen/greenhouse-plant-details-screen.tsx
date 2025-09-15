@@ -88,13 +88,17 @@ export const GreenhousePlantDetailsScreen = ({ id }: { id: string }) => {
       "Select a source to analyze your plant",
       [
         {
-          text: "Gallery",
+          text: "Cancel",
           style: "cancel",
+        },
+        {
+          text: "Gallery",
+          style: "default",
           onPress: async () => await handleSelectImage("gallery"),
         },
         {
           text: "Camera",
-          style: "cancel",
+          style: "default",
           onPress: async () => await handleSelectImage("camera"),
         },
       ]

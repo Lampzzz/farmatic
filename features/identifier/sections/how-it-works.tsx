@@ -5,7 +5,7 @@ import { InstructionStep } from "../components/instruction-step";
 export const HowItWorks = () => {
   return (
     <BaseCard styles="mb-6">
-      <Text className="text-primary text-xl font-bold mb-4">How It Works</Text>
+      <Text className="text-xl font-bold mb-4">How It Works</Text>
 
       <View className="space-y-4">
         <InstructionStep

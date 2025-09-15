@@ -17,12 +17,12 @@ export const PlantLibraryDetailsScreen = ({ id }: { id: string }) => {
   const { adminId } = useAuth();
 
   const { data } = useFetch(() => getPlantDetails(id as string), []);
-  if (!data) return null;
-
   const { data: bookmarks } = useRealTimeFetch("plantBookmarks", [
     where("userId", "==", adminId || ""),
     where("plant.id", "==", id as string),
   ]);
+
+  if (!data) return null;
 
   const handleBookmark = () => {
     togglePlantBookmark(

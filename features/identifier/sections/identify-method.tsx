@@ -11,7 +11,7 @@ interface Props {
 export const IdentifyMethod = ({ onTakePicture, onUploadImage }: Props) => {
   return (
     <BaseCard styles="mb-6">
-      <Text className="text-center text-primary text-xl font-bold mb-6">
+      <Text className="text-center text-xl font-bold mb-6">
         How would you like to identify your plant?
       </Text>
 

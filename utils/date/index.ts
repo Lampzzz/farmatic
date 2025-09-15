@@ -33,3 +33,20 @@ export const formatDate = (date: Date | string | null): string => {
     return "Invalid Date";
   }
 };
+
+export const formatFirestoreDate = (timestamp: {
+  seconds: number;
+  nanoseconds: number;
+}): string => {
+  if (!timestamp?.seconds) return "";
+
+  // Convert Firestore timestamp to JS Date
+  const date = new Date(timestamp.seconds * 1000);
+
+  // Format: September 11, 2024
+  return date.toLocaleDateString("en-US", {
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  });
+};

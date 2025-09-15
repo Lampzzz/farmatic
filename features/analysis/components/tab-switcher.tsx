@@ -19,7 +19,7 @@ export const TabSwitcher = ({
   onTabChange,
 }: TabSwitcherProps) => {
   return (
-    <View className="flex-row bg-white rounded-2xl my-6 shadow-md overflow-hidden">
+    <View className="flex-row bg-white rounded-2xl shadow-md overflow-hidden mb-6">
       {tabs.map((tab, index) => {
         const isActive = activeTab === tab.key;
 

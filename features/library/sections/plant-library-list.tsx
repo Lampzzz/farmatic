@@ -43,7 +43,7 @@ export const PlantLibraryList = ({
         <PlantCard
           image={item.default_image?.thumbnail}
           name={item.scientific_name}
-          onPress={() => router.push(`/plant/plant-library/${item.id}`)}
+          onPress={() => router.push(`/plant/library/${item.id}`)}
         />
       )}
       onEndReached={handleLoadMore}
