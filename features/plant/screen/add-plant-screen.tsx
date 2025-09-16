@@ -7,8 +7,10 @@ import { MainLayout } from "@/components/layout/main-layout";
 import { ScreenContainer } from "@/components/layout/screen-container";
 import { useAuth } from "@/hooks/use-auth";
 import { createPlant } from "@/services/firebase/firestore/plants";
+import { getPlantAvailableSpot } from "@/services/firebase/firestore/plants/plant-available-spot";
 import { getImageType, pickImage, takePhoto } from "@/utils/image";
 import { router } from "expo-router";
+import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Alert, ToastAndroid } from "react-native";
 import { ImagePicker } from "../sections/image-picker";
@@ -19,12 +21,6 @@ interface Props {
   selectedPlantImage?: string;
 }
 
-const plantSpots = [
-  { label: "Spot 1", value: 1 },
-  { label: "Spot 2", value: 2 },
-  { label: "Spot 3", value: 3 },
-];
-
 const zones = [
   { label: "Zone 1", value: 1 },
   { label: "Zone 2", value: 2 },
@@ -32,6 +28,9 @@ const zones = [
 
 export const AddPlantScreen = (selectedPlant: Props) => {
   const { adminId } = useAuth();
+  const [availableSpots, setAvailableSpots] = useState<
+    { label: string; value: number }[]
+  >([]);
 
   const hasSelectedPlant =
     selectedPlant.selectedPlantId &&
@@ -43,6 +42,7 @@ export const AddPlantScreen = (selectedPlant: Props) => {
     handleSubmit,
     formState: { errors, isSubmitting },
     setValue,
+    watch,
   } = useForm({
     defaultValues: {
       name: hasSelectedPlant ? (selectedPlant.selectedPlantName as string) : "",
@@ -55,6 +55,31 @@ export const AddPlantScreen = (selectedPlant: Props) => {
       plantSpot: 1,
     },
   });
+
+  const zoneNumber = watch("zoneNumber");
+
+  useEffect(() => {
+    const fetchAvailableSpots = async () => {
+      const result = await getPlantAvailableSpot({
+        adminId,
+        zoneNumber,
+      });
+
+      if (result.length === 0) {
+        setAvailableSpots([]);
+        return;
+      }
+
+      const availableSpots = result.map((spot: number) => ({
+        label: `Spot ${spot}`,
+        value: spot,
+      }));
+
+      setAvailableSpots(availableSpots);
+      setValue("plantSpot", availableSpots[0].value);
+    };
+    fetchAvailableSpots();
+  }, [adminId, zoneNumber]);
 
   const handleImagePicker = async () => {
     try {
@@ -170,7 +195,7 @@ export const AddPlantScreen = (selectedPlant: Props) => {
             <FormSelect
               label="Plant Spot"
               placeholder="Select plant spot"
-              options={plantSpots}
+              options={availableSpots}
               onChange={onChange}
               value={value}
               styles="mb-6"

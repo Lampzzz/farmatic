@@ -45,7 +45,7 @@ export const ImagePicker = ({
                 onPress={handleImagePicker}
                 className="items-center gap-2"
               >
-                <View className="bg-primary/10 items-center justify-center rounded-full">
+                <View className="bg-primary/10 p-3 items-center justify-center rounded-full">
                   <Icon name="Image" size={24} color="#16A34A" />
                 </View>
 
@@ -56,7 +56,7 @@ export const ImagePicker = ({
                 onPress={handleTakePhoto}
                 className="items-center gap-2"
               >
-                <View className="bg-primary/10 p-3 rounded-full">
+                <View className="bg-primary/10 p-3 rounded-full items-center justify-center">
                   <Icon name="Camera" size={24} color="#16A34A" />
                 </View>
                 <Text className="text-primary text-sm">Camera</Text>

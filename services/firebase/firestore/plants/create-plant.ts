@@ -29,6 +29,8 @@ export const createPlant = async (data: any, userId: string) => {
       plantName: data.name,
       imageUri: data.imageUrl,
       imageType: data.imageType,
+      zoneNumber: data.zoneNumber,
+      plantSpot: data.plantSpot,
     });
 
     return { isSuccess: true, message: "Plant added successfully" };

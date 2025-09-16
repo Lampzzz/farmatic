@@ -2,6 +2,7 @@ import { ANALYZE_GREENHOUSE_PLANT } from "@/constants";
 import { generateResult } from "@/utils/ai/generate-result";
 import { getBase64Data } from "@/utils/image";
 import { createAnalysis } from "../firestore/plants/create-analysis";
+import { setRecommendedThresholds } from "../real-time/thresholds";
 import { isPlantImage } from "./is-image-plant";
 
 interface Props {
@@ -12,6 +13,8 @@ interface Props {
   imageUri: string;
   imageType: string;
   base64?: string;
+  zoneNumber: number;
+  plantSpot: number;
 }
 
 export const analyzePlant = async ({
@@ -22,6 +25,8 @@ export const analyzePlant = async ({
   imageUri,
   imageType,
   base64,
+  zoneNumber,
+  plantSpot,
 }: Props) => {
   try {
     const base64Data = await getBase64Data(imageUri, base64);
@@ -40,6 +45,13 @@ export const analyzePlant = async ({
       analyzerId,
       adminId,
       analysis: { ...result, imageUrl: imageUri },
+    });
+
+    await setRecommendedThresholds(zoneNumber, plantSpot, {
+      soilMoisture: result.thresholds.sprinkler.soilMoisture,
+      lightLevel: result.thresholds.light.lightLevel,
+      temperature: result.thresholds.fan.temperature,
+      humidity: result.thresholds.fan.humidity,
     });
 
     return result;
