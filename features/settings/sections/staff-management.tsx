@@ -60,12 +60,15 @@ export function StaffManagementSection({
               <View>
                 <Text className="">{staff.name}</Text>
               </View>
-              <View
+              {/* <View
                 className={clsx(
                   "w-4 h-4 rounded-full",
                   staff.isActive ? "bg-primary" : "bg-gray/20"
                 )}
-              />
+              /> */}
+              <View>
+                <Icon name="ChevronRight" size={16} color="#6B7280" />
+              </View>
             </View>
             {index !== staffMembers.length - 1 && (
               <View className="mb-4">

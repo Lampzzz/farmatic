@@ -24,6 +24,16 @@ export const IdentifierScreen = () => {
       });
     } catch (err) {
       console.error(err);
+      const message = (err as any)?.message || (err as any)?.code;
+      if (message === "PERMISSION_DENIED") {
+        Alert.alert(
+          "Permission denied",
+          mode === "camera"
+            ? "Camera permission is required to take a photo. Please enable it in Settings."
+            : "Photo library permission is required to select an image. Please enable it in Settings."
+        );
+        return;
+      }
       Alert.alert("Error", "Could not analyze the image.");
     }
   };

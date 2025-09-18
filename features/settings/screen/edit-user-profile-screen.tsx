@@ -131,6 +131,7 @@ export const EditUserProfileScreen = ({ userId }: Props) => {
               iconName="Mail"
               styles="mb-6"
               error={errors.email?.message}
+              disabled
             />
           )}
         />
@@ -140,15 +141,23 @@ export const EditUserProfileScreen = ({ userId }: Props) => {
           name="phoneNumber"
           rules={{
             required: "Required",
+            minLength: {
+              value: 11,
+              message: "Phone number must be 11 characters",
+            },
+            maxLength: {
+              value: 11,
+              message: "Phone number must be 11 characters",
+            },
             pattern: {
               value: /^[0-9]+$/,
-              message: "Invalid phone number",
+              message: "Phone number must only contain numbers",
             },
           }}
           render={({ field: { onChange, value } }) => (
             <FormInput
               label="Phone Number"
-              placeholder="Enter phone number "
+              placeholder="Enter phone number"
               value={value}
               onChangeText={onChange}
               iconName="Phone"
@@ -163,8 +172,9 @@ export const EditUserProfileScreen = ({ userId }: Props) => {
           name="password"
           rules={{
             pattern: {
-              value: /^.{8,}$/,
-              message: "Minimum 8 characters",
+              value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/,
+              message:
+                "Password must be at least 8 characters, include uppercase, lowercase, and a number",
             },
           }}
           render={({ field: { onChange, value } }) => (

@@ -9,6 +9,8 @@ export const ANALYZE_GREENHOUSE_PLANT = (plantName: string) => {
     "scientificName": string,
     "description": string (2-3 sentences),
     "healthStatus": string (healthy, sick, growing, needs attention, dead, harvestable),
+    "issue": string (1-2 sentences),
+    "riskLevel": string (low, medium, high),
     "thresholds": {
       "fan": { 
         "humidity": number (recommended max humidity percentage as a number, e.g. 60), 

@@ -94,15 +94,23 @@ export const AddStaffMemberScreen = () => {
           name="phoneNumber"
           rules={{
             required: "Required",
+            minLength: {
+              value: 11,
+              message: "Phone number must be 11 characters",
+            },
+            maxLength: {
+              value: 11,
+              message: "Phone number must be 11 characters",
+            },
             pattern: {
               value: /^[0-9]+$/,
-              message: "Invalid phone number",
+              message: "Phone number must only contain numbers",
             },
           }}
           render={({ field: { onChange, value } }) => (
             <FormInput
               label="Phone Number"
-              placeholder="+63"
+              placeholder="Enter phone number"
               value={value}
               onChangeText={onChange}
               iconName="Phone"
@@ -116,10 +124,10 @@ export const AddStaffMemberScreen = () => {
           control={control}
           name="password"
           rules={{
-            required: "Required",
             pattern: {
-              value: /^.{6,}$/,
-              message: "Minimum 6 characters",
+              value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/,
+              message:
+                "Password must be at least 8 characters, include uppercase, lowercase, and a number",
             },
           }}
           render={({ field: { onChange, value } }) => (

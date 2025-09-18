@@ -7,7 +7,8 @@ export const pickImage = async () => {
       await ImagePicker.requestMediaLibraryPermissionsAsync();
 
     if (permissionResult.granted === false) {
-      throw new Error("Permission to access camera roll is required!");
+      // Signal to callers that this failure is specifically a permission denial
+      throw new Error("PERMISSION_DENIED");
     }
 
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -31,6 +32,14 @@ export const pickImage = async () => {
 
     return null;
   } catch (error: any) {
+    // Re-throw permission errors so the UI can react appropriately
+    if (
+      error &&
+      (error.message === "PERMISSION_DENIED" ||
+        error.code === "PERMISSION_DENIED")
+    ) {
+      throw error;
+    }
     console.error("Error picking image:", error);
     return null;
   }

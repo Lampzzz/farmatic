@@ -13,6 +13,7 @@ export function FormInput({
   styles,
   iconName,
   error,
+  disabled = false,
 }: {
   placeholder: string;
   value: string;
@@ -22,13 +23,19 @@ export function FormInput({
   styles?: string;
   iconName?: keyof typeof icons;
   error?: string;
+  disabled?: boolean;
 }) {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
   return (
     <View className={clsx(styles)}>
       {label && <Text className="font-medium mb-2">{label}</Text>}
-      <View className="bg-white border border-gray/20 rounded-xl px-4 py-1 flex-row items-center justify-between gap-2">
+      <View
+        className={clsx(
+          " border border-gray/20 rounded-xl px-4 py-1 flex-row items-center justify-between gap-2",
+          disabled ? "bg-gray/10" : "bg-white"
+        )}
+      >
         {iconName && <Icon name={iconName} size={20} color="#6B7280" />}
         <View className="flex-1">
           <TextInput
@@ -37,6 +44,7 @@ export function FormInput({
             placeholder={placeholder}
             value={value}
             onChangeText={onChangeText}
+            editable={!disabled}
           />
         </View>
         {isPassword && (

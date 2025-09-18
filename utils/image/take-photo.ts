@@ -6,7 +6,8 @@ export const takePhoto = async () => {
     const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
 
     if (permissionResult.granted === false) {
-      throw new Error("Permission to access camera is required!");
+      // Signal to callers that this failure is specifically a permission denial
+      throw new Error("PERMISSION_DENIED");
     }
 
     const result = await ImagePicker.launchCameraAsync({
@@ -29,6 +30,14 @@ export const takePhoto = async () => {
 
     return null;
   } catch (error: any) {
+    // Re-throw permission errors so the UI can react appropriately
+    if (
+      error &&
+      (error.message === "PERMISSION_DENIED" ||
+        error.code === "PERMISSION_DENIED")
+    ) {
+      throw error;
+    }
     console.error("Error taking photo:", error);
     return null;
   }

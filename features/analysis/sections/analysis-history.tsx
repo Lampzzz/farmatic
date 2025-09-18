@@ -1,7 +1,8 @@
 import { EmptyState } from "@/components/empty-state";
+import { Icon } from "@/components/icon";
 import { Image } from "@/components/image";
 import { Loader } from "@/components/loader";
-import clsx from "clsx";
+import { formatFirestoreDate } from "@/utils/date";
 import { router } from "expo-router";
 import { FlatList, Text, View } from "react-native";
 
@@ -15,7 +16,7 @@ const getRiskColor = (risk: string) => {
     case "low":
       return "bg-green-500";
     case "medium":
-      return "bg-orange-400";
+      return "bg-orange-500";
     case "high":
       return "bg-red-500";
     default:
@@ -44,29 +45,29 @@ export const AnalysisHistory = ({ data, loading }: Props) => {
       showsVerticalScrollIndicator={false}
       contentContainerStyle={{ gap: 12 }}
       renderItem={({ item }) => (
-        <View className="relative flex-1 bg-white rounded-2xl shadow-md flex-row items-center gap-4 overflow-hidden p-3">
+        <View className="relative flex-1 bg-white rounded-2xl shadow-md flex-row items-center gap-4 overflow-hidden">
           <Image uri={item.analysis.imageUrl} width={96} height={96} />
 
-          <View className="flex-1">
-            <Text className="font-semibold text-xl">
+          <View className="">
+            <Text className="font-bold text-xl  mb-1">
               {item.analysis.commoName}
             </Text>
-            {item.analysis.issue ? (
-              <Text className="text-gray-400 text-xs mb-1">
-                {item.analysis.issue}
+            <View className="flex-row items-center gap-2">
+              <Icon name="Calendar" size={16} color="#6B7280" />
+              <Text className="text-gray-400 text-sm">
+                Analyzed: {formatFirestoreDate(item.createdAt)}
               </Text>
-            ) : null}
-            <View className="flex-row items-center justify-between gap-2">
-              <Text className="text-gray-400 text-xs">Aug 11, 2025</Text>
-              <View
-                className={clsx(
-                  "rounded-full px-2 py",
-                  getRiskColor(item.analysis.riskLevel)
-                )}
-              >
-                <Text className="text-gray-400 text-xs">Low Risk</Text>
-              </View>
             </View>
+            {/* <View
+              className={clsx(
+                "rounded-full px-2 py-1 text-center",
+                getRiskColor(item.analysis.riskLevel)
+              )}
+            >
+              <Text className="text-white text-sm capitalize">
+                {item.analysis.riskLevel} Risk
+              </Text>
+            </View> */}
           </View>
         </View>
       )}

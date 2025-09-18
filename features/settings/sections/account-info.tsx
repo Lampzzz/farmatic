@@ -2,7 +2,7 @@ import { BaseCard } from "@/components/base-card";
 import { Divider } from "@/components/divider";
 import { ProfileInfoRow } from "@/features/settings/components/profile-info-row";
 import { useUserData } from "@/hooks/use-user-data";
-import { formatDate } from "@/utils/date";
+import { formatFirestoreDate } from "@/utils/date";
 import { Text } from "react-native";
 
 export function AccountInfoSection() {
@@ -16,7 +16,7 @@ export function AccountInfoSection() {
         <>
           <ProfileInfoRow
             label="Member Since"
-            value={formatDate(userData.createdAt.toDate())}
+            value={formatFirestoreDate(userData.createdAt)}
             styles="mt-4"
           />
           <ProfileInfoRow

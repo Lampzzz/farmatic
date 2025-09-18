@@ -1,3 +1,4 @@
+import { getFirebaseErrorMessage } from "@/utils/firebase";
 import { initializeApp } from "firebase/app";
 import {
   createUserWithEmailAndPassword,
@@ -15,35 +16,41 @@ export interface CreateStaffData {
 }
 
 export const createStaff = async (staffData: CreateStaffData) => {
-  const currentUser = auth.currentUser;
+  try {
+    const currentUser = auth.currentUser;
 
-  if (!currentUser) {
-    throw new Error("You must be logged in to add staff");
+    if (!currentUser) {
+      throw new Error("You must be logged in to add staff");
+    }
+
+    const newStaffData = {
+      name: staffData.name.trim(),
+      email: staffData.email.trim().toLowerCase(),
+      phoneNumber: staffData.phoneNumber?.trim() || "",
+      isAdmin: false,
+      isActive: true,
+      createdAt: new Date(),
+      adminId: currentUser.uid,
+    };
+
+    const secondaryApp = initializeApp(app.options, "Secondary");
+    const staffAuth = getAuth(secondaryApp);
+
+    const userCredential = await createUserWithEmailAndPassword(
+      staffAuth,
+      staffData.email,
+      staffData.password
+    );
+
+    await signOut(staffAuth);
+
+    const userDocRef = doc(db, "users", userCredential.user.uid);
+    await setDoc(userDocRef, newStaffData);
+
+    return { id: userCredential.user.uid, ...newStaffData };
+  } catch (error: any) {
+    if (error.code) {
+      throw new Error(getFirebaseErrorMessage(error));
+    }
   }
-
-  const newStaffData = {
-    name: staffData.name.trim(),
-    email: staffData.email.trim().toLowerCase(),
-    phoneNumber: staffData.phoneNumber?.trim() || "",
-    isAdmin: false,
-    isActive: true,
-    createdAt: new Date(),
-    adminId: currentUser.uid,
-  };
-
-  const secondaryApp = initializeApp(app.options, "Secondary");
-  const staffAuth = getAuth(secondaryApp);
-
-  const userCredential = await createUserWithEmailAndPassword(
-    staffAuth,
-    staffData.email,
-    staffData.password
-  );
-
-  await signOut(staffAuth);
-
-  const userDocRef = doc(db, "users", userCredential.user.uid);
-  await setDoc(userDocRef, newStaffData);
-
-  return { id: userCredential.user.uid, ...newStaffData };
 };
