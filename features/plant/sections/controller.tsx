@@ -2,9 +2,9 @@ import { Button } from "@/components/form/button";
 import { FormInput } from "@/components/form/form-input";
 import { ControllerCard } from "@/features/plant/components/controller-card";
 import { useRealtimeDatabase } from "@/hooks/use-real-time-databases";
+import { toggleController } from "@/services/firebase/firestore/controllers";
 import clsx from "clsx";
 import { Modal, Text, View } from "react-native";
-import { getSprinkler } from "../utils";
 
 interface Props {
   openModal: (name: string) => void;
@@ -19,9 +19,12 @@ export const Controller = ({
   zoneNumber,
   plantSpot,
 }: Props) => {
-  const { data } = useRealtimeDatabase("controls");
-  const zoneData = zoneNumber == 1 ? data?.zone1 : data?.zone2;
-  const sprinkler = getSprinkler(zoneData, plantSpot);
+  const { data: controls } = useRealtimeDatabase(
+    `controllers/zones/${zoneNumber}`
+  );
+  const { data: sprinkler } = useRealtimeDatabase(
+    `controllers/zones/${zoneNumber}/sprinklers/${plantSpot}`
+  );
 
   return (
     <View className={clsx(styles, "mb-6")}>
@@ -29,8 +32,10 @@ export const Controller = ({
       <ControllerCard
         title="Fan"
         icon="Fan"
-        value={zoneData?.fan}
-        onToggle={() => {}}
+        value={controls?.fan}
+        onToggle={() => {
+          toggleController(zoneNumber, "fan", plantSpot, controls?.fan);
+        }}
         onSettings={() => {}}
         colorScheme={{
           iconBgClass: "bg-green-100",
@@ -43,8 +48,10 @@ export const Controller = ({
       <ControllerCard
         title="Light"
         icon="Lightbulb"
-        value={zoneData?.light}
-        onToggle={() => {}}
+        value={controls?.light}
+        onToggle={() => {
+          toggleController(zoneNumber, "light", plantSpot, controls?.light);
+        }}
         onSettings={() => {}}
         colorScheme={{
           iconBgClass: "bg-yellow-100",
@@ -58,7 +65,9 @@ export const Controller = ({
         title="Sprinkler"
         icon="Droplet"
         value={sprinkler}
-        onToggle={() => {}}
+        onToggle={() => {
+          toggleController(zoneNumber, "sprinkler", plantSpot, sprinkler);
+        }}
         onSettings={() => {}}
         colorScheme={{
           iconBgClass: "bg-blue-100",

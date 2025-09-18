@@ -11,7 +11,7 @@ import { analyzePlant } from "@/services/firebase/ai";
 import { deletePlant, getPlant } from "@/services/firebase/firestore/plants";
 import { getImageType, pickImage, takePhoto } from "@/utils/image";
 import { useRouter } from "expo-router";
-import { limit, orderBy, where } from "firebase/firestore";
+import { limit, where } from "firebase/firestore";
 import { useState } from "react";
 import { Alert } from "react-native";
 import { Controller, ControllerModal } from "../sections/controller";
@@ -25,7 +25,6 @@ export const GreenhousePlantDetailsScreen = ({ id }: { id: string }) => {
   const { data: analysisData } = useRealTimeFetch("analyses", [
     where("adminId", "==", adminId || ""),
     where("plantId", "==", id || ""),
-    orderBy("createdAt", "desc"),
     limit(1),
   ]);
 
@@ -46,12 +45,11 @@ export const GreenhousePlantDetailsScreen = ({ id }: { id: string }) => {
           style: "destructive",
           onPress: async () => {
             try {
+              router.back();
               const result = await deletePlant(plant.id as string);
-              if (result.isSuccess) {
-                router.back();
-              } else {
-                Alert.alert("Error", result.message);
-              }
+
+              if (!result.isSuccess)
+                return Alert.alert("Error", result.message);
             } catch (e: any) {
               Alert.alert("Error", e?.message || "Failed to delete plant");
             }
@@ -75,6 +73,8 @@ export const GreenhousePlantDetailsScreen = ({ id }: { id: string }) => {
         plantName: plant.name,
         imageUri: image.uri,
         imageType: type,
+        zoneNumber: plant?.zoneNumber,
+        plantSpot: plant?.plantSpot,
       });
     } catch (err) {
       console.error(err);
@@ -118,11 +118,16 @@ export const GreenhousePlantDetailsScreen = ({ id }: { id: string }) => {
 
         <ScreenContainer scrollable>
           <Image uri={plant?.imageUrl} styles="mb-6 rounded-xl" height={250} />
-          <PlantInfoSection styles="mb-6" plant={plant} />
+          <PlantInfoSection
+            styles="mb-6"
+            plant={{
+              ...plant,
+              healthStatus: analysisData?.[0]?.analysis?.healthStatus,
+            }}
+          />
           <EnvironmentalStatus
             zoneNumber={plant?.zoneNumber}
             plantSpot={plant?.plantSpot}
-            thresholds={analysisData?.[0]?.analysis?.thresholds}
           />
           <Controller
             openModal={() => {}}

@@ -1,13 +1,12 @@
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "../../config";
 
-export const getPlantAvailableSpot = async ({
-  adminId,
-  zoneNumber,
-}: {
+interface Props {
   adminId: string;
   zoneNumber: number;
-}) => {
+}
+
+export const getPlantAvailableSpot = async ({ adminId, zoneNumber }: Props) => {
   try {
     const q = query(
       collection(db, "plants"),
@@ -17,11 +16,9 @@ export const getPlantAvailableSpot = async ({
     const querySnapshot = await getDocs(q);
     const plants = querySnapshot.docs.map((doc) => doc.data());
 
-    if (plants.length >= 6) {
-      return [];
-    }
+    if (plants.length >= 3) return [];
 
-    const allSpots = [1, 2, 3];
+    const allSpots = zoneNumber === 1 ? [1, 2, 3] : [4, 5, 6];
     const takenSpots = plants.map((p) => p.plantSpot);
     const available = allSpots.filter((spot) => !takenSpots.includes(spot));
 

@@ -1,7 +1,7 @@
 import clsx from "clsx";
 import { icons } from "lucide-react-native";
 import React from "react";
-import { Text, TouchableOpacity, View } from "react-native";
+import { Switch, Text, View } from "react-native";
 import { Icon } from "../../../components/icon";
 
 type ColorScheme = {
@@ -62,15 +62,15 @@ export function ControllerCard({
         </View>
 
         <View className="flex-row items-center">
-          {/* <Switch
+          <Switch
             value={value}
             onValueChange={onToggle}
             trackColor={{ false: "#e5e7eb", true: onTrackColor }}
             thumbColor={value ? colorScheme.switchOnColor : "#d1d5db"}
-          /> */}
-          <TouchableOpacity onPress={onSettings}>
+          />
+          {/* <TouchableOpacity onPress={onSettings}>
             <Icon name="Settings" size={20} color="#6B7280" />
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
       </View>
 

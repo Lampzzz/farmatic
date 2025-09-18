@@ -1,43 +1,21 @@
 import { useRealtimeDatabase } from "@/hooks/use-real-time-databases";
-import { updateAutoController } from "@/services/firebase/firestore/controllers";
-import { useEffect } from "react";
 import { Text, View } from "react-native";
 import { EnvironmentalStatusCard } from "../components/environmental-status-card";
-import { getReadableLightLevel, getSoilMoisture } from "../utils";
+import { getReadableLightLevel } from "../utils";
 
 export const EnvironmentalStatus = ({
   zoneNumber,
   plantSpot,
-  thresholds,
 }: {
   zoneNumber: Number;
   plantSpot: Number;
-  thresholds: any;
 }) => {
-  const { data: sensors } = useRealtimeDatabase(`sensors/zone${zoneNumber}`);
+  const { data } = useRealtimeDatabase(`sensors/zones/${zoneNumber}`);
+  const { data: soilMoisture } = useRealtimeDatabase(
+    `sensors/zones/${zoneNumber}/soilMoisture/${plantSpot}`
+  );
 
-  const soilMoisture = getSoilMoisture(sensors, +plantSpot);
-  const lightLevel = getReadableLightLevel(+sensors?.lightLevel);
-
-  useEffect(() => {
-    const updateControllers = async () => {
-      if (sensors && thresholds) {
-        try {
-          const controllers = await updateAutoController(
-            +zoneNumber,
-            +plantSpot,
-            sensors,
-            thresholds
-          );
-          console.log("Auto controller updated:", controllers);
-        } catch (err) {
-          console.error("Error updating controller:", err);
-        }
-      }
-    };
-
-    updateControllers();
-  }, [sensors, zoneNumber, plantSpot, thresholds]);
+  const lightLevel = getReadableLightLevel(+data?.lightLevel);
 
   return (
     <View className="mb-6">
@@ -48,13 +26,13 @@ export const EnvironmentalStatus = ({
         <View className="flex-row gap-2">
           <EnvironmentalStatusCard
             title="Temperature"
-            value={`${sensors?.temperature ?? 0}°C`}
+            value={`${data?.temperature ?? 0}°C`}
             icon="Thermometer"
             iconColor="red"
           />
           <EnvironmentalStatusCard
             title="Humidity"
-            value={`${sensors?.humidity ?? 0}%`}
+            value={`${data?.humidity ?? 0}%`}
             icon="Droplet"
             iconColor="blue"
           />

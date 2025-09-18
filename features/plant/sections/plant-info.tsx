@@ -10,8 +10,6 @@ interface Props {
 }
 
 export const PlantInfoSection = ({ plant, styles }: Props) => {
-  console.log(JSON.stringify(plant, null, 2));
-
   return (
     <View className={clsx(styles)}>
       <Text className="text-xl font-bold text-gray-800 mb-4">
@@ -29,7 +27,7 @@ export const PlantInfoSection = ({ plant, styles }: Props) => {
         <View className="py-3">
           <Divider />
         </View>
-        <PlantInfoRow label="Status" value={plant.analysis?.healthStatus} />
+        <PlantInfoRow label="Status" value={plant.healthStatus} />
       </View>
     </View>
   );

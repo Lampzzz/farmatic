@@ -21,6 +21,11 @@ interface Props {
   selectedPlantImage?: string;
 }
 
+interface AvailableSpot {
+  label: string;
+  value: number;
+}
+
 const zones = [
   { label: "Zone 1", value: 1 },
   { label: "Zone 2", value: 2 },
@@ -28,9 +33,7 @@ const zones = [
 
 export const AddPlantScreen = (selectedPlant: Props) => {
   const { adminId } = useAuth();
-  const [availableSpots, setAvailableSpots] = useState<
-    { label: string; value: number }[]
-  >([]);
+  const [availableSpots, setAvailableSpots] = useState<AvailableSpot[]>([]);
 
   const hasSelectedPlant =
     selectedPlant.selectedPlantId &&
@@ -81,23 +84,10 @@ export const AddPlantScreen = (selectedPlant: Props) => {
     fetchAvailableSpots();
   }, [adminId, zoneNumber]);
 
-  const handleImagePicker = async () => {
+  const handleSelectOrCaptureImage = async (mode: "upload" | "capture") => {
     try {
-      const result = await pickImage();
+      const result = mode === "upload" ? await pickImage() : await takePhoto();
 
-      if (result) {
-        const type = getImageType(result.uri);
-        setValue("imageType", type);
-        setValue("imageUrl", result.uri);
-      }
-    } catch (error: any) {
-      Alert.alert("Error", error.message);
-    }
-  };
-
-  const handleTakePhoto = async () => {
-    try {
-      const result = await takePhoto();
       if (result) {
         const type = getImageType(result.uri);
         setValue("imageType", type);
@@ -119,11 +109,9 @@ export const AddPlantScreen = (selectedPlant: Props) => {
     try {
       const result = await createPlant(data, adminId);
 
-      if (!result.isSuccess) {
-        Alert.alert("Error", result.message);
-      }
+      if (!result.isSuccess) return Alert.alert("Error", result.message);
 
-      ToastAndroid.show(result.message, ToastAndroid.SHORT);
+      ToastAndroid.show("Plant added successfully", ToastAndroid.SHORT);
       router.replace("/home");
     } catch (error: any) {
       Alert.alert("Error", error.message);
@@ -151,8 +139,8 @@ export const AddPlantScreen = (selectedPlant: Props) => {
             <ImagePicker
               value={value}
               onChange={onChange}
-              handleImagePicker={handleImagePicker}
-              handleTakePhoto={handleTakePhoto}
+              handleImagePicker={() => handleSelectOrCaptureImage("upload")}
+              handleTakePhoto={() => handleSelectOrCaptureImage("capture")}
               errors={errors}
             />
           )}

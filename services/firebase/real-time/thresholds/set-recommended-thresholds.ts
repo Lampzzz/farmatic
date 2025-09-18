@@ -1,24 +1,23 @@
 import { realTimeDB } from "@/services/firebase/config";
 import { ref, set } from "firebase/database";
 
-type Thresholds = {
+interface Thresholds {
   soilMoisture: number;
   lightLevel: number;
   temperature: number;
   humidity: number;
-};
+}
 
 export const setRecommendedThresholds = async (
-  zoneId: number,
-  spotId: number,
+  zoneNumber: number,
+  plantSpot: number,
   thresholds: Thresholds
 ) => {
   try {
-    const path = `recommended_thresholds/zones/${zoneId}/spots/${spotId}`;
+    const path = `thresholds/zones/${zoneNumber}/spots/${plantSpot}`;
 
     await set(ref(realTimeDB, path), thresholds);
 
-    console.log(`Thresholds set for Zone ${zoneId}, Spot ${spotId}`);
     return { success: true };
   } catch (error: any) {
     console.error("Error setting thresholds:", error);

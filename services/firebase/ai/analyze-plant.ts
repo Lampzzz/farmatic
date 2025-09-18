@@ -13,8 +13,8 @@ interface Props {
   imageUri: string;
   imageType: string;
   base64?: string;
-  zoneNumber: number;
-  plantSpot: number;
+  zoneNumber?: number;
+  plantSpot?: number;
 }
 
 export const analyzePlant = async ({
@@ -47,12 +47,14 @@ export const analyzePlant = async ({
       analysis: { ...result, imageUrl: imageUri },
     });
 
-    await setRecommendedThresholds(zoneNumber, plantSpot, {
-      soilMoisture: result.thresholds.sprinkler.soilMoisture,
-      lightLevel: result.thresholds.light.lightLevel,
-      temperature: result.thresholds.fan.temperature,
-      humidity: result.thresholds.fan.humidity,
-    });
+    if (zoneNumber && plantSpot) {
+      await setRecommendedThresholds(zoneNumber, plantSpot, {
+        soilMoisture: result.thresholds.sprinkler.soilMoisture,
+        lightLevel: result.thresholds.light.lightLevel,
+        temperature: result.thresholds.fan.temperature,
+        humidity: result.thresholds.fan.humidity,
+      });
+    }
 
     return result;
   } catch (err) {
