@@ -2,7 +2,6 @@ import { Image, Text, View } from "react-native";
 
 import clsx from "clsx";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Icon } from "../icon";
 
 export const AuthLayout = ({
   children,
@@ -25,9 +24,13 @@ export const AuthLayout = ({
 
         <View className="flex-1">
           <View className="flex-1 items-center justify-center">
-            <View className="bg-white rounded-xl p-4 mb-2">
+            {/* <View className="bg-white rounded-xl p-4 mb-2">
               <Icon name="Leaf" size={40} color="#5B8908" />
-            </View>
+            </View> */}
+            <Image
+              source={require("@/assets/images/logo.png")}
+              className="w-20 h-20 mb-2"
+            />
             <Text className="text-white text-5xl font-bold mb-2">Farmatic</Text>
             <Text className="text-white text-sm">Smart Plant Care System</Text>
           </View>
