@@ -1,4 +1,5 @@
-import { ANALYZE_GREENHOUSE_PLANT } from "@/constants";
+import { ANALYZE_GREENHOUSE_PLANT, ANALYZE_PLANT_BY_IMAGE } from "@/constants";
+import { cloudinaryUpload } from "@/services/cloudinary";
 import { generateResult } from "@/utils/ai/generate-result";
 import { getBase64Data } from "@/utils/image";
 import { createAnalysis } from "../firestore/plants/create-analysis";
@@ -15,6 +16,7 @@ interface Props {
   base64?: string;
   zoneNumber?: number;
   plantSpot?: number;
+  type?: "analyze" | "identify";
 }
 
 export const analyzePlant = async ({
@@ -27,15 +29,23 @@ export const analyzePlant = async ({
   base64,
   zoneNumber,
   plantSpot,
+  type = "analyze",
 }: Props) => {
   try {
+    let image = null;
+
+    if (imageUri) {
+      image = await cloudinaryUpload(imageUri);
+    }
     const base64Data = await getBase64Data(imageUri, base64);
 
     const isPlant = await isPlantImage(base64Data, imageType);
     if (!isPlant) return null;
 
     const result = await generateResult(
-      ANALYZE_GREENHOUSE_PLANT(plantName),
+      type === "analyze"
+        ? ANALYZE_GREENHOUSE_PLANT(plantName)
+        : ANALYZE_PLANT_BY_IMAGE,
       base64Data,
       imageType
     );
@@ -44,10 +54,10 @@ export const analyzePlant = async ({
       plantId: plantId || null,
       analyzerId,
       adminId,
-      analysis: { ...result, imageUrl: imageUri },
+      analysis: { ...result.analysis, imageUrl: image },
     });
 
-    if (zoneNumber && plantSpot) {
+    if (zoneNumber && plantSpot && result.thresholds) {
       await setRecommendedThresholds(zoneNumber, plantSpot, {
         soilMoisture: result.thresholds.sprinkler.soilMoisture,
         lightLevel: result.thresholds.light.lightLevel,

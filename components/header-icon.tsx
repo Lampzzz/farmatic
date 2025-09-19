@@ -16,7 +16,7 @@ export function HeaderIcon({
     <TouchableOpacity
       onPress={onPress}
       className={clsx(
-        "p-2 h-10 w-10 items-center justify-center rounded-full bg-icon-background",
+        "p-2 h-10 w-10 items-center justify-center rounded-full bg-primary",
         styles
       )}
     >

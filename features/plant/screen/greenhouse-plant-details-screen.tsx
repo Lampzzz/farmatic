@@ -11,30 +11,32 @@ import { analyzePlant } from "@/services/firebase/ai";
 import { deletePlant, getPlant } from "@/services/firebase/firestore/plants";
 import { getImageType, pickImage, takePhoto } from "@/utils/image";
 import { useRouter } from "expo-router";
-import { limit, where } from "firebase/firestore";
+import { limit, orderBy, where } from "firebase/firestore";
 import { useState } from "react";
-import { Alert } from "react-native";
-import { Controller, ControllerModal } from "../sections/controller";
+import { Alert, ToastAndroid } from "react-native";
+import { Controller } from "../sections/controller";
 import { EnvironmentalStatus } from "../sections/environmental-status";
 import { PlantInfoSection } from "../sections/plant-info";
 
 export const GreenhousePlantDetailsScreen = ({ id }: { id: string }) => {
   const router = useRouter();
   const { adminId, user } = useAuth();
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
   const { data: plant, loading } = useFetch(() => getPlant(id as string), []);
   const { data: analysisData } = useRealTimeFetch("analyses", [
     where("adminId", "==", adminId || ""),
     where("plantId", "==", id || ""),
+    orderBy("createdAt", "desc"),
     limit(1),
   ]);
-
-  const [isModalVisible, setIsModalVisible] = useState(false);
 
   if (loading) return <Loader />;
   if (!plant) return null;
 
   const confirmDelete = () => {
+    if (isAnalyzing) return;
     if (!plant?.id) return;
+
     Alert.alert(
       "Delete Plant",
       `Are you sure you want to delete "${plant.name}"? This cannot be undone.`,
@@ -61,6 +63,7 @@ export const GreenhousePlantDetailsScreen = ({ id }: { id: string }) => {
 
   const handleSelectImage = async (mode: "camera" | "gallery") => {
     try {
+      setIsAnalyzing(true);
       const image = mode === "camera" ? await takePhoto() : await pickImage();
       if (!image) return;
 
@@ -79,10 +82,21 @@ export const GreenhousePlantDetailsScreen = ({ id }: { id: string }) => {
     } catch (err) {
       console.error(err);
       Alert.alert("Error", "Could not analyze the image.");
+    } finally {
+      setIsAnalyzing(false);
+      router.push({
+        pathname: "/plant/analyze-plant-history",
+        params: {
+          plantId: plant.id,
+          adminId,
+        },
+      });
+      ToastAndroid.show("Plant analyzed successfully", ToastAndroid.SHORT);
     }
   };
 
   const handlePress = async () => {
+    if (isAnalyzing) return;
     return Alert.alert(
       "Upload Plant Photo",
       "Select a source to analyze your plant",
@@ -106,44 +120,58 @@ export const GreenhousePlantDetailsScreen = ({ id }: { id: string }) => {
   };
 
   return (
-    <>
-      <MainLayout>
-        <Header
-          title="Plant Details"
-          description="View your plant information"
-          showBackButton
-          rightIcon="Trash"
-          onRightIconPress={confirmDelete}
-        />
-
-        <ScreenContainer scrollable>
-          <Image uri={plant?.imageUrl} styles="mb-6 rounded-xl" height={250} />
-          <PlantInfoSection
-            styles="mb-6"
-            plant={{
-              ...plant,
-              healthStatus: analysisData?.[0]?.analysis?.healthStatus,
-            }}
-          />
-          <EnvironmentalStatus
-            zoneNumber={plant?.zoneNumber}
-            plantSpot={plant?.plantSpot}
-          />
-          <Controller
-            openModal={() => {}}
-            zoneNumber={plant?.zoneNumber}
-            plantSpot={plant?.plantSpot}
-          />
-          <Button label="Analyze Plant" onPress={handlePress} />
-        </ScreenContainer>
-      </MainLayout>
-
-      <ControllerModal
-        visible={isModalVisible}
-        onClose={() => setIsModalVisible(false)}
-        selectedController={""}
-        plant={plant}
+    <MainLayout>
+      <Header
+        title="Plant Details"
+        description="View your plant information"
+        showBackButton
+        rightIcon="Trash"
+        onRightIconPress={confirmDelete}
       />
-    </>
+
+      <ScreenContainer scrollable>
+        <Image
+          uri={analysisData?.[0]?.analysis?.imageUrl || plant?.imageUrl}
+          styles="mb-6 rounded-xl"
+          height={250}
+        />
+        <PlantInfoSection
+          styles="mb-6"
+          plant={{
+            ...plant,
+            healthStatus: analysisData?.[0]?.analysis?.healthStatus,
+            description: analysisData?.[0]?.analysis?.description,
+          }}
+        />
+        <EnvironmentalStatus
+          zoneNumber={plant?.zoneNumber}
+          plantSpot={plant?.plantSpot}
+        />
+        <Controller
+          zoneNumber={plant?.zoneNumber}
+          plantSpot={plant?.plantSpot}
+        />
+        <Button
+          label="Analyze Plant"
+          onPress={handlePress}
+          styles="mb-2"
+          isLoading={isAnalyzing}
+        />
+        <Button
+          label="Analyze History"
+          variant="outline"
+          onPress={() =>
+            router.push({
+              pathname: "/plant/analyze-plant-history",
+              params: {
+                plantId: plant.id,
+                adminId,
+              },
+            })
+          }
+          isLoading={isAnalyzing}
+        />
+      </ScreenContainer>
+    </MainLayout>
   );
 };

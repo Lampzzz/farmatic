@@ -8,6 +8,10 @@ export default function PlantLayout() {
       <Stack.Screen name="add-plant" options={{ headerShown: false }} />
       <Stack.Screen name="select-plant" options={{ headerShown: false }} />
       <Stack.Screen name="analyze-plant" options={{ headerShown: false }} />
+      <Stack.Screen
+        name="analyze-plant-history"
+        options={{ headerShown: false }}
+      />
     </Stack>
   );
 }

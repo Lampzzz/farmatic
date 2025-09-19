@@ -3,6 +3,7 @@ import { Icon } from "@/components/icon";
 import { Image } from "@/components/image";
 import { Loader } from "@/components/loader";
 import { formatFirestoreDate } from "@/utils/date";
+import clsx from "clsx";
 import { router } from "expo-router";
 import { FlatList, Text, View } from "react-native";
 
@@ -11,19 +12,43 @@ interface Props {
   loading: boolean;
 }
 
-const getRiskColor = (risk: string) => {
-  switch (risk?.toLowerCase()) {
-    case "low":
+const getHealthStatusColor = (status: string) => {
+  switch (status?.toLowerCase()) {
+    case "healthy":
       return "bg-green-500";
-    case "medium":
-      return "bg-orange-500";
-    case "high":
+    case "sick":
       return "bg-red-500";
+    case "growing":
+      return "bg-blue-500";
+    case "needs attention":
+      return "bg-orange-500";
+    case "dead":
+      return "bg-gray-500";
+    case "harvestable":
+      return "bg-purple-500";
     default:
       return "bg-gray-300";
   }
 };
 
+const getHealthStatusText = (status: string) => {
+  switch (status?.toLowerCase()) {
+    case "healthy":
+      return "Healthy";
+    case "sick":
+      return "Sick";
+    case "growing":
+      return "Growing";
+    case "needs attention":
+      return "Needs Attention";
+    case "dead":
+      return "Dead";
+    case "harvestable":
+      return "Harvestable";
+    default:
+      return "Unknown";
+  }
+};
 export const AnalysisHistory = ({ data, loading }: Props) => {
   if (loading) return <Loader />;
 
@@ -52,22 +77,27 @@ export const AnalysisHistory = ({ data, loading }: Props) => {
             <Text className="font-bold text-xl  mb-1">
               {item.analysis.commoName}
             </Text>
-            <View className="flex-row items-center gap-2">
+            <View className="flex-row items-center gap-2 mb-2">
               <Icon name="Calendar" size={16} color="#6B7280" />
               <Text className="text-gray-400 text-sm">
                 Analyzed: {formatFirestoreDate(item.createdAt)}
               </Text>
             </View>
-            {/* <View
+            <View
               className={clsx(
-                "rounded-full px-2 py-1 text-center",
-                getRiskColor(item.analysis.riskLevel)
+                "rounded-full px-2 py-1 self-start text-center",
+                getHealthStatusColor(item.analysis.healthStatus)
               )}
             >
-              <Text className="text-white text-sm capitalize">
-                {item.analysis.riskLevel} Risk
+              <Text
+                className={clsx(
+                  "text-white text-sm capitalize",
+                  getHealthStatusColor(item.analysis.healthStatus)
+                )}
+              >
+                {item.analysis.healthStatus}
               </Text>
-            </View> */}
+            </View>
           </View>
         </View>
       )}

@@ -5,7 +5,7 @@ import { auth } from "../config";
 export const logout = async () => {
   try {
     await signOut(auth);
-    router.replace("/sign-in");
+    router.replace("/login");
 
     return { isSuccess: true, message: "Logout successful" };
   } catch (error: any) {

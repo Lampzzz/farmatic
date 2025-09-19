@@ -28,6 +28,8 @@ export const AnalysisScreen = () => {
     { key: "history", label: "Analysis History", icon: "Clock" as const },
   ];
 
+  const plants = savedPlants.map((plant) => plant.plant);
+
   return (
     <MainLayout>
       <Header
@@ -44,7 +46,7 @@ export const AnalysisScreen = () => {
 
         <View className="flex-1">
           {activeTab === "bookmark" ? (
-            <BookmarkPlants data={savedPlants} loading={loading} />
+            <BookmarkPlants data={plants} loading={loading} />
           ) : (
             <AnalysisHistory data={analysisHistory} loading={loading} />
           )}

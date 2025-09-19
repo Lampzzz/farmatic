@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import { ActivityIndicator, Text, TouchableOpacity } from "react-native";
+import { Text, TouchableOpacity } from "react-native";
 
 export function Button({
   onPress,
@@ -20,12 +20,12 @@ export function Button({
   buttonHeight?: number;
   disabled?: boolean;
 }) {
-  const baseClasses = "rounded-lg items-center justify-center";
+  const baseClasses = "rounded-xl items-center justify-center";
 
   const variantClasses =
     variant === "outline"
       ? "border border-primary bg-transparent"
-      : "bg-primary";
+      : "bg-primary border border-primary";
 
   const disabledClasses = isLoading ? "opacity-50" : "";
 
@@ -37,7 +37,7 @@ export function Button({
       style={{ height: buttonHeight }}
       className={clsx(baseClasses, variantClasses, disabledClasses, styles)}
     >
-      {isLoading ? (
+      {/* {isLoading ? (
         <ActivityIndicator
           size="small"
           color={variant === "outline" ? "#16A34A" : "white"}
@@ -52,7 +52,16 @@ export function Button({
         >
           {label}
         </Text>
-      )}
+      )} */}
+      <Text
+        className={clsx(
+          textSize,
+          "font-bold",
+          variant === "outline" ? "text-primary" : "text-white"
+        )}
+      >
+        {label}
+      </Text>
     </TouchableOpacity>
   );
 }

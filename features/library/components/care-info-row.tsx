@@ -17,7 +17,7 @@ export const CareInfoRow = ({ icon, title, description, styles }: Props) => {
         className="rounded-lg bg-green-50 items-center justify-center"
         style={{ width: 50, height: 50 }}
       >
-        <Icon name={icon} size={28} color="#16A34A" />
+        <Icon name={icon} size={28} color="#5B8908" />
       </View>
 
       <View className="flex-1">

@@ -7,7 +7,7 @@ export const MainLayout = () => {
     <Tabs
       initialRouteName="home"
       screenOptions={{
-        tabBarActiveTintColor: "#16A34A",
+        tabBarActiveTintColor: "#5B8908",
         tabBarShowLabel: true,
         tabBarStyle: {
           height: 80,

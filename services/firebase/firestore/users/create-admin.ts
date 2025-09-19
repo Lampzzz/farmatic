@@ -14,6 +14,7 @@ export const createAdmin = async (id: string, email: string) => {
 
     await setDoc(doc(db, "users", id), {
       id,
+      name: "Admin",
       email,
       isAdmin: true,
       createdAt: new Date(),

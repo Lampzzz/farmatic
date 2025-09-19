@@ -17,8 +17,8 @@ export const GreenhousePlantList = ({ data, loading }: Props) => {
       <EmptyState
         title="No Greenhouse Plants Yet"
         description="Your greenhouse plants will appear here. Start by adding your first plant."
-        buttonText="Add Plants"
-        onPress={() => router.push("/plant/select-plant")}
+        buttonText="Add Plant"
+        onPress={() => router.push("/plant/add-plant")}
       />
     );
   }
@@ -31,6 +31,7 @@ export const GreenhousePlantList = ({ data, loading }: Props) => {
       numColumns={2}
       columnWrapperStyle={{ gap: 12 }}
       contentContainerStyle={{ gap: 12 }}
+      overScrollMode="never"
       renderItem={({ item }) => (
         <PlantCard
           image={item.imageUrl}

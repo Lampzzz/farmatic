@@ -1,19 +1,26 @@
-import { BaseCard } from "@/components/base-card";
 import { Icon } from "@/components/icon";
 import { useAuth } from "@/hooks/use-auth";
 import { router } from "expo-router";
 import { Text, TouchableOpacity, View } from "react-native";
 
+function getInitials(name: string) {
+  return name
+    .split(" ")
+    .map((n) => n[0])
+    .join("");
+}
+
 export function ProfileSection() {
   const { user } = useAuth();
 
   return (
-    <BaseCard styles="mb-6 items-center justify-center">
-      <View
-        className="overflow-hidden bg-primary mb-2 items-center justify-center"
-        style={{ width: 100, height: 100, borderRadius: 50 }}
-      >
-        <Icon name="User" size={50} color="white" />
+    <View className="mb-6 items-center justify-center">
+      <View className="p-2 bg-white rounded-full items-center justify-center mb-2">
+        <View className="overflow-hidden bg-primary items-center justify-center h-36 w-36 rounded-full">
+          <Text className="text-white font-bold text-5xl">
+            {getInitials(user?.name || "")}
+          </Text>
+        </View>
       </View>
       <Text className="font-bold text-xl">{user?.name || "N/A"}</Text>
       <Text className="text-gray ">{user?.email}</Text>
@@ -26,9 +33,9 @@ export function ProfileSection() {
           router.push(`/user/edit-user-profile?userId=${user?.id}`)
         }
       >
-        <Icon name="Pencil" size={12} color="#16A34A" />
+        <Icon name="Pencil" size={12} color="#5B8908" />
         <Text className="text-primary underline">Edit Profile</Text>
       </TouchableOpacity>
-    </BaseCard>
+    </View>
   );
 }

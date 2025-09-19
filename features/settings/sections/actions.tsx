@@ -17,21 +17,21 @@ export function ActionsSection() {
 
   return (
     <BaseCard>
-      <SettingsItem
-        icon="CircleQuestionMark"
-        title="Help Center"
-        onPress={() => {}}
-      />
       <SettingsItem icon="Settings" title="About Farmatic" onPress={() => {}} />
-      <SettingsItem icon="ArchiveRestore" title="Archive" onPress={() => {}} />
       <SettingsItem
+        icon="ArchiveRestore"
+        title="Archive"
+        onPress={() => {}}
+        showBorder={false}
+      />
+      {/* <SettingsItem
         icon="LogOut"
         title="Log Out"
         iconColor="#EF4444"
         titleColor="text-red-500"
         onPress={handleLogout}
         showBorder={false}
-      />
+      /> */}
     </BaseCard>
   );
 }

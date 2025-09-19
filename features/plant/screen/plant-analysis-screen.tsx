@@ -35,6 +35,7 @@ export const PlantAnalysisScreen = ({
           imageUri,
           imageType: type,
           base64: base64Data,
+          type: "identify",
         });
 
         setResult(result);
@@ -50,14 +51,14 @@ export const PlantAnalysisScreen = ({
   }, [imageUri, type]);
 
   if (isLoading) {
-    return <Loader message="Analyzing plant..." />;
+    return <Loader message="Identifying plant..." />;
   }
 
   return (
     <MainLayout>
       <Header
-        title={result.common_name || "Unknown Plant"}
-        description={result.scientific_name || "Unknown Plant"}
+        title={result.commonName || "Unknown Plant"}
+        description={result.scientificName || "Unknown Plant"}
         showBackButton
       />
       <ScreenContainer scrollable>
@@ -69,7 +70,16 @@ export const PlantAnalysisScreen = ({
           />
         </View>
         <BaseCard styles="mb-6">
-          <Text className="text-gray text-lg">{result.description}</Text>
+          <Text className="text-primary text-xl font-bold mb-2">
+            Description
+          </Text>
+          <Text className="text-gray">{result.description}</Text>
+        </BaseCard>
+        <BaseCard styles="mb-6">
+          <Text className="text-primary text-xl font-bold mb-2">
+            Care Guide
+          </Text>
+          <Text className="text-gray">{result.careGuide}</Text>
         </BaseCard>
       </ScreenContainer>
     </MainLayout>

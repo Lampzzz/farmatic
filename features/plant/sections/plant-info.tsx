@@ -12,10 +12,15 @@ interface Props {
 export const PlantInfoSection = ({ plant, styles }: Props) => {
   return (
     <View className={clsx(styles)}>
+      {plant.description && (
+        <View className="bg-white rounded-xl p-4 shadow-md mb-6">
+          <Text className="text-gray leading-relaxed">{plant.description}</Text>
+        </View>
+      )}
       <Text className="text-xl font-bold text-gray-800 mb-4">
         Plant Information
       </Text>
-      <View className="bg-white rounded-xl p-4 shadow-md">
+      <View className="bg-white rounded-xl p-4 shadow-md mb-6">
         <PlantInfoRow label="Plant name" value={plant.name} />
         <View className="py-3">
           <Divider />

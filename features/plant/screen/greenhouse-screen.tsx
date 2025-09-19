@@ -1,4 +1,5 @@
 import { Header } from "@/components/header";
+import { HeaderIcon } from "@/components/header-icon";
 import { MainLayout } from "@/components/layout/main-layout";
 import { ScreenContainer } from "@/components/layout/screen-container";
 import { useAuth } from "@/hooks/use-auth";
@@ -18,15 +19,14 @@ export const GreenhouseScreen = () => {
 
   return (
     <MainLayout>
-      <Header
-        title="Farmatic"
-        description="Greenhouse Dashboard"
-        rightIcon="Plus"
-        onRightIconPress={() => router.push("/plant/select-plant")}
-      />
+      <Header title="Farmatic" description="Greenhouse Dashboard" />
       <ScreenContainer>
         <View className="mb-6 flex-row items-center justify-between">
           <Text className="text-2xl font-bold">Greenhouse Plants</Text>
+          <HeaderIcon
+            icon="Plus"
+            onPress={() => router.push("/plant/add-plant")}
+          />
         </View>
         <GreenhousePlantList data={data} loading={loading} />
       </ScreenContainer>

@@ -15,7 +15,7 @@ interface Props {
 
 export const PlantProfileRow = ({
   icon,
-  iconColor = "#16A34A",
+  iconColor = "#5B8908",
   label,
   value,
   styles = "",

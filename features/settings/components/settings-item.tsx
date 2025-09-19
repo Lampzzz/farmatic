@@ -14,7 +14,7 @@ interface Props {
 
 export const SettingsItem = ({
   icon,
-  iconColor = "#16A34A",
+  iconColor = "#5B8908",
   title,
   titleColor,
   onPress,

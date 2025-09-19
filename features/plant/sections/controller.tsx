@@ -1,24 +1,16 @@
-import { Button } from "@/components/form/button";
-import { FormInput } from "@/components/form/form-input";
 import { ControllerCard } from "@/features/plant/components/controller-card";
 import { useRealtimeDatabase } from "@/hooks/use-real-time-databases";
 import { toggleController } from "@/services/firebase/firestore/controllers";
 import clsx from "clsx";
-import { Modal, Text, View } from "react-native";
+import { Text, View } from "react-native";
 
 interface Props {
-  openModal: (name: string) => void;
   styles?: string;
   zoneNumber: number;
   plantSpot: number;
 }
 
-export const Controller = ({
-  openModal,
-  styles,
-  zoneNumber,
-  plantSpot,
-}: Props) => {
+export const Controller = ({ styles, zoneNumber, plantSpot }: Props) => {
   const { data: controls } = useRealtimeDatabase(
     `controllers/zones/${zoneNumber}`
   );
@@ -80,85 +72,3 @@ export const Controller = ({
     </View>
   );
 };
-
-interface ControllerModalProps {
-  visible: boolean;
-  onClose: () => void;
-  selectedController: string;
-  plant: any;
-}
-
-export const ControllerModal = ({
-  visible,
-  onClose,
-  selectedController,
-  plant,
-}: ControllerModalProps) => (
-  <Modal visible={visible} onRequestClose={onClose}>
-    <View className="bg-white rounded-xl p-4 shadow-md">
-      <Text className="text-lg font-bold text-gray-800 mb-4">
-        {selectedController === "fan" && "Fan Threshold Settings"}
-        {selectedController === "light" && "Light Threshold Settings"}
-        {selectedController === "sprinkler" && "Sprinkler Threshold Settings"}
-      </Text>
-
-      {selectedController === "fan" && (
-        <>
-          <FormInput
-            label="Temperature Threshold (°C)"
-            placeholder="Set temperature threshold"
-            iconName="Thermometer"
-            value={plant.analysis?.thresholds?.fan?.temperature || ""}
-            onChangeText={() => {}}
-          />
-          <FormInput
-            label="Humidity Threshold (%)"
-            placeholder="Set humidity threshold"
-            iconName="Droplet"
-            value={plant.analysis?.thresholds?.fan?.humidity || ""}
-            onChangeText={() => {}}
-          />
-        </>
-      )}
-
-      {selectedController === "light" && (
-        <FormInput
-          label="Light Level"
-          placeholder="Set light level threshold"
-          iconName="Sun"
-          value={plant.analysis?.thresholds?.light?.intensity || ""}
-          onChangeText={() => {}}
-        />
-      )}
-
-      {selectedController === "sprinkler" && (
-        <FormInput
-          label="Soil Moisture Threshold (%)"
-          placeholder="Set soil moisture threshold"
-          iconName="Droplet"
-          value={plant.analysis?.thresholds?.sprinkler?.soil_moisture || ""}
-          onChangeText={() => {}}
-        />
-      )}
-
-      <View className="mt-4 flex-row gap-2 justify-end">
-        <Button
-          label="Cancel"
-          onPress={onClose}
-          variant="outline"
-          textSize="text-sm"
-          buttonHeight={40}
-          styles="w-20"
-        />
-        <Button
-          label="Save"
-          onPress={() => {}}
-          variant="primary"
-          textSize="text-sm"
-          buttonHeight={40}
-          styles="w-20"
-        />
-      </View>
-    </View>
-  </Modal>
-);

@@ -17,18 +17,18 @@ export const IdentifyMethod = ({ onTakePicture, onUploadImage }: Props) => {
 
       <View className="flex-row items-center justify-center gap-4 mb-4">
         <TouchableOpacity
-          className="flex-1 bg-green-50 p-4 rounded-lg items-center"
+          className="flex-1 bg-primary/20 p-4 rounded-lg items-center"
           onPress={onTakePicture}
         >
-          <Icon name="Camera" size={32} color="#16A34A" />
+          <Icon name="Camera" size={32} color="#5B8908" />
           <Text className="text-primary font-semibold mt-2">Take Picture</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
-          className="flex-1 bg-green-50 p-4 rounded-lg items-center"
+          className="flex-1 bg-primary/20 p-4 rounded-lg items-center"
           onPress={onUploadImage}
         >
-          <Icon name="Image" size={32} color="#16A34A" />
+          <Icon name="Image" size={32} color="#5B8908" />
           <Text className="text-primary font-semibold mt-2">Upload Image</Text>
         </TouchableOpacity>
       </View>

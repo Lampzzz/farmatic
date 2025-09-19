@@ -5,7 +5,7 @@ import { Icon } from "../icon";
 export default function EmptyGreenhousePlant() {
   return (
     <View className="flex-1 items-center justify-center px-6">
-      <Icon name="Sprout" size={64} color="#16A34A" />
+      <Icon name="Sprout" size={64} color="#5B8908" />
       <Text className="text-xl font-semibold text-primary  mt-4 text-center">
         No Plants Yet
       </Text>

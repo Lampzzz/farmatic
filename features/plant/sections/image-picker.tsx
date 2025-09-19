@@ -46,7 +46,7 @@ export const ImagePicker = ({
                 className="items-center gap-2"
               >
                 <View className="bg-primary/10 p-3 items-center justify-center rounded-full">
-                  <Icon name="Image" size={24} color="#16A34A" />
+                  <Icon name="Image" size={24} color="#5B8908" />
                 </View>
 
                 <Text className="text-primary text-sm">Gallery</Text>
@@ -57,7 +57,7 @@ export const ImagePicker = ({
                 className="items-center gap-2"
               >
                 <View className="bg-primary/10 p-3 rounded-full items-center justify-center">
-                  <Icon name="Camera" size={24} color="#16A34A" />
+                  <Icon name="Camera" size={24} color="#5B8908" />
                 </View>
                 <Text className="text-primary text-sm">Camera</Text>
               </TouchableOpacity>

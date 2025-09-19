@@ -35,14 +35,14 @@ export const TabSwitcher = ({
             key={tab.key}
             onPress={() => onTabChange(tab.key)}
             className={`flex-1 flex-row gap-2 items-center justify-center py-3 px-4 ${roundedClass} ${
-              isActive ? "bg-green-100" : "bg-white"
+              isActive ? "bg-primary/20" : "bg-white"
             }`}
           >
             {tab.icon === "Bookmark" && (
-              <Bookmark size={20} color={isActive ? "#16A34A" : "#6B7280"} />
+              <Bookmark size={20} color={isActive ? "#5B8908" : "#6B7280"} />
             )}
             {tab.icon === "Clock" && (
-              <Clock size={20} color={isActive ? "#16A34A" : "#6B7280"} />
+              <Clock size={20} color={isActive ? "#5B8908" : "#6B7280"} />
             )}
             <Text
               className={`ml-2 font-semibold ${isActive ? "text-primary" : "text-gray"}`}
